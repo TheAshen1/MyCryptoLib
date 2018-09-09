@@ -90,21 +90,6 @@ namespace McElieceCryptosystem.Models
         }
         #endregion
 
-        #region Generic Operations
-        public MatrixBase<T> Transpose()
-        {
-            var rawDataTransposed = new T[ColumnCount, RowCount];
-            
-
-            for (int row = 0; row < RowCount; row++)
-                for (int col = 0; col < ColumnCount; col++)
-                    rawDataTransposed[col, row] = Data[row, col];
-
-            var result = new MatrixBase<T>(rawDataTransposed);
-            return result;
-        }
-        #endregion
-
         override public string ToString()
         {
             var sb = new StringBuilder();

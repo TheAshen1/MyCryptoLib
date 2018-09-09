@@ -2,7 +2,7 @@
 
 namespace McElieceCryptosystem.Models
 {
-    class MatrixInt: MatrixBase<int>
+    public class MatrixInt: MatrixBase<int>
     {
         #region Constructors
         public MatrixInt(int size) : base(size)
@@ -23,6 +23,19 @@ namespace McElieceCryptosystem.Models
         #endregion
 
         #region Operations
+        public MatrixInt Transpose()
+        {
+            var rawDataTransposed = new int[ColumnCount, RowCount];
+
+
+            for (int row = 0; row < RowCount; row++)
+                for (int col = 0; col < ColumnCount; col++)
+                    rawDataTransposed[col, row] = Data[row, col];
+
+            var result = new MatrixInt(rawDataTransposed);
+            return result;
+        }
+
         protected static MatrixInt Addition(
            MatrixInt matrix1,
            MatrixInt matrix2)
@@ -87,10 +100,10 @@ namespace McElieceCryptosystem.Models
                 {
                     int sum = 0;
                     for (int k = 0; k < matrix1.ColumnCount; k++)
-                        sum += matrix1.Data[k, col] * matrix2.Data[row, k];
+                        sum += matrix1.Data[row, k] * matrix2.Data[k, col];
                     rawResult[row, col] = sum;
                 }
-            MatrixInt result = new MatrixInt(matrix2.ColumnCount, matrix1.RowCount);
+            MatrixInt result = new MatrixInt(rawResult);
             return result;
         }
 

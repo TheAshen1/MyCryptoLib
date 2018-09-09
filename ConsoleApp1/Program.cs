@@ -9,9 +9,15 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             //var mcElice = new McElieceCryptosystem.McElieceCryptosystem();
-            var M = new MatrixBase<int>(3, 6);
-            Console.Write(M.ToString());
-            Console.Write(M.Transpose().ToString());
+            var m1 = new int[,] { { 1, 2 } };
+            var m2 = new int[,] { { 1, 2 }, { 3, 4 } };
+
+            var M1 = new MatrixInt(m1);
+            var M2 = new MatrixInt(m2);
+
+            Console.WriteLine(M1.ToString());
+            Console.WriteLine(M2.ToString());
+            Console.WriteLine((M1 * M2).ToString());
         }
     }
 }
