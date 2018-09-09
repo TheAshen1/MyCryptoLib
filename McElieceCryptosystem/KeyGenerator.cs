@@ -1,0 +1,6 @@
+﻿namespace McElieceCryptosystem
+{
+    class KeyGenerator
+    {
+    }
+}
