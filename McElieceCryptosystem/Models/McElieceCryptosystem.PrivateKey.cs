@@ -2,7 +2,6 @@
 {
     public class PrivateKey
     {
-        public int[] Polynomial { get; set; }
 		/// <summary>
         /// K rows N columns
         /// </summary>

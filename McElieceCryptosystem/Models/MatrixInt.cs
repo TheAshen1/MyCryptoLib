@@ -1,8 +1,9 @@
 ﻿using McElieceCryptosystem.Exceptions;
+using System;
 
 namespace McElieceCryptosystem.Models
 {
-    public class MatrixInt: MatrixBase<int>
+    public class MatrixInt : MatrixBase<int>
     {
         #region Constructors
         public MatrixInt(int size) : base(size)
@@ -13,7 +14,7 @@ namespace McElieceCryptosystem.Models
         {
         }
 
-        public MatrixInt(int[,] initialValues): base(initialValues)
+        public MatrixInt(int[,] initialValues) : base(initialValues)
         {
         }
 
@@ -25,33 +26,64 @@ namespace McElieceCryptosystem.Models
         #region Operations
         public MatrixInt Transpose()
         {
-            var rawDataTransposed = new int[ColumnCount, RowCount];
+            var rawResult = Transpose(this);
 
-
-            for (int row = 0; row < RowCount; row++)
-                for (int col = 0; col < ColumnCount; col++)
-                    rawDataTransposed[col, row] = Data[row, col];
-
-            var result = new MatrixInt(rawDataTransposed);
+            var result = new MatrixInt(rawResult);
             return result;
         }
 
-        protected static MatrixInt Addition(
-           MatrixInt matrix1,
-           MatrixInt matrix2)
+        public MatrixInt SubMatrix(
+            RangeInt range)
+        {
+            var result = SubMatrix(range, range);
+            return result;
+        }
+
+        public MatrixInt SubMatrix(
+            RangeInt columnRange,
+            RangeInt rowRange)
+        {
+            var rawResult = SubMatrix(this, columnRange, rowRange);
+            var result = new MatrixInt(rawResult);
+            return result;
+        }
+
+        public static MatrixInt Concatenate(
+            MatrixInt matrixLeft,
+            MatrixInt matrixRight)
+        {
+            var rawResult = MatrixBase<int>.Concatenate(matrixLeft, matrixRight);
+            var result = new MatrixInt(rawResult);
+            return result;
+        }
+
+        protected static MatrixInt Negative(
+            MatrixInt matrix)
         {
             return new MatrixInt(
-                ElementWiseOperation(
-                    matrix1,
-                    matrix2,
-                    (a, b) => a + b
+                UnaryElementWiseOperation(
+                    matrix,
+                    (a) => -a
                     ));
-            
+
         }
 
         protected static MatrixInt Addition(
-           MatrixInt matrix,
-           int scalar)
+            MatrixInt matrixLeft,
+            MatrixInt matrixRight)
+        {
+            return new MatrixInt(
+                ElementWiseOperation(
+                    matrixLeft,
+                    matrixRight,
+                    (a, b) => a + b
+                    ));
+
+        }
+
+        protected static MatrixInt Addition(
+            MatrixInt matrix,
+            int scalar)
         {
             return new MatrixInt(
                 ElementWiseOperation(
@@ -63,21 +95,21 @@ namespace McElieceCryptosystem.Models
         }
 
         protected static MatrixInt Subtraction(
-          MatrixInt matrix1,
-          MatrixInt matrix2)
+            MatrixInt matrixLeft,
+            MatrixInt matrixRight)
         {
             return new MatrixInt(
                 ElementWiseOperation(
-                    matrix1,
-                    matrix2,
+                    matrixLeft,
+                    matrixRight,
                     (a, b) => a - b
                     ));
 
         }
 
         protected static MatrixInt Subtraction(
-         MatrixInt matrix,
-         int scalar)
+            MatrixInt matrix,
+            int scalar)
         {
             return new MatrixInt(
                 ElementWiseOperation(
@@ -87,29 +119,35 @@ namespace McElieceCryptosystem.Models
                     ));
 
         }
-   
-        protected static MatrixInt Multiplication(MatrixInt matrix1, MatrixInt matrix2)
+
+        protected static MatrixInt Multiplication(
+            MatrixInt matrixLeft,
+            MatrixInt matrixRight)
         {
-            if (matrix1.ColumnCount != matrix2.RowCount)
+            if (matrixLeft.ColumnCount != matrixRight.RowCount)
                 throw new DimensionMismatchException("Number of columns in first matrix does not equal number of rows in second matrix.");
 
-            var rawResult = new int[matrix1.RowCount, matrix2.ColumnCount];
+            var rawResult = new int[matrixLeft.RowCount, matrixRight.ColumnCount];
 
             for (int row = 0; row < rawResult.GetLength(0); row++)
+            {
                 for (int col = 0; col < rawResult.GetLength(1); col++)
                 {
                     int sum = 0;
-                    for (int k = 0; k < matrix1.ColumnCount; k++)
-                        sum += matrix1.Data[row, k] * matrix2.Data[k, col];
+                    for (int k = 0; k < matrixLeft.ColumnCount; k++)
+                    {
+                        sum += matrixLeft.Data[row, k] * matrixRight.Data[k, col];
+                    }
                     rawResult[row, col] = sum;
                 }
+            }
             MatrixInt result = new MatrixInt(rawResult);
             return result;
         }
 
         protected static MatrixInt Multiplication(
-        MatrixInt matrix,
-        int scalar)
+            MatrixInt matrix,
+            int scalar)
         {
             return new MatrixInt(
                 ElementWiseOperation(
@@ -119,12 +157,29 @@ namespace McElieceCryptosystem.Models
                     ));
 
         }
+
+        protected static MatrixInt Mod(
+            MatrixInt matrix,
+            int scalar)
+        {
+            return new MatrixInt(
+               ElementWiseOperation(
+                   matrix,
+                   scalar,
+                   (a, b) => a % b
+                   ));
+        }
         #endregion
 
         #region Operator Overloads
-        public static MatrixInt operator +(MatrixInt matrix1, MatrixInt matrix2)
+        public static MatrixInt operator -(MatrixInt matrix)
         {
-            return Addition(matrix1, matrix2);
+            return Negative(matrix);
+        }
+
+        public static MatrixInt operator +(MatrixInt matrixLeft, MatrixInt matrixRight)
+        {
+            return Addition(matrixLeft, matrixRight);
         }
 
         public static MatrixInt operator +(MatrixInt matrix, int scalar)
@@ -137,9 +192,9 @@ namespace McElieceCryptosystem.Models
             return Addition(matrix, scalar);
         }
 
-        public static MatrixInt operator -(MatrixInt matrix1, MatrixInt matrix2)
+        public static MatrixInt operator -(MatrixInt matrixLeft, MatrixInt matrixRight)
         {
-            return Subtraction(matrix1, matrix2);
+            return Subtraction(matrixLeft, matrixRight);
         }
 
         public static MatrixInt operator -(MatrixInt matrix, int scalar)
@@ -147,14 +202,24 @@ namespace McElieceCryptosystem.Models
             return Subtraction(matrix, scalar);
         }
 
-        public static MatrixInt operator *(MatrixInt matrix1, MatrixInt matrix2)
+        public static MatrixInt operator *(MatrixInt matrixLeft, MatrixInt matrixRight)
         {
-            return Multiplication(matrix1, matrix2);
+            return Multiplication(matrixLeft, matrixRight);
         }
 
         public static MatrixInt operator *(MatrixInt matrix, int scalar)
         {
             return Multiplication(matrix, scalar);
+        }
+
+        public static MatrixInt operator %(MatrixInt matrix, int scalar)
+        {
+            return Mod(matrix, scalar);
+        }
+
+        public static MatrixInt operator |(MatrixInt matrixLeft, MatrixInt matrixRight)
+        {
+            return Concatenate(matrixLeft, matrixRight);
         }
         #endregion
     }
