@@ -1,5 +1,4 @@
 ﻿using McElieceCryptosystem.Exceptions;
-using System;
 
 namespace McElieceCryptosystem.Models
 {
@@ -40,10 +39,42 @@ namespace McElieceCryptosystem.Models
         }
 
         public MatrixInt SubMatrix(
-            RangeInt columnRange,
+            RangeInt rowRange,
+            RangeInt columnRange)
+        {
+            var rawResult = SubMatrix(this, rowRange, columnRange);
+            var result = new MatrixInt(rawResult);
+            return result;
+        }
+
+        public MatrixInt GetRangeOfRows(
             RangeInt rowRange)
         {
-            var rawResult = SubMatrix(this, columnRange, rowRange);
+            var rawResult = GetRangeOfRows(this, rowRange);
+            var result = new MatrixInt(rawResult);
+            return result;
+        }
+
+        public MatrixInt GetRangeOfColumns(
+         RangeInt columnRange)
+        {
+            var rawResult = GetRangeOfColumns(this, columnRange);
+            var result = new MatrixInt(rawResult);
+            return result;
+        }
+
+        public MatrixInt GetRow(
+          int rowNumber)
+        {
+            var rawResult = GetRow(this, rowNumber);
+            var result = new MatrixInt(rawResult);
+            return result;
+        }
+
+        public MatrixInt GetColumn(
+         int columnNumber)
+        {
+            var rawResult = GetColumn(this, columnNumber);
             var result = new MatrixInt(rawResult);
             return result;
         }
@@ -125,7 +156,9 @@ namespace McElieceCryptosystem.Models
             MatrixInt matrixRight)
         {
             if (matrixLeft.ColumnCount != matrixRight.RowCount)
+            {
                 throw new DimensionMismatchException("Number of columns in first matrix does not equal number of rows in second matrix.");
+            }
 
             var rawResult = new int[matrixLeft.RowCount, matrixRight.ColumnCount];
 

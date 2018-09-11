@@ -98,22 +98,29 @@ namespace McElieceCryptosystem.Models
             var rawDataTransposed = new T[matrix.ColumnCount, matrix.RowCount];
 
             for (int row = 0; row < matrix.RowCount; row++)
+            {
                 for (int col = 0; col < matrix.ColumnCount; col++)
+                {
                     rawDataTransposed[col, row] = matrix.Data[row, col];
-
+                }
+            }
             var result = new MatrixBase<T>(rawDataTransposed);
             return result;
         }
 
         public static MatrixBase<T> SubMatrix(
             MatrixBase<T> matrix,
-            RangeInt columnRange,
-            RangeInt rowRange)
+            RangeInt rowRange,
+            RangeInt columnRange)
         {
             if (!matrix.DataColumnRange.Contains(columnRange))
+            {
                 throw new ArgumentOutOfRangeException("columnRange");
+            }
             if (!matrix.DataRowRange.Contains(rowRange))
+            {
                 throw new ArgumentOutOfRangeException("rowRange");
+            }
 
             var rawResult = new T[rowRange.Length, columnRange.Length];
 
@@ -128,6 +135,86 @@ namespace McElieceCryptosystem.Models
             return result;
         }
 
+        public MatrixBase<T> GetRangeOfRows(
+            MatrixBase<T> matrix,
+            RangeInt rowRange)
+        {
+            if (!matrix.DataRowRange.Contains(rowRange))
+            {
+                throw new ArgumentOutOfRangeException("rowRange");
+            }
+
+            var rawResult = new T[rowRange.Length, matrix.ColumnCount];
+
+            for (int row = rowRange.Start; row < rowRange.End; row++)
+            {
+                for (int col = 0; col < matrix.ColumnCount; col++)
+                {
+                    rawResult[row - rowRange.Start, col] = matrix.Data[row, col];
+                }
+            }
+            MatrixBase<T> result = new MatrixBase<T>(rawResult);
+            return result;
+        }
+
+        public MatrixBase<T> GetRangeOfColumns(
+            MatrixBase<T> matrix,
+            RangeInt columnRange)
+        {
+            if (!matrix.DataColumnRange.Contains(columnRange))
+            {
+                throw new ArgumentOutOfRangeException("columnRange");
+            }
+
+            var rawResult = new T[matrix.RowCount, columnRange.Length];
+
+            for (int row = 0; row < matrix.RowCount; row++)
+            {
+                for (int col = columnRange.Start; col < columnRange.End; col++)
+                {
+                    rawResult[row, col - columnRange.Start] = matrix.Data[row, col];
+                }
+            }
+            MatrixBase<T> result = new MatrixBase<T>(rawResult);
+            return result;
+        }
+
+        public MatrixBase<T> GetRow(
+            MatrixBase<T> matrix,
+            int rowNumber)
+        {
+            if (rowNumber > matrix.RowCount - 1 || rowNumber < 0)
+            {
+                throw new ArgumentOutOfRangeException("columnRange");
+            }
+            var rawResult = new T[1, matrix.ColumnCount];
+
+            for (int col = 0; col < matrix.ColumnCount; col++)
+            {
+                rawResult[0, col] = matrix.Data[rowNumber, col];
+            }
+            MatrixBase<T> result = new MatrixBase<T>(rawResult);
+            return result;
+        }
+
+        public MatrixBase<T> GetColumn(
+            MatrixBase<T> matrix,
+            int columnNumber)
+        {
+            if (columnNumber > matrix.ColumnCount - 1 || columnNumber < 0)
+            {
+                throw new ArgumentOutOfRangeException("columnRange");
+            }
+
+            var rawResult = new T[matrix.RowCount, 1];
+
+            for (int row = 0; row < matrix.RowCount; row++)
+            {
+                rawResult[row, 0] = matrix.Data[row, columnNumber];
+            }
+            MatrixBase<T> result = new MatrixBase<T>(rawResult);
+            return result;
+        }
         #endregion
 
         #region Properties

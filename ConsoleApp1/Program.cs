@@ -1,5 +1,6 @@
 ﻿using McElieceCryptosystem;
 using McElieceCryptosystem.Models;
+using McElieceCryptosystem.Util;
 using System;
 
 namespace ConsoleApp1
@@ -9,24 +10,40 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             #region Fiddle
-            //var mcElice = new McElieceCryptosystem.McElieceCryptosystem();
-            //var m1 = new int[,] { { 1, 2 } };
-            //var m2 = new int[,] { { 1, 2 }, { 3, 4 } };
+            var linearCode = new BinaryLinearCode(Constants.HammingCodeGeneratorMatrix);
 
-            //var M1 = new MatrixInt(m1);
-            //var M2 = new MatrixInt(m2);
+            //System.Console.WriteLine((linearCode.GeneratorMatrix * linearCode.ParityCheckMatrix.Transpose()).ToString());
 
-            //Console.WriteLine(M1.ToString());
-            //Console.WriteLine(M2.ToString());
-            //Console.WriteLine((M1 * M2).ToString());
+            var message = new MatrixInt(new int[,]
+            {
+                { 1, 0, 1, 1 }
+            });
+            var biggerMessage = new MatrixInt(new int[,]
+            {
+                { 1, 0, 1, 1 },
+                { 0, 1, 1, 0 },
+                { 1, 0, 1, 1 }
+            });
 
-            var subMatrix1 = Constants.HammingCodeGeneratorMatrix.SubMatrix(new RangeInt(4), new RangeInt(4));
-            Console.WriteLine(subMatrix1.ToString());
+            Console.WriteLine(linearCode.GeneratorMatrix.ToString());
+            Console.WriteLine(linearCode.ParityCheckMatrix.ToString());
+            Console.WriteLine(linearCode.MinimumDistance);
 
-            var subMatrix2 = Constants.HammingCodeGeneratorMatrix.SubMatrix(new RangeInt(4,7), new RangeInt(4));
-            Console.WriteLine(subMatrix2.ToString());
+            var encodedMessage = linearCode.Encode(biggerMessage);
+            Console.WriteLine(encodedMessage.ToString());
 
-            Console.WriteLine((subMatrix1 | subMatrix2).ToString());
+            var errorVector = new MatrixInt(new int[,]
+            {
+                { 0, 0, 0, 1, 0, 0, 0 },
+                { 0, 1, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0 }
+            });
+            encodedMessage = (encodedMessage + errorVector) % 2;
+            Console.WriteLine(errorVector.ToString());
+            Console.WriteLine(encodedMessage.ToString());
+
+            var decodedMessage = linearCode.DecodeAndCorrect(encodedMessage);
+            Console.WriteLine(decodedMessage.ToString());
             #endregion
 
             #region Step-by-Step Encryption Process

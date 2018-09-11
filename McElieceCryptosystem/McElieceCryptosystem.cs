@@ -23,7 +23,7 @@ namespace McElieceCryptosystem
             PublicKey = new PublicKey
             {
                 EncryptionMatrix = scramblerMatrix * linearCode.GeneratorMatrix * permutationMatrix % 2,
-                ErrorVectorMaxWeight = linearCode.MaxErrors
+                ErrorVectorMaxWeight = linearCode.MinimumDistance
             };
         }
 
@@ -36,7 +36,7 @@ namespace McElieceCryptosystem
         public MatrixInt DecryptMessage(MatrixInt ciphertext)
         {
             var messageWithErrors = ciphertext * PrivateKey.PermutationMatrix.Transpose();
-            var correctedMessage = LinearCode.CorrectErrors(messageWithErrors);
+            var correctedMessage = LinearCode.DecodeAndCorrect(messageWithErrors);
             var message = correctedMessage * PrivateKey.ScramblerMatrix.Transpose();
             return message;
         }

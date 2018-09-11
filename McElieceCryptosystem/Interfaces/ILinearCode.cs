@@ -9,18 +9,26 @@ namespace McElieceCryptosystem.Interfaces
         /// Length of a codeword 
         /// </summary>
         int N { get; }
+
         /// <summary>
         /// Number of information bits
         /// </summary>
         int K { get; }
+
         /// <summary>
         /// Max amount of errors code can correct
         /// </summary>
-        int MaxErrors { get; }
+        int MinimumDistance { get; }
+
+        int CanDetectUpTo { get; }
+
+        int CanCorrectUpTo { get; }
+
         /// <summary>
         /// Generator matrix of a linear code with K rows and N columns
         /// </summary>
         MatrixInt GeneratorMatrix { get; }
+
         /// <summary>
         /// Parity check matrix of a linear code 
         /// </summary>
@@ -28,8 +36,8 @@ namespace McElieceCryptosystem.Interfaces
         #endregion
 
         #region Methods
-        MatrixInt CorrectErrors(MatrixInt message);
-        bool ParityCheck();
+        MatrixInt Encode(MatrixInt message);
+        MatrixInt DecodeAndCorrect(MatrixInt message);
         #endregion
 
     }

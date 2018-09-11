@@ -41,18 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants.cs" />
+    <Compile Include="Util\Constants.cs" />
     <Compile Include="Exceptions\DimensionMismatchException.cs" />
     <Compile Include="Interfaces\ILinearCode.cs" />
-    <Compile Include="KeyGenerator.cs" />
-    <Compile Include="LinearCodes\HammingCode.cs" />
+    <Compile Include="LinearCode.cs" />
     <Compile Include="McElieceCryptosystem.cs" />
     <Compile Include="Models\MatrixBase.cs" />
     <Compile Include="Models\MatrixInt.cs" />
     <Compile Include="Models\McElieceCryptosystem.PublicKey.cs" />
     <Compile Include="Models\RangeInt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utility.cs" />
+    <Compile Include="Util\Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\McElieceCryptosystem.PrivateKey.cs" />
