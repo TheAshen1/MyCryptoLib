@@ -1,5 +1,6 @@
 ﻿using McElieceCryptosystem.Exceptions;
 using McElieceCryptosystem.Models;
+using System;
 
 namespace McElieceCryptosystem.Util
 {
@@ -25,7 +26,7 @@ namespace McElieceCryptosystem.Util
 
         public static int Distance(MatrixInt vector1, MatrixInt vector2)
         {
-            if(vector1.RowCount != vector2.RowCount )
+            if (vector1.RowCount != vector2.RowCount)
             {
                 throw new DimensionMismatchException("Number of rows in first vector does not equal number of rows in second vector.");
             }
@@ -56,6 +57,26 @@ namespace McElieceCryptosystem.Util
                 rawResult[i, i] = 1;
             }
             var result = new MatrixInt(rawResult);
+            return result;
+        }
+
+        public static int BinaryToDecimal(MatrixInt binaryVector)
+        {
+            if (binaryVector.RowCount > 1)
+            {
+                throw new DimensionMismatchException("Method BinaryToDecimal accepts only binaty vectors");
+            }
+
+            int result = 0;
+
+            for (var col = 0; col < binaryVector.ColumnCount; col++)
+            {
+                if (binaryVector.Data[0, col] != 0)
+                {
+                    result += 1 << col;
+                }
+            }
+
             return result;
         }
     }

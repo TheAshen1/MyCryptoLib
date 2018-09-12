@@ -1,8 +1,9 @@
 ﻿using McElieceCryptosystem.Exceptions;
+using System;
 
 namespace McElieceCryptosystem.Models
 {
-    public class MatrixInt : MatrixBase<int>
+    public class MatrixInt : MatrixBase<int>, IEquatable<MatrixInt>
     {
         #region Constructors
         public MatrixInt(int size) : base(size)
@@ -22,7 +23,55 @@ namespace McElieceCryptosystem.Models
         }
         #endregion
 
-        #region Operations
+        #region Methods
+
+        #region Public Methods
+        public override bool Equals(object obj)
+        {
+            var item = obj as MatrixInt;
+
+            if (item == null)
+            {
+                return false;
+            }
+
+            return Equals(item);
+        }
+
+        public override int GetHashCode()
+        {
+            return Data.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+
+        public bool Equals(MatrixInt other)
+        {
+            if (RowCount != other.RowCount)
+            {
+                throw new DimensionMismatchException("The number of rows in this matrix does not equal the number of rows in other matrix");
+            }
+            if (ColumnCount != other.ColumnCount)
+            {
+                throw new DimensionMismatchException("The number of columns in this matrix does not equal the number of columns in other matrix");
+            }
+
+            for (var row = 0; row < RowCount; row++)
+            {
+                for (var col = 0; col < ColumnCount; col++)
+                {
+                    if (Data[row, col] != other.Data[row, col])
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
         public MatrixInt Transpose()
         {
             var rawResult = Transpose(this);
@@ -56,7 +105,7 @@ namespace McElieceCryptosystem.Models
         }
 
         public MatrixInt GetRangeOfColumns(
-         RangeInt columnRange)
+            RangeInt columnRange)
         {
             var rawResult = GetRangeOfColumns(this, columnRange);
             var result = new MatrixInt(rawResult);
@@ -64,7 +113,7 @@ namespace McElieceCryptosystem.Models
         }
 
         public MatrixInt GetRow(
-          int rowNumber)
+            int rowNumber)
         {
             var rawResult = GetRow(this, rowNumber);
             var result = new MatrixInt(rawResult);
@@ -72,13 +121,15 @@ namespace McElieceCryptosystem.Models
         }
 
         public MatrixInt GetColumn(
-         int columnNumber)
+            int columnNumber)
         {
             var rawResult = GetColumn(this, columnNumber);
             var result = new MatrixInt(rawResult);
             return result;
         }
+        #endregion Public Methods
 
+        #region Static Methods
         public static MatrixInt Concatenate(
             MatrixInt matrixLeft,
             MatrixInt matrixRight)
@@ -202,7 +253,9 @@ namespace McElieceCryptosystem.Models
                    (a, b) => a % b
                    ));
         }
-        #endregion
+        #endregion Static Methods
+
+        #endregion Methods
 
         #region Operator Overloads
         public static MatrixInt operator -(MatrixInt matrix)
@@ -253,6 +306,16 @@ namespace McElieceCryptosystem.Models
         public static MatrixInt operator |(MatrixInt matrixLeft, MatrixInt matrixRight)
         {
             return Concatenate(matrixLeft, matrixRight);
+        }
+
+        public static bool operator ==(MatrixInt matrixLeft, MatrixInt matrixRight)
+        {
+            return matrixLeft.Equals(matrixRight);
+        }
+
+        public static bool operator !=(MatrixInt matrixLeft, MatrixInt matrixRight)
+        {
+            return !matrixLeft.Equals(matrixRight);
         }
         #endregion
     }

@@ -29,13 +29,13 @@ namespace McElieceCryptosystem
 
         public MatrixInt EncryptMesaage(PublicKey publicKey, MatrixInt message, MatrixInt errorVector)
         {
-            var result = publicKey.EncryptionMatrix * message + errorVector;
+            var result = (message * publicKey.EncryptionMatrix + errorVector) % 2;
             return result;
         }
 
-        public MatrixInt DecryptMessage(MatrixInt ciphertext)
+        public MatrixInt DecryptMessage(MatrixInt encryptedMessage)
         {
-            var messageWithErrors = ciphertext * PrivateKey.PermutationMatrix.Transpose();
+            var messageWithErrors = encryptedMessage * PrivateKey.PermutationMatrix.Transpose();
             var correctedMessage = LinearCode.DecodeAndCorrect(messageWithErrors);
             var message = correctedMessage * PrivateKey.ScramblerMatrix.Transpose();
             return message;

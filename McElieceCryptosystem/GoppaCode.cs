@@ -2,10 +2,11 @@
 using McElieceCryptosystem.Models;
 using McElieceCryptosystem.Util;
 using System;
+using System.Collections.Generic;
 
 namespace McElieceCryptosystem
 {
-    public sealed class BinaryLinearCode : ILinearCode
+    public class GoppaCode : ILinearCode
     {
         #region Properties
         /// <summary>
@@ -31,7 +32,7 @@ namespace McElieceCryptosystem
         #endregion
 
         #region Constructors
-        public BinaryLinearCode(MatrixInt generatorMatrix)
+        public GoppaCode(MatrixInt generatorMatrix)
         {
             GeneratorMatrix = generatorMatrix;
             K = GeneratorMatrix.RowCount;
@@ -99,12 +100,29 @@ namespace McElieceCryptosystem
             return minimumDistance;
         }
 
-        private MatrixInt CMLD()
+        private MatrixInt CMLD(MatrixInt encodedMessage)
         {
+            for (var row = 0; row < encodedMessage.RowCount; row++)
+            {
+                var encodedMessageRow = encodedMessage.GetRow(row);
+
+                int minimumDistance = GeneratorMatrix.ColumnCount;
+                int mostLikelyCodewordNumber = 0;
+                for (var codewordNumber = 0; codewordNumber < GeneratorMatrix.RowCount; codewordNumber++)
+                {
+                    int distance = Utility.Distance(encodedMessageRow, GeneratorMatrix.GetRow(codewordNumber));
+                    if (distance < minimumDistance)
+                    {
+                        minimumDistance = distance;
+                        mostLikelyCodewordNumber = codewordNumber;
+                    }
+                }
+            }
+
             throw new NotImplementedException();
         }
 
-        private MatrixInt SyndromeDecoding()
+        private MatrixInt PattersonAlgorithm()
         {
             throw new NotImplementedException();
         }

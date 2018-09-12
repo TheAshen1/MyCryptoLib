@@ -41,10 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HammingCode.cs" />
     <Compile Include="Util\Constants.cs" />
     <Compile Include="Exceptions\DimensionMismatchException.cs" />
     <Compile Include="Interfaces\ILinearCode.cs" />
-    <Compile Include="LinearCode.cs" />
+    <Compile Include="GoppaCode.cs" />
     <Compile Include="McElieceCryptosystem.cs" />
     <Compile Include="Models\MatrixBase.cs" />
     <Compile Include="Models\MatrixInt.cs" />
