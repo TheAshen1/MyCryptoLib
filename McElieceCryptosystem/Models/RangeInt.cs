@@ -24,6 +24,11 @@ namespace McElieceCryptosystem.Models
         #endregion
 
         #region Methods
+        public bool Contains(int number)
+        {
+            return  Start <= number && number < End;
+        }
+
         public bool Contains(RangeInt range)
         {
             return Start <= range.Start && range.End <= End;

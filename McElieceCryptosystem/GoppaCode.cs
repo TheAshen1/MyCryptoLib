@@ -9,14 +9,16 @@ namespace McElieceCryptosystem
     public class GoppaCode : ILinearCode
     {
         #region Properties
+
+        public MatrixInt GoppaPolynomial { get; }
         /// <summary>
         /// Total length of an encoded word of length K
         /// </summary>
-        public int N { get; }
+        public int N => GeneratorMatrix.ColumnCount;
         /// <summary>
         /// Number of information digits in liner code
         /// </summary>
-        public int K { get; }
+        public int K => GeneratorMatrix.RowCount;
         /// <summary>
         /// Max amount of errors code can correct
         /// </summary>
@@ -26,19 +28,27 @@ namespace McElieceCryptosystem
 
         public MatrixInt ParityCheckMatrix { get; }
 
+        public BinaryGaloisField GaloisField { get; }
+
+        public List<Tuple<int, int>> FieldSubset { get; }
+
         public int CanDetectUpTo => MinimumDistance - 1;
 
         public int CanCorrectUpTo => (MinimumDistance - 1) / 2;
         #endregion
 
         #region Constructors
-        public GoppaCode(MatrixInt generatorMatrix)
+        public GoppaCode(MatrixInt goppaPolynomial, MatrixInt basePolynomialForGalouisField, int galoisFieldPower)
         {
-            GeneratorMatrix = generatorMatrix;
-            K = GeneratorMatrix.RowCount;
-            N = GeneratorMatrix.ColumnCount;
-            ParityCheckMatrix = GenerateParityCheckMatrix(GeneratorMatrix);
-            MinimumDistance = CalculateMinimumDistance(GeneratorMatrix);
+            GoppaPolynomial = goppaPolynomial;
+
+            GaloisField = new BinaryGaloisField(galoisFieldPower, basePolynomialForGalouisField);
+
+            FieldSubset = GetValuesOfGoppaPolynomial();
+
+            ParityCheckMatrix = CalculateParityCheckMatrix();
+
+            //GeneratorMatrix = CalculateGeneratorMatrix();
         }
         #endregion
 
@@ -66,22 +76,143 @@ namespace McElieceCryptosystem
 
         #region Private Methods
         /// <summary>
-        /// G = [I_k | P]
-        /// H = [-P^-1 | I_n-k]^-1
+        /// 
         /// Negation is not nessesary on binary fields
         /// </summary>
         /// <returns></returns>
-        private MatrixInt GenerateParityCheckMatrix(MatrixInt generatorMatrix)
+        private MatrixInt CalculateParityCheckMatrix()
         {
-            var I_k = generatorMatrix.SubMatrix(new RangeInt(K));
+            #region Matrix C
+            var C_rowCount = GoppaPolynomial.ColumnCount - 1;
+            var C_columnCount = GoppaPolynomial.ColumnCount - 1;
+            var C = new int[C_rowCount, C_columnCount];
 
-            var P = generatorMatrix.SubMatrix(new RangeInt(K), new RangeInt(K, N));
+            for (int row = 0; row < C_rowCount; row++)
+            {
+                for (int col = 0; col < C_columnCount; col++)
+                {
+                    C[row, col] = -1;
+                }
+            }
+            for (int row = 0; row < C_rowCount; row++)
+            {
+                for (int col = row; col < C_columnCount; col++)
+                {
+                    C[row, col] = GoppaPolynomial.Data[0, GoppaPolynomial.ColumnCount - 1 - col - row];
+                }
+            }
+            #endregion
 
-            var H = P.Transpose() | Utility.GenerateIdentityMatrix(N - K);
+            #region Matrix X
+            var X_rowCount = GoppaPolynomial.ColumnCount - 1;
+            var X_columnCount = FieldSubset.Count;
+            var X = new int[X_rowCount, X_columnCount];
 
-            var parityCheckMatrix = H.Transpose();
+            for (int row = 0; row < X_rowCount - 1; row++)
+            {
+                for (int col = 0; col < X_columnCount; col++)
+                {
+                    X[row, col] = (FieldSubset[col].Item1 * (X_rowCount - 1)) % GaloisField.WordCount;
+                }
+            }
+            #endregion
+
+            #region Matrix Y
+            var Y_rowCount = FieldSubset.Count;
+            var Y_columnCount = FieldSubset.Count;
+            var Y = new int[Y_rowCount, Y_columnCount];
+            for (int row = 0; row < Y_rowCount; row++)
+            {
+                for (int col = 0; col < Y_columnCount; col++)
+                {
+                    if(row == col)
+                    {
+                        Y[row, col] = GaloisField.WordCount - FieldSubset[row].Item2;
+                        continue;
+                    }
+                    Y[row, col] = -1;
+                }
+            }
+            #endregion
+
+            #region Polynomial Dot Multiplication C . X
+            var CX_rowCount = C_rowCount;
+            var CX_columnCount = X_columnCount;
+            var CX = new int[CX_rowCount, CX_columnCount];
+
+            for (int row = 0; row < CX_rowCount; row++)
+            {
+                for (int col = 0; col < CX_columnCount; col++)
+                {
+                    var sum = new MatrixInt(new int[GaloisField.WordLength, 1]);
+                    for (int k = 0; k < C_columnCount; k++)
+                    {
+                        if (C[row, k] >= 0)
+                        {
+                            sum = sum + GaloisField.GetWord((C[row, k] + X[k, col]) % GaloisField.WordCount);
+                        }
+                    }
+                    sum = sum % 2;
+                    CX[row, col] = GaloisField.FindWord(sum);
+                }
+            }
+            #endregion 
+
+            #region Polynomial Dot Multiplication C . X . Y
+            var H_rowCount = CX_rowCount;
+            var H_columnCount = Y_columnCount;
+            var H = new int[H_rowCount, H_columnCount];
+
+            for (int row = 0; row < H_rowCount; row++)
+            {
+                for (int col = 0; col < H_columnCount; col++)
+                {
+                    var sum = new MatrixInt(new int[GaloisField.WordLength, 1]);
+                    for (int k = 0; k < CX_columnCount; k++)
+                    {
+                        if (Y[k, col] >= 0 && CX[row, k] >= 0)
+                        {
+                            sum = sum + GaloisField.GetWord((CX[row, k] + Y[k, col]) % GaloisField.WordCount);
+                        }
+                    }
+                    sum = sum % 2;
+                    H[row, col] = GaloisField.FindWord(sum);
+                }
+            }
+            #endregion
+
+            #region Final assembly
+            var parityCheckMatrix_rowCount = H_rowCount * GaloisField.WordLength;
+            var parityCheckMatrix_columnCount = H_columnCount + 1;//first column will be empty
+            var parityCheckMatrix = new MatrixInt(new int[1, parityCheckMatrix_columnCount]);
+
+            for (int row = 0; row < H_rowCount; row++)
+            {
+                var rowMatrix = new MatrixInt(new int[GaloisField.WordLength, 1]);
+                for (int col = 0; col < H_columnCount; col++)
+                {
+                    if (H[row, col] < 0)
+                    {
+                        rowMatrix = rowMatrix | new MatrixInt(new int[GaloisField.WordLength, 1]);
+                        continue;
+                    }
+                    rowMatrix = rowMatrix | GaloisField.GetWord(H[row, col]);
+                }
+                parityCheckMatrix = parityCheckMatrix.AppendRows(rowMatrix);
+            }
+            #endregion
+
+            parityCheckMatrix = parityCheckMatrix.SubMatrix(new RangeInt(1, parityCheckMatrix.RowCount), new RangeInt(1, parityCheckMatrix.ColumnCount));
 
             return parityCheckMatrix;
+        }
+
+        private MatrixInt CalculateGeneratorMatrix()
+        {
+            var parityCheckMatrixStandardForm = Utility.ToReducedRowEchelonForm(ParityCheckMatrix);
+
+
+            return parityCheckMatrixStandardForm;
         }
 
         private int CalculateMinimumDistance(MatrixInt generatorMatrix)
@@ -100,31 +231,19 @@ namespace McElieceCryptosystem
             return minimumDistance;
         }
 
-        private MatrixInt CMLD(MatrixInt encodedMessage)
+        private List<Tuple<int, int>> GetValuesOfGoppaPolynomial()
         {
-            for (var row = 0; row < encodedMessage.RowCount; row++)
-            {
-                var encodedMessageRow = encodedMessage.GetRow(row);
+            var subset = new List<Tuple<int, int>>();
 
-                int minimumDistance = GeneratorMatrix.ColumnCount;
-                int mostLikelyCodewordNumber = 0;
-                for (var codewordNumber = 0; codewordNumber < GeneratorMatrix.RowCount; codewordNumber++)
+            for (int col = 1; col < GaloisField.Field.ColumnCount; col++)
+            {
+                var polynomValue = Utility.CalculateGoppaPolynomialValue(GoppaPolynomial, GaloisField, col) % 2;
+                if (Utility.Weight(polynomValue) != 0)
                 {
-                    int distance = Utility.Distance(encodedMessageRow, GeneratorMatrix.GetRow(codewordNumber));
-                    if (distance < minimumDistance)
-                    {
-                        minimumDistance = distance;
-                        mostLikelyCodewordNumber = codewordNumber;
-                    }
+                    subset.Add(new Tuple<int, int>(col, GaloisField.Field.FindColumn(polynomValue)));
                 }
             }
-
-            throw new NotImplementedException();
-        }
-
-        private MatrixInt PattersonAlgorithm()
-        {
-            throw new NotImplementedException();
+            return subset;
         }
         #endregion
     }

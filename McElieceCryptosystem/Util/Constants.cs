@@ -11,5 +11,21 @@ namespace McElieceCryptosystem.Util
                 { 0, 0, 1, 0, 0, 1, 1 },
                 { 0, 0, 0, 1, 1, 1, 1 }
             });
+        public static readonly MatrixInt GoppaCodeGeneratorMatrix_4_12 = new MatrixInt(new[,]
+            {
+                { 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0 },
+                { 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0 },
+                { 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0 },
+                { 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1 }
+            });
+
+        public static readonly MatrixInt GoppaCodeGeneratorMatrix_5_9 = new MatrixInt(new[,]
+            {
+                { 1, 0, 1, 0, 0, 0, 1, 0, 0 },
+                { 0, 1, 1, 1, 0, 0, 0, 0, 0 },
+                { 0, 1, 0, 0, 1, 0, 0, 1, 0 },
+                { 1, 1, 0, 0, 0, 0, 0, 0, 1 },
+                { 0, 0, 1, 0, 1, 1, 0, 0, 0 }
+            });
     }
 }

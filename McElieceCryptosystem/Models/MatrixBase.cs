@@ -1,5 +1,6 @@
 ﻿using McElieceCryptosystem.Exceptions;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace McElieceCryptosystem.Models
@@ -113,11 +114,11 @@ namespace McElieceCryptosystem.Models
             RangeInt rowRange,
             RangeInt columnRange)
         {
-            if (!matrix.DataColumnRange.Contains(columnRange))
+            if (!matrix.ColumnRange.Contains(columnRange))
             {
                 throw new ArgumentOutOfRangeException("columnRange");
             }
-            if (!matrix.DataRowRange.Contains(rowRange))
+            if (!matrix.RowRange.Contains(rowRange))
             {
                 throw new ArgumentOutOfRangeException("rowRange");
             }
@@ -135,11 +136,11 @@ namespace McElieceCryptosystem.Models
             return result;
         }
 
-        public MatrixBase<T> GetRangeOfRows(
+        public static MatrixBase<T> GetRangeOfRows(
             MatrixBase<T> matrix,
             RangeInt rowRange)
         {
-            if (!matrix.DataRowRange.Contains(rowRange))
+            if (!matrix.RowRange.Contains(rowRange))
             {
                 throw new ArgumentOutOfRangeException("rowRange");
             }
@@ -157,11 +158,11 @@ namespace McElieceCryptosystem.Models
             return result;
         }
 
-        public MatrixBase<T> GetRangeOfColumns(
+        public static MatrixBase<T> GetRangeOfColumns(
             MatrixBase<T> matrix,
             RangeInt columnRange)
         {
-            if (!matrix.DataColumnRange.Contains(columnRange))
+            if (!matrix.ColumnRange.Contains(columnRange))
             {
                 throw new ArgumentOutOfRangeException("columnRange");
             }
@@ -179,11 +180,11 @@ namespace McElieceCryptosystem.Models
             return result;
         }
 
-        public MatrixBase<T> GetRow(
+        public static MatrixBase<T> GetRow(
             MatrixBase<T> matrix,
             int rowNumber)
         {
-            if (rowNumber > matrix.RowCount - 1 || rowNumber < 0)
+            if (!matrix.RowRange.Contains(rowNumber))
             {
                 throw new ArgumentOutOfRangeException("columnRange");
             }
@@ -197,11 +198,11 @@ namespace McElieceCryptosystem.Models
             return result;
         }
 
-        public MatrixBase<T> GetColumn(
+        public static MatrixBase<T> GetColumn(
             MatrixBase<T> matrix,
             int columnNumber)
         {
-            if (columnNumber > matrix.ColumnCount - 1 || columnNumber < 0)
+            if (!matrix.ColumnRange.Contains(columnNumber))
             {
                 throw new ArgumentOutOfRangeException("columnRange");
             }
@@ -215,6 +216,99 @@ namespace McElieceCryptosystem.Models
             MatrixBase<T> result = new MatrixBase<T>(rawResult);
             return result;
         }
+
+        public static MatrixBase<T> SwapColumns(
+            MatrixBase<T> matrix,
+            int i,
+            int j)
+        {
+            if (!matrix.ColumnRange.Contains(i))
+            {
+                throw new ArgumentOutOfRangeException("columnRange");
+            }
+
+            if (!matrix.ColumnRange.Contains(j))
+            {
+                throw new ArgumentOutOfRangeException("columnRange");
+            }
+
+            if (i == j)
+            {
+                return matrix;
+            }
+
+            var rawResult = matrix.Data;
+
+            for (var row = 0; row < matrix.RowCount; row++)
+            {
+                var temp = rawResult[row, i];
+                rawResult[row, i] = rawResult[row, j];
+                rawResult[row, j] = temp;
+            }
+            var result = new MatrixBase<T>(rawResult);
+            return result;
+        }
+
+        public static MatrixBase<T> AppendRows(
+            MatrixBase<T> matrix,
+            MatrixBase<T> rows)
+        {
+
+            if (matrix.ColumnCount != rows.ColumnCount)
+            {
+                throw new DimensionMismatchException("The number of columns in matrix does not equal the number of columns in rows");
+            }
+            var rawResult = new T[matrix.RowCount + rows.RowCount, matrix.ColumnCount];
+
+            for (var row = 0; row < matrix.RowCount; row++)
+            {
+                for (var col = 0; col < matrix.ColumnCount; col++)
+                {
+                    rawResult[row, col] = matrix.Data[row, col];
+                }
+            }
+
+            for (var row = matrix.RowCount; row < matrix.RowCount + rows.RowCount; row++)
+            {
+                for (var col = 0; col < matrix.ColumnCount; col++)
+                {
+                    rawResult[row, col] = rows.Data[row - matrix.RowCount, col];
+                }
+            }
+            var result = new MatrixBase<T>(rawResult);
+            return result;
+        }
+
+        public int FindColumn(MatrixInt matrix, MatrixInt column)
+        {
+
+            if (column.ColumnCount > 1)
+            {
+                throw new ArgumentException("The column matrix contains more than 1 column");
+            }
+
+            if (matrix.RowCount != column.RowCount)
+            {
+                throw new DimensionMismatchException("The number of rows in matrix does not equal the number of rows in the column");
+            }
+
+            for (var col = 0; col < matrix.ColumnCount; col++)
+            {
+                for (var row = 0; row < matrix.RowCount; row++)
+                {
+                    if (matrix.Data[row, col] != column.Data[row, 0])
+                    {
+                        break;
+                    }
+
+                    if(row == matrix.RowCount - 1)
+                    {
+                        return col;
+                    }
+                }
+            }
+            return -1;
+        }
         #endregion
 
         #region Properties
@@ -222,8 +316,8 @@ namespace McElieceCryptosystem.Models
         public int ColumnCount { get; }
         public T[,] Data { get; }
 
-        public RangeInt DataColumnRange => new RangeInt(ColumnCount);
-        public RangeInt DataRowRange => new RangeInt(RowCount);
+        public RangeInt ColumnRange => new RangeInt(ColumnCount);
+        public RangeInt RowRange => new RangeInt(RowCount);
         #endregion
 
         #region Constructors
@@ -269,6 +363,22 @@ namespace McElieceCryptosystem.Models
                 }
             }
         }
+
+        public MatrixBase(List<T> list)
+        {
+            RowCount = 1;
+            ColumnCount = list.Count;
+
+            Data = new T[RowCount, ColumnCount];
+
+            for (var row = 0; row < RowCount; row++)
+            {
+                for (var col = 0; col < ColumnCount; col++)
+                {
+                    Data[row, col] = list[col];
+                }
+            }
+        }
         #endregion
 
         #region Methods
@@ -294,5 +404,97 @@ namespace McElieceCryptosystem.Models
             return Concatenate(matrix1, matrix2);
         }
         #endregion
+
+
+        //public class ColumnAccessor<T> : IEnumerable<MatrixBase<T>>
+        //{
+
+        //    #region Private Members
+        //    /*******************/
+        //    /* PRIVATE MEMBERS */
+        //    /*******************/
+        //    private MatrixBase<T> _dataView;
+        //    #endregion Private Members
+
+
+        //    #region Public Constructor
+        //    /**********************/
+        //    /* PUBLIC CONSTRUCTOR */
+        //    /**********************/
+        //    /// <summary>ColumnAccessor</summary>
+        //    /// <param name="dataView"></param>
+        //    public ColumnAccessor(MatrixBase<T> dataView)
+        //    {
+        //        _dataView = dataView;
+        //    }
+
+        //    #endregion Public Constructor
+
+
+        //    #region Public Accessors
+        //    /********************/
+        //    /* PUBLIC ACCESSORS */
+        //    /********************/
+
+        //    /// <summary>this</summary>
+        //    /// <param name="columnIndex"></param>
+        //    /// <returns></returns>
+        //    public MatrixBase<T> this[int columnIndex]
+        //    {
+        //        get
+        //        {
+        //            return this.AsEnumerable().ElementAt(columnIndex);
+        //        }
+        //        set
+        //        {
+        //            if (value.RowCount != _dataView.RowCount || value.ColumnCount != 1)
+        //                throw new DimensionMismatchException();
+
+        //            MatrixBase<T> targetColumn = this.AsEnumerable().ElementAt(columnIndex);
+        //            for (int j = 0; j < value.RowCount; j++)
+        //                targetColumn[0, j] = value[0, j];
+        //        }
+        //    }
+
+        //    #endregion Public Accessors
+
+
+        //    #region Public Methods
+        //    /******************/
+        //    /* PUBLIC METHODS */
+        //    /******************/
+
+        //    /// <summary>AsEnumerable</summary>
+        //    /// <returns></returns>
+        //    public IEnumerable<MatrixBase<T>> AsEnumerable()
+        //    {
+        //        int i = 0;
+        //        while (i < _dataView.ColumnCount)
+        //        {
+        //            yield return MatrixBase<T>.SubMatrix(_dataView, new RangeInt(0, _dataView.RowCount), new RangeInt(i, i + 1));
+        //            i++;
+        //        }
+
+        //    }
+
+
+        //    /// <summary>GetEnumerator</summary>
+        //    /// <returns></returns>
+        //    public IEnumerator<MatrixBase<T>> GetEnumerator()
+        //    {
+        //        return this.AsEnumerable().GetEnumerator();
+        //    }
+
+
+        //    /// <summary>IEnumerable.GetEnumerator</summary>
+        //    /// <returns></returns>
+        //    IEnumerator IEnumerable.GetEnumerator()
+        //    {
+        //        return this.GetEnumerator();
+        //    }
+
+        //    #endregion Public Methods
+
+        //}
     }
 }

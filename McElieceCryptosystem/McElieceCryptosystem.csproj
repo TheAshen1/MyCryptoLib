@@ -41,7 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BinaryGaloisField.cs" />
     <Compile Include="HammingCode.cs" />
+    <Compile Include="Models\PolynomialBase.cs" />
+    <Compile Include="Models\PolynomialDouble.cs" />
+    <Compile Include="Models\PolynomialExtendedGcdResult.cs" />
+    <Compile Include="Models\PolynomialInt.cs" />
+    <Compile Include="Models\PolynomialLongDivisionResult.cs" />
     <Compile Include="Util\Constants.cs" />
     <Compile Include="Exceptions\DimensionMismatchException.cs" />
     <Compile Include="Interfaces\ILinearCode.cs" />

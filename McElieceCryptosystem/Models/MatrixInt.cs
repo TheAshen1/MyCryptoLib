@@ -1,5 +1,6 @@
 ﻿using McElieceCryptosystem.Exceptions;
 using System;
+using System.Collections.Generic;
 
 namespace McElieceCryptosystem.Models
 {
@@ -19,6 +20,10 @@ namespace McElieceCryptosystem.Models
         }
 
         public MatrixInt(MatrixBase<int> matrix) : base(matrix)
+        {
+        }
+
+        public MatrixInt(List<int> list) : base(list)
         {
         }
         #endregion
@@ -127,6 +132,27 @@ namespace McElieceCryptosystem.Models
             var result = new MatrixInt(rawResult);
             return result;
         }
+
+        public MatrixInt SwapColumns(int i, int j)
+        {
+            var rawResult = SwapColumns(this, i, j);
+            var result = new MatrixInt(rawResult);
+            return result;
+        }
+
+        public MatrixInt AppendRows(MatrixInt rows)
+        {
+            var rawResult = AppendRows(this, rows);
+            var result = new MatrixInt(rawResult);
+            return result;
+        }
+
+        public int FindColumn(MatrixInt column)
+        {
+            var result = FindColumn(this, column);
+            return result;
+        }
+
         #endregion Public Methods
 
         #region Static Methods
@@ -173,7 +199,6 @@ namespace McElieceCryptosystem.Models
                     scalar,
                     (a, b) => a + b
                     ));
-
         }
 
         protected static MatrixInt Subtraction(
@@ -203,6 +228,19 @@ namespace McElieceCryptosystem.Models
         }
 
         protected static MatrixInt Multiplication(
+            MatrixInt matrixLeft,
+            MatrixInt matrixRight)
+        {
+            return new MatrixInt(
+                ElementWiseOperation(
+                    matrixLeft,
+                    matrixRight,
+                    (a, b) => a * b
+                    ));
+
+        }
+
+        protected static MatrixInt DotMultiplication(
             MatrixInt matrixLeft,
             MatrixInt matrixRight)
         {
@@ -253,6 +291,7 @@ namespace McElieceCryptosystem.Models
                    (a, b) => a % b
                    ));
         }
+
         #endregion Static Methods
 
         #endregion Methods
@@ -290,7 +329,7 @@ namespace McElieceCryptosystem.Models
 
         public static MatrixInt operator *(MatrixInt matrixLeft, MatrixInt matrixRight)
         {
-            return Multiplication(matrixLeft, matrixRight);
+            return DotMultiplication(matrixLeft, matrixRight);
         }
 
         public static MatrixInt operator *(MatrixInt matrix, int scalar)
@@ -301,6 +340,11 @@ namespace McElieceCryptosystem.Models
         public static MatrixInt operator %(MatrixInt matrix, int scalar)
         {
             return Mod(matrix, scalar);
+        }
+
+        public static MatrixInt operator ^(MatrixInt matrixLeft, MatrixInt matrixRight)
+        {
+            return Multiplication(matrixLeft, matrixRight);
         }
 
         public static MatrixInt operator |(MatrixInt matrixLeft, MatrixInt matrixRight)
