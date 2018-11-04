@@ -1,4 +1,5 @@
-﻿using McElieceCryptosystem.Interfaces;
+﻿using McElieceCryptosystem.Algorithms;
+using McElieceCryptosystem.Interfaces;
 using McElieceCryptosystem.Models;
 using McElieceCryptosystem.Util;
 using System;
@@ -28,7 +29,7 @@ namespace McElieceCryptosystem
 
         public MatrixInt ParityCheckMatrix { get; }
 
-        public BinaryGaloisField GaloisField { get; }
+        public GaloisField GaloisField { get; }
 
         public List<Tuple<int, int>> FieldSubset { get; }
 
@@ -38,11 +39,11 @@ namespace McElieceCryptosystem
         #endregion
 
         #region Constructors
-        public GoppaCode(MatrixInt goppaPolynomial, MatrixInt basePolynomialForGalouisField, int galoisFieldPower)
+        public GoppaCode(MatrixInt goppaPolynomial, MatrixInt basePolynomialForGalouisField, int galoisFieldBase, int galoisFieldPower)
         {
             GoppaPolynomial = goppaPolynomial;
 
-            GaloisField = new BinaryGaloisField(galoisFieldPower, basePolynomialForGalouisField);
+            GaloisField = new GaloisField(galoisFieldBase, galoisFieldPower, basePolynomialForGalouisField);
 
             FieldSubset = GetValuesOfGoppaPolynomial();
 
@@ -209,7 +210,7 @@ namespace McElieceCryptosystem
 
         private MatrixInt CalculateGeneratorMatrix()
         {
-            var parityCheckMatrixStandardForm = Utility.ToReducedRowEchelonForm(ParityCheckMatrix);
+            var parityCheckMatrixStandardForm = MatrixAlgorithms.ToReducedRowEchelonFormBinary(ParityCheckMatrix);
 
 
             return parityCheckMatrixStandardForm;
@@ -244,6 +245,11 @@ namespace McElieceCryptosystem
                 }
             }
             return subset;
+        }
+
+        public MatrixInt Encode(MatrixInt message, MatrixInt errorVector)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

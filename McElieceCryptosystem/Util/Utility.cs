@@ -50,7 +50,7 @@ namespace McElieceCryptosystem.Util
             return distance;
         }
 
-        internal static MatrixInt CalculateGoppaPolynomialValue(MatrixInt goppaPolynomial, BinaryGaloisField galoisField, int wordNumber)
+        internal static MatrixInt CalculateGoppaPolynomialValue(MatrixInt goppaPolynomial, GaloisField galoisField, int wordNumber)
         {
             var x = galoisField.Field.GetColumn(wordNumber);
             var result = galoisField.Field.GetColumn(goppaPolynomial.Data[0, 0]);
@@ -144,81 +144,7 @@ namespace McElieceCryptosystem.Util
         }
 
 
-        public static MatrixInt ToReducedRowEchelonForm(MatrixInt matrix)
-        {
-            var rawResult = matrix.Data;
-            var lead = 0; // lead column
-            for (int row = 0; row < matrix.RowCount; row++)
-            {
-                if (lead >= matrix.ColumnCount)
-                    break;
-
-                #region Find first row from top with nonzero element at lead column   
-                int i = row;
-                while (rawResult[i, lead] == 0)
-                {
-                    i++;
-                    if (i == matrix.RowCount)
-                    {
-                        i = row;
-                        lead++;
-                        if (lead == matrix.ColumnCount)
-                        {
-                            lead--;
-                            break;
-                        }
-                    }
-                }
-                #endregion
-
-                #region Swap rows        
-                for (int col = 0; col < matrix.ColumnCount; col++)
-                {
-                    int temp = rawResult[row, col];
-                    rawResult[row, col] = rawResult[i, col];
-                    rawResult[i, col] = temp;
-                }
-                #endregion
-
-
-                //skipping division part cause we are operating on binary matrix
-                //int div = rawResult[row, lead];
-                //if (div != 0)
-                //    for (int j = 0; j < matrix.ColumnCount; j++)
-                //        rawResult[row, j] /= div;
-
-                #region Subtraction rows 
-                for (int j = 0; j < matrix.RowCount; j++)
-                {
-                    if (j != row)
-                    {
-                        int sub = rawResult[j, lead];
-                        for (int k = 0; k < matrix.ColumnCount; k++)
-                        {
-                            rawResult[j, k] = (rawResult[j, k] - (sub * rawResult[row, k])) % 2;
-                        }
-                    }
-                }
-                #endregion
-
-                lead++;
-            }
-
-            for (int row = 0; row < matrix.RowCount; row++)
-            {
-                for (int col = 0; col < matrix.ColumnCount; col++)
-                {
-                    if (rawResult[row, col] < 0)
-                    {
-                        rawResult[row, col] = -rawResult[row, col];
-                    }
-                }
-            }
-
-            var result = new MatrixInt(rawResult);
-            return result;
-        }
-
+       
         //public static MatrixInt ShiftRight(MatrixInt matrix, int shiftLength = 1)
         //{
         //    var rawResult = new int[matrix.RowCount, matrix.ColumnCount + shiftLength];
@@ -269,77 +195,6 @@ namespace McElieceCryptosystem.Util
         public static PolynomialDouble ZeroPolynomialDouble()
         {
             return new PolynomialDouble(0);
-        }
-
-        public static PolynomialDouble PolynomialGCD(PolynomialDouble polynomialLeft, PolynomialDouble polynomialRight)
-        {
-            PolynomialDouble A;
-            PolynomialDouble B;
-
-            if (polynomialLeft.Degree >= polynomialRight.Degree)
-            {
-                A = polynomialLeft.Clone();
-                B = polynomialRight.Clone();
-            }
-            else
-            {
-                A = polynomialRight.Clone();
-                B = polynomialLeft.Clone();
-            }
-
-            while (!B.IsZero())
-            {
-                var divisionResult = A / B;
-
-                A = B;
-                B = divisionResult.Mod;
-            }
-            return A;
-        }
-
-        public static PolynomialExtendedGcdResult PolynomialExtendedGCD(PolynomialDouble polynomialLeft, PolynomialDouble polynomialRight)
-        {
-            PolynomialDouble A;
-            PolynomialDouble B;
-
-            PolynomialDouble X0 = new PolynomialDouble(new double[] { 1 });
-            PolynomialDouble X1 = new PolynomialDouble(new double[] { 0 });
-            PolynomialDouble Y0 = new PolynomialDouble(new double[] { 0 });
-            PolynomialDouble Y1 = new PolynomialDouble(new double[] { 1 });
-
-            if (polynomialLeft.Degree >= polynomialRight.Degree)
-            {
-                A = polynomialLeft.Clone();
-                B = polynomialRight.Clone();
-            }
-            else
-            {
-                A = polynomialRight.Clone();
-                B = polynomialLeft.Clone();
-            }
-
-            while (!B.IsZero())
-            {
-                var divisionResult = A / B;
-
-                A = B;
-                B = divisionResult.Mod;
-
-                var tempX = X0 - divisionResult.Result * X1;
-                X0 = X1;
-                X1 = tempX;
-
-                var tempY = Y0 - divisionResult.Result * Y1;
-                Y0 = Y1;
-                Y1 = tempY;
-            }
-            var result = new PolynomialExtendedGcdResult
-            {
-                Gcd = A,
-                S = X1,
-                T = Y0
-            };
-            return result;
-        }
+        }     
     }
 }

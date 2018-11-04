@@ -147,6 +147,13 @@ namespace McElieceCryptosystem.Models
             return result;
         }
 
+        internal int FindRow(MatrixInt row)
+        {
+            var result = FindRow(this, row);
+            return result;
+        }
+
+
         public int FindColumn(MatrixInt column)
         {
             var result = FindColumn(this, column);

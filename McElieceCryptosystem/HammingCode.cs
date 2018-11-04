@@ -16,9 +16,7 @@ namespace McElieceCryptosystem
         /// Number of information digits in liner code
         /// </summary>
         public int K { get; }
-        /// <summary>
-        /// Max amount of errors code can correct
-        /// </summary>
+
         public int MinimumDistance { get; }
 
         public MatrixInt GeneratorMatrix { get; }
@@ -108,6 +106,11 @@ namespace McElieceCryptosystem
                 }
             }
             return minimumDistance;
+        }
+
+        public MatrixInt Encode(MatrixInt message, MatrixInt errorVector)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

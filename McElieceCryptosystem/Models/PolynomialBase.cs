@@ -18,6 +18,18 @@ namespace McElieceCryptosystem.Models
             Coefficients = new T[Length];
         }
 
+        public PolynomialBase(int degree, T value)
+        {
+            if (degree < 0)
+            {
+                throw new DimensionMismatchException("Polynomial's length can't be less than 0");
+            }
+
+            Length = degree + 1;
+            Coefficients = new T[Length];
+            Coefficients[degree] = value;
+        }
+
         public PolynomialBase(T[] initialValues)
         {
             Length = initialValues.Length;
@@ -37,6 +49,22 @@ namespace McElieceCryptosystem.Models
             for (var i = 0; i < Length; i++)
             {
                 Coefficients[i] = polynomialBase.Coefficients[i];
+            }
+        }
+
+        public PolynomialBase(MatrixBase<T> baseMatrix)
+        {
+            if(baseMatrix.RowCount > 1)
+            {
+                throw new DimensionMismatchException("Base matrix for shoud consist of single row");
+            }
+
+            Length = baseMatrix.ColumnCount;
+            Coefficients = new T[Length];
+
+            for (var i = 0; i < Length; i++)
+            {
+                Coefficients[i] = baseMatrix.Data[0, i];
             }
         }
         #endregion

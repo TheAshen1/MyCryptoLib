@@ -1,8 +1,9 @@
 ﻿using McElieceCryptosystem;
+using McElieceCryptosystem.Algorithms;
+using McElieceCryptosystem.Mappers;
 using McElieceCryptosystem.Models;
 using McElieceCryptosystem.Util;
 using System;
-using System.Collections.Generic;
 
 namespace ConsoleApp1
 {
@@ -12,8 +13,8 @@ namespace ConsoleApp1
         {
             #region Testing out polynomials
 
-            //var polynom1 = new PolynomialDouble(new double[] { -42.0, 0.0, -12.0, 1.0 });
-            //var polynom2 = new PolynomialDouble(new double[] { -3.0, 1.0 });
+            //var polynom1 = new PolynomialDouble(8, 1.0);
+            //var polynom2 = new PolynomialDouble(5, 1.0);
 
             //Console.WriteLine(polynom1);
             //Console.WriteLine(polynom2);
@@ -24,18 +25,43 @@ namespace ConsoleApp1
             //Console.WriteLine(result.Mod);
 
 
-            var polynom1 = new PolynomialDouble(new double[] { 1.0, 0.0, -1.0, 0.0, 2.0, 1.0 });
-            var polynom2 = new PolynomialDouble(new double[] { -1.0, 0.0, 0.0, 0.0, 1.0 });
+            //var polynom1 = new PolynomialDouble(new double[] { 1.0, 0.0, -1.0, 0.0, 2.0, 1.0 });
+            //var polynom2 = new PolynomialDouble(new double[] { -1.0, 0.0, 0.0, 0.0, 1.0 });
 
-            var extendedGcd = Utility.PolynomialExtendedGCD(polynom1, polynom2);
-            Console.WriteLine(extendedGcd.Gcd);
-            Console.WriteLine(extendedGcd.S);
-            Console.WriteLine(extendedGcd.T);
+            //var extendedGcd = PolynomialAlgorithms.ExtendedGCD(polynom1, polynom2);
+            //Console.WriteLine(extendedGcd.Gcd);
+            //Console.WriteLine(extendedGcd.S);
+            //Console.WriteLine(extendedGcd.T);
 
+            //var polynom1 = new PolynomialDouble(new double[] { 1.0, 1.0, 1.0, 1.0, 1.0 });
+            ////var polynom1 = new PolynomialDouble(5, 1.0);
+            //var result = PolynomialAlgorithms.IsIrreducible(polynom1);
+            //Console.WriteLine(result);
 
             #endregion
 
             #region Fiddle
+
+
+            var field = new GaloisField(2, 3, Constants.IrreduciblePolynom_deg3);
+            Console.WriteLine(field);
+            var reedSolomonCode = new ReedSolomonCode(field);
+            Console.WriteLine(reedSolomonCode.ParityCheckMatrix);
+            Console.WriteLine(reedSolomonCode.GeneratorMatrix);
+
+            var message = new MatrixInt(new int[,]{
+                { 0, -1, 1 }
+            });
+            var errorVector = new MatrixInt(new int[,]{
+                { 0, -1, -1, 2, -1, -1, -1 }
+            });
+            var encodedMessage = reedSolomonCode.Encode(message, errorVector);
+            Console.WriteLine(encodedMessage + 1);
+            //var scramblerMatrix = Utility.GenerateScramblerMatrix(reedSolomonCode.K);
+            //var permutationMatrix = Utility.GeneratePermutationMatrix(reedSolomonCode.N);
+            //var mcElieseSystem = new McElieceCryptosystem.McElieceCryptosystem(reedSolomonCode, scramblerMatrix, permutationMatrix);
+
+
             // 1 + X + X^4
             //var polynomial = new MatrixInt(new int[1, 5] { { 1, 1, 0, 0, 1 } });
 

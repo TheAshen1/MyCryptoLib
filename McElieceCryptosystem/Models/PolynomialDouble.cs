@@ -7,7 +7,7 @@ namespace McElieceCryptosystem.Models
 {
     public class PolynomialDouble : PolynomialBase<double>, IEquatable<PolynomialDouble>
     {
-        static readonly double Epsilon = 0.000000000000001;
+        static readonly double Epsilon = 0.000_000_000_000_001;
 
         #region Properties
         private int _degree = -1;
@@ -17,6 +17,7 @@ namespace McElieceCryptosystem.Models
             {
                 if (_degree == -1)
                 {
+                    _degree = 0;
                     for (int i = Length - 1; i >= 0; i--)
                     {
                         if (Math.Abs(Coefficients[i]) > Epsilon)
@@ -36,11 +37,19 @@ namespace McElieceCryptosystem.Models
         {
         }
 
+        public PolynomialDouble(int degree, double value) : base(degree, value)
+        {
+        }
+
         public PolynomialDouble(double[] initialValues) : base(initialValues)
         {
         }
 
         public PolynomialDouble(PolynomialBase<double> polynomialBase) : base(polynomialBase)
+        {
+        }
+
+        public PolynomialDouble(MatrixBase<double> baseMatrix) : base(baseMatrix)
         {
         }
         #endregion
@@ -139,7 +148,11 @@ namespace McElieceCryptosystem.Models
 
             if (polynomialDivident.Degree < polynomialDivisor.Degree)
             {
-                throw new DimensionMismatchException("The degree of the divisor cannot exceed that of the divident");
+                return new PolynomialLongDivisionResult
+                {
+                    Result = new PolynomialDouble(0, 0.0),
+                    Mod = polynomialDivident
+                };
             }
 
             var divident = polynomialDivident.Clone();
@@ -249,15 +262,18 @@ namespace McElieceCryptosystem.Models
 
         public bool Equals(PolynomialDouble other)
         {
-            if (Length != other.Length)
+            if (Degree != other.Degree)
             {
-                throw new DimensionMismatchException("The length of this polynomial does not equal the length of other polynomial");
+                return false;
             }
 
-            for (var i = 0; i < Length; i++)
+            var length = Math.Max(Length, other.Length);
+            for (var i = 0; i < length; i++)
             {
 
-                if (Math.Abs(Coefficients[i] - other.Coefficients[i]) > Epsilon)
+                if (Math.Abs(
+                    (i < Length ? Coefficients[i] : 0.0) - (i < other.Length ? other.Coefficients[i] : 0.0 )
+                    ) > Epsilon)
                 {
                     return false;
                 }

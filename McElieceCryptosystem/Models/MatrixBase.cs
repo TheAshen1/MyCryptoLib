@@ -279,15 +279,47 @@ namespace McElieceCryptosystem.Models
             return result;
         }
 
-        public int FindColumn(MatrixInt matrix, MatrixInt column)
+
+
+        public int FindRow(MatrixInt matrix, MatrixInt rowToFind)
+        {
+            if (rowToFind.RowCount > 1)
+            {
+                throw new ArgumentException("The row matrix contains more than 1 row");
+            }
+
+            if (matrix.ColumnCount != rowToFind.ColumnCount)
+            {
+                throw new DimensionMismatchException("The number of columns in matrix does not equal the number of columns in the row");
+            }
+
+            for (var row = 0; row < matrix.RowCount; row++)
+            {
+                for (var col = 0; col < matrix.ColumnCount; col++)
+                {
+                    if (matrix.Data[row, col] != rowToFind.Data[0, col])
+                    {
+                        break;
+                    }
+
+                    if (col == matrix.ColumnCount - 1)
+                    {
+                        return row;
+                    }
+                }
+            }
+            return -1;
+        }
+
+        public int FindColumn(MatrixInt matrix, MatrixInt columnToFind)
         {
 
-            if (column.ColumnCount > 1)
+            if (columnToFind.ColumnCount > 1)
             {
                 throw new ArgumentException("The column matrix contains more than 1 column");
             }
 
-            if (matrix.RowCount != column.RowCount)
+            if (matrix.RowCount != columnToFind.RowCount)
             {
                 throw new DimensionMismatchException("The number of rows in matrix does not equal the number of rows in the column");
             }
@@ -296,12 +328,12 @@ namespace McElieceCryptosystem.Models
             {
                 for (var row = 0; row < matrix.RowCount; row++)
                 {
-                    if (matrix.Data[row, col] != column.Data[row, 0])
+                    if (matrix.Data[row, col] != columnToFind.Data[row, 0])
                     {
                         break;
                     }
 
-                    if(row == matrix.RowCount - 1)
+                    if (row == matrix.RowCount - 1)
                     {
                         return col;
                     }

@@ -37,6 +37,7 @@ namespace McElieceCryptosystem.Interfaces
 
         #region Methods
         MatrixInt Encode(MatrixInt message);
+        MatrixInt Encode(MatrixInt message, MatrixInt errorVector);
         MatrixInt DecodeAndCorrect(MatrixInt message);
         #endregion
 
