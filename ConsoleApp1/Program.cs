@@ -46,6 +46,7 @@ namespace ConsoleApp1
             var field = new GaloisField(2, 3, Constants.IrreduciblePolynom_deg3);
             Console.WriteLine(field);
             var reedSolomonCode = new ReedSolomonCode(field);
+            Console.WriteLine(reedSolomonCode.CanCorrectUpTo);
             Console.WriteLine(reedSolomonCode.ParityCheckMatrix);
             Console.WriteLine(reedSolomonCode.GeneratorMatrix);
 
@@ -57,6 +58,11 @@ namespace ConsoleApp1
             });
             var encodedMessage = reedSolomonCode.Encode(message, errorVector);
             Console.WriteLine(encodedMessage + 1);
+
+            var syndrome = reedSolomonCode.DecodeAndCorrect(encodedMessage);
+            Console.WriteLine(syndrome);
+            Console.WriteLine(syndrome);
+
             //var scramblerMatrix = Utility.GenerateScramblerMatrix(reedSolomonCode.K);
             //var permutationMatrix = Utility.GeneratePermutationMatrix(reedSolomonCode.N);
             //var mcElieseSystem = new McElieceCryptosystem.McElieceCryptosystem(reedSolomonCode, scramblerMatrix, permutationMatrix);

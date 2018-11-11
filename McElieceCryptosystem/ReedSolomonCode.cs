@@ -48,7 +48,72 @@ namespace McElieceCryptosystem
 
         public MatrixInt DecodeAndCorrect(MatrixInt message)
         {
-            throw new NotImplementedException();
+            if(message.ColumnCount != ParityCheckMatrix.ColumnCount)
+            {
+                throw new DimensionMismatchException("Incorrect length of message. Meesage length should be equal number of columns in parity check matrix.");
+            }
+
+            #region Syndrome
+            var transposedParityCheckMatrix = ParityCheckMatrix.Transpose();
+
+            var rowCount = message.RowCount;
+            var columnCount = transposedParityCheckMatrix.ColumnCount;
+
+            var rawSyndrome = new int[rowCount, columnCount];
+
+            for (int row = 0; row < rowCount; row++)
+            {
+                for (int col = 0; col < columnCount; col++)
+                {
+                    int sum = -1;
+                    for (int k = 0; k < message.ColumnCount; k++)
+                    {
+                        var product = GaloisField.MultiplyWords(message.Data[row, k], transposedParityCheckMatrix.Data[k, col]);
+                        sum = GaloisField.AddWords(sum, product);
+                    }
+                    rawSyndrome[row, col] = sum;
+                }
+            }
+
+            var syndrome = new MatrixInt(rawSyndrome);
+            #endregion
+
+            #region МЛО
+            var t = CanCorrectUpTo;
+            rowCount = t;
+            columnCount = t + 1;
+
+            var system = new int[rowCount, columnCount];
+
+            for (int row = 0; row < rowCount; row++)
+            {
+                for (int col = 0; col < columnCount; col++)
+                {
+                    system[row, col] = syndrome.Data[0, row + col];
+                }
+            }
+            var coefficients = Solve(new MatrixInt(system), GaloisField).Transpose();
+            #endregion
+
+            #region CalculateErrorPositions
+            var errorCheck = new int[N];
+            for (int position = 0; position < N; position++)
+            {
+                var checkResult = coefficients.Data[0, 0];
+                for (int i = 1; i < coefficients.ColumnCount; i++)
+                {
+                    var wordToAdd = GaloisField.MultiplyWords(coefficients.Data[0, i], position);
+                    checkResult = GaloisField.AddWords(checkResult, wordToAdd);
+                }
+
+                var lastAddent = GaloisField.Power(position, t);
+                checkResult = GaloisField.AddWords(checkResult, lastAddent);
+
+                errorCheck[position] = checkResult;
+            }
+
+            #endregion
+            return coefficients;
         }
 
         public MatrixInt Encode(MatrixInt message)
@@ -70,7 +135,7 @@ namespace McElieceCryptosystem
                     for (int k = 0; k < message.ColumnCount; k++)
                     {
                         var product = GaloisField.MultiplyWords(message.Data[row, k], GeneratorMatrix.Data[k, col]);
-                        sum = GaloisField.SumWords(sum, product);
+                        sum = GaloisField.AddWords(sum, product);
                     }
                     rawEncodedMessage[row, col] = sum;
                 }
@@ -92,7 +157,7 @@ namespace McElieceCryptosystem
 
             for (int i = 0; i < encodedMessage.ColumnCount; i++)
             {
-                rawResult[0, i] = GaloisField.SumWords(rawResult[0, i], errorVector.Data[0, i]); 
+                rawResult[0, i] = GaloisField.AddWords(rawResult[0, i], errorVector.Data[0, i]); 
             }
 
             return encodedMessage;
@@ -198,7 +263,7 @@ namespace McElieceCryptosystem
                     for (int col = leadColumn; col < matrix.ColumnCount; col++)
                     {
                         var wordToSubtract = galoisField.MultiplyWords(otherRowLeadingValue, rawResult[leadRow, col]);
-                        rawResult[i, col] = galoisField.SumWords(wordToSubtract, rawResult[i, col]);
+                        rawResult[i, col] = galoisField.AddWords(wordToSubtract, rawResult[i, col]);
                     }
                     //Console.WriteLine(new MatrixInt(rawResult));
                 }
@@ -220,7 +285,7 @@ namespace McElieceCryptosystem
                 {
                     var wordToSubtract = galoisField.MultiplyWords(rawResult[row, leadColumn], rawResult[leadRow, matrix.ColumnCount - 1]);
 
-                    rawResult[row, matrix.ColumnCount - 1] = galoisField.SumWords(wordToSubtract, rawResult[row, matrix.ColumnCount - 1]);
+                    rawResult[row, matrix.ColumnCount - 1] = galoisField.AddWords(wordToSubtract, rawResult[row, matrix.ColumnCount - 1]);
                     rawResult[row, leadColumn] = -1;
                 }
 

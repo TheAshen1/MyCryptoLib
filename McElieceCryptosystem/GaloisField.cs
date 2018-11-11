@@ -65,7 +65,7 @@ namespace McElieceCryptosystem
             return inverse;
         }
 
-        public int SumWords(int wordNumberleft, int wordNumberRight)
+        public int AddWords(int wordNumberleft, int wordNumberRight)
         {
             if(wordNumberleft < 0 && wordNumberRight >= 0)
             {
@@ -109,6 +109,27 @@ namespace McElieceCryptosystem
 
             var resultWordNumber = (wordNumberleft + GetMultiplicativeInverse(wordNumberRight)) % WordCount;
             return resultWordNumber;
+        }
+
+        public int Power(int wordNumber, int power)
+        {
+            if(power < 0)
+            {
+                throw new ArgumentException("Power cannot be negative here.");
+            }
+
+            if (power == 0)
+            {
+                return 0;
+            }          
+           
+            var result = wordNumber;
+            
+            for (int i = 1; i < power; i++)
+            {
+                result = MultiplyWords(result, wordNumber);
+            }
+            return result;
         }
 
         public override string ToString()
