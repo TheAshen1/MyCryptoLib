@@ -15,6 +15,10 @@ namespace McElieceCryptosystem.Models
         {
         }
 
+        public MatrixInt(int[] initialRow) : base(initialRow)
+        {
+        }
+
         public MatrixInt(int[,] initialValues) : base(initialValues)
         {
         }

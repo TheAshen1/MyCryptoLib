@@ -95,7 +95,7 @@ namespace McElieceCryptosystem
             var coefficients = Solve(new MatrixInt(system), GaloisField).Transpose();
             #endregion
 
-            #region CalculateErrorPositions
+            #region Calculate Error Positions
             var errorCheck = new int[N];
             for (int position = 0; position < N; position++)
             {
@@ -111,9 +111,58 @@ namespace McElieceCryptosystem
 
                 errorCheck[position] = checkResult;
             }
-
             #endregion
-            return coefficients;
+
+            #region Caclulate Error vector
+            rowCount = t;
+            columnCount = t + 1;
+
+            system = new int[rowCount, columnCount];
+
+            var errorNumber = 0;
+            for (int errorPostition = 0; errorPostition < N; errorPostition++)
+            {
+                if (errorCheck[errorPostition] == -1)
+                {
+                    for (int row = 0; row < rowCount; row++)
+                    {
+                        system[row, errorNumber] = ParityCheckMatrix.Data[row, errorPostition];
+                    }
+                    errorNumber++;
+                }
+            }
+
+            for (int i = 0; i < rowCount; i++)
+            {
+                system[i, columnCount - 1] = rawSyndrome[0, i];
+            }
+
+            var weights = Solve(new MatrixInt(system), GaloisField);
+
+            var rawErrorVector = new int[N];
+
+            errorNumber = 0;
+            for (int i = 0; i < N; i++)
+            {
+                if (errorCheck[i] == -1)
+                {
+                    rawErrorVector[i] = weights.Data[errorNumber, 0];
+                    errorNumber++;
+                    continue;
+                }
+                rawErrorVector[i] = -1;
+            }
+            #endregion
+
+            var rawOriginalMessage = new int[K];
+
+            for (int i = 0; i < K; i++)
+            {
+                rawOriginalMessage[i] = GaloisField.AddWords(message.Data[0, i], rawErrorVector[i]);
+            }
+
+            var originalMessage = new MatrixInt(rawOriginalMessage);
+            return originalMessage;
         }
 
         public MatrixInt Encode(MatrixInt message)
@@ -217,7 +266,6 @@ namespace McElieceCryptosystem
             for (int i = 0; i < k; i++)
             {
                 var system = parityCheckMatrix.GetRangeOfColumns(new RangeInt(k, n)) | parityCheckMatrix.GetColumn(i);
-                Console.WriteLine(system);
                 var result = Solve(system, galoisField);
 
                 #region CopyResults
@@ -230,7 +278,6 @@ namespace McElieceCryptosystem
             #endregion
 
             var generatorMatrix = new MatrixInt(rawResult);
-            Console.WriteLine(generatorMatrix);
             return generatorMatrix;
         }
 
@@ -265,7 +312,6 @@ namespace McElieceCryptosystem
                         var wordToSubtract = galoisField.MultiplyWords(otherRowLeadingValue, rawResult[leadRow, col]);
                         rawResult[i, col] = galoisField.AddWords(wordToSubtract, rawResult[i, col]);
                     }
-                    //Console.WriteLine(new MatrixInt(rawResult));
                 }
                 #endregion
 
@@ -279,8 +325,6 @@ namespace McElieceCryptosystem
                 rawResult[leadRow, matrix.ColumnCount - 1] = galoisField.DivideWords(rawResult[leadRow, matrix.ColumnCount - 1], rawResult[leadRow, leadColumn]);
                 rawResult[leadRow, leadColumn] = 0;
 
-                //Console.WriteLine(new MatrixInt(rawResult));
-
                 for (int row = (leadRow - 1); row >= 0; row--)
                 {
                     var wordToSubtract = galoisField.MultiplyWords(rawResult[row, leadColumn], rawResult[leadRow, matrix.ColumnCount - 1]);
@@ -288,8 +332,6 @@ namespace McElieceCryptosystem
                     rawResult[row, matrix.ColumnCount - 1] = galoisField.AddWords(wordToSubtract, rawResult[row, matrix.ColumnCount - 1]);
                     rawResult[row, leadColumn] = -1;
                 }
-
-                //Console.WriteLine(new MatrixInt(rawResult));
 
                 leadColumn--;
             }

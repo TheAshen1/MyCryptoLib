@@ -364,6 +364,22 @@ namespace McElieceCryptosystem.Models
             ColumnCount = columns;
         }
 
+        public MatrixBase(T[] initialRow)
+        {
+            RowCount = 1;
+            ColumnCount = initialRow.Length;
+
+            Data = new T[RowCount, ColumnCount];
+
+            for (var row = 0; row < RowCount; row++)
+            {
+                for (var col = 0; col < ColumnCount; col++)
+                {
+                    Data[row, col] = initialRow[col];
+                }
+            }
+        }
+
         public MatrixBase(T[,] initialValues)
         {
             RowCount = initialValues.GetLength(0);
@@ -436,97 +452,5 @@ namespace McElieceCryptosystem.Models
             return Concatenate(matrix1, matrix2);
         }
         #endregion
-
-
-        //public class ColumnAccessor<T> : IEnumerable<MatrixBase<T>>
-        //{
-
-        //    #region Private Members
-        //    /*******************/
-        //    /* PRIVATE MEMBERS */
-        //    /*******************/
-        //    private MatrixBase<T> _dataView;
-        //    #endregion Private Members
-
-
-        //    #region Public Constructor
-        //    /**********************/
-        //    /* PUBLIC CONSTRUCTOR */
-        //    /**********************/
-        //    /// <summary>ColumnAccessor</summary>
-        //    /// <param name="dataView"></param>
-        //    public ColumnAccessor(MatrixBase<T> dataView)
-        //    {
-        //        _dataView = dataView;
-        //    }
-
-        //    #endregion Public Constructor
-
-
-        //    #region Public Accessors
-        //    /********************/
-        //    /* PUBLIC ACCESSORS */
-        //    /********************/
-
-        //    /// <summary>this</summary>
-        //    /// <param name="columnIndex"></param>
-        //    /// <returns></returns>
-        //    public MatrixBase<T> this[int columnIndex]
-        //    {
-        //        get
-        //        {
-        //            return this.AsEnumerable().ElementAt(columnIndex);
-        //        }
-        //        set
-        //        {
-        //            if (value.RowCount != _dataView.RowCount || value.ColumnCount != 1)
-        //                throw new DimensionMismatchException();
-
-        //            MatrixBase<T> targetColumn = this.AsEnumerable().ElementAt(columnIndex);
-        //            for (int j = 0; j < value.RowCount; j++)
-        //                targetColumn[0, j] = value[0, j];
-        //        }
-        //    }
-
-        //    #endregion Public Accessors
-
-
-        //    #region Public Methods
-        //    /******************/
-        //    /* PUBLIC METHODS */
-        //    /******************/
-
-        //    /// <summary>AsEnumerable</summary>
-        //    /// <returns></returns>
-        //    public IEnumerable<MatrixBase<T>> AsEnumerable()
-        //    {
-        //        int i = 0;
-        //        while (i < _dataView.ColumnCount)
-        //        {
-        //            yield return MatrixBase<T>.SubMatrix(_dataView, new RangeInt(0, _dataView.RowCount), new RangeInt(i, i + 1));
-        //            i++;
-        //        }
-
-        //    }
-
-
-        //    /// <summary>GetEnumerator</summary>
-        //    /// <returns></returns>
-        //    public IEnumerator<MatrixBase<T>> GetEnumerator()
-        //    {
-        //        return this.AsEnumerable().GetEnumerator();
-        //    }
-
-
-        //    /// <summary>IEnumerable.GetEnumerator</summary>
-        //    /// <returns></returns>
-        //    IEnumerator IEnumerable.GetEnumerator()
-        //    {
-        //        return this.GetEnumerator();
-        //    }
-
-        //    #endregion Public Methods
-
-        //}
     }
 }
