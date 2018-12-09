@@ -58,10 +58,8 @@ namespace McElieceCryptosystem
             {
                 throw new DimensionMismatchException("Word number cannot exceed number of all words in Galois field minus one");
             }
-            var word = GetWord(wordNumber);
-            var wordPolynom = Mapper.Map(word);
 
-            var inverse = WordCount - wordNumber;
+            var inverse = (WordCount - wordNumber) % WordCount;
             return inverse;
         }
 

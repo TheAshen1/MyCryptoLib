@@ -210,7 +210,7 @@ namespace McElieceCryptosystem
 
         private MatrixInt CalculateGeneratorMatrix()
         {
-            var parityCheckMatrixStandardForm = MatrixAlgorithms.ToReducedRowEchelonFormBinary(ParityCheckMatrix);
+            var parityCheckMatrixStandardForm = MatrixAlgorithms.Solve(ParityCheckMatrix);
 
 
             return parityCheckMatrixStandardForm;

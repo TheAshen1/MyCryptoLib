@@ -72,7 +72,7 @@ namespace McElieceCryptosystem.Models
             {
                 for (var col = 0; col < ColumnCount; col++)
                 {
-                    if (Data[row, col] != other.Data[row, col])
+                    if (this[row, col] != other[row, col])
                     {
                         return false;
                     }
@@ -100,55 +100,57 @@ namespace McElieceCryptosystem.Models
             RangeInt rowRange,
             RangeInt columnRange)
         {
-            var rawResult = SubMatrix(this, rowRange, columnRange);
-            var result = new MatrixInt(rawResult);
+            var baseResult = SubMatrix(this, rowRange, columnRange);
+            var result = new MatrixInt(baseResult);
             return result;
         }
 
         public MatrixInt GetRangeOfRows(
             RangeInt rowRange)
         {
-            var rawResult = GetRangeOfRows(this, rowRange);
-            var result = new MatrixInt(rawResult);
+            var baseResult = GetRangeOfRows(this, rowRange);
+            var result = new MatrixInt(baseResult);
             return result;
         }
 
         public MatrixInt GetRangeOfColumns(
             RangeInt columnRange)
         {
-            var rawResult = GetRangeOfColumns(this, columnRange);
-            var result = new MatrixInt(rawResult);
+            var baseResult = GetRangeOfColumns(this, columnRange);
+            var result = new MatrixInt(baseResult);
             return result;
         }
 
         public MatrixInt GetRow(
             int rowNumber)
         {
-            var rawResult = GetRow(this, rowNumber);
-            var result = new MatrixInt(rawResult);
-            return result;
+            var baseResult = GetRow(this, rowNumber);
+            return new MatrixInt(baseResult);
         }
 
         public MatrixInt GetColumn(
             int columnNumber)
         {
-            var rawResult = GetColumn(this, columnNumber);
-            var result = new MatrixInt(rawResult);
-            return result;
+            var baseResult = GetColumn(this, columnNumber);
+            return new MatrixInt(baseResult);
         }
 
         public MatrixInt SwapColumns(int i, int j)
         {
-            var rawResult = SwapColumns(this, i, j);
-            var result = new MatrixInt(rawResult);
-            return result;
+            var baseResult = SwapColumns(this, i, j);
+            return new MatrixInt(baseResult);
+        }
+
+        public MatrixInt SwapRows(int i, int j)
+        {
+            var baseResult = SwapRows(this, i, j);
+            return new MatrixInt(baseResult);
         }
 
         public MatrixInt AppendRows(MatrixInt rows)
         {
-            var rawResult = AppendRows(this, rows);
-            var result = new MatrixInt(rawResult);
-            return result;
+            var baseResult = AppendRows(this, rows);
+            return new MatrixInt(baseResult);
         }
 
         internal int FindRow(MatrixInt row)
@@ -164,6 +166,11 @@ namespace McElieceCryptosystem.Models
             return result;
         }
 
+        public new MatrixInt Clone()
+        {
+            return new MatrixInt(this);
+        }
+
         #endregion Public Methods
 
         #region Static Methods
@@ -171,8 +178,8 @@ namespace McElieceCryptosystem.Models
             MatrixInt matrixLeft,
             MatrixInt matrixRight)
         {
-            var rawResult = MatrixBase<int>.Concatenate(matrixLeft, matrixRight);
-            var result = new MatrixInt(rawResult);
+            var baseResult = MatrixBase<int>.Concatenate(matrixLeft, matrixRight);
+            var result = new MatrixInt(baseResult);
             return result;
         }
 
@@ -269,7 +276,7 @@ namespace McElieceCryptosystem.Models
                     int sum = 0;
                     for (int k = 0; k < matrixLeft.ColumnCount; k++)
                     {
-                        sum += matrixLeft.Data[row, k] * matrixRight.Data[k, col];
+                        sum += matrixLeft[row, k] * matrixRight[k, col];
                     }
                     rawResult[row, col] = sum;
                 }
@@ -302,7 +309,6 @@ namespace McElieceCryptosystem.Models
                    (a, b) => a % b
                    ));
         }
-
         #endregion Static Methods
 
         #endregion Methods

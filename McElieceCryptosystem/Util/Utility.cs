@@ -99,6 +99,27 @@ namespace McElieceCryptosystem.Util
             return result;
         }
 
+        public static MatrixInt GenerateScramblerMatrix(int size, GaloisField galoisField)
+        {
+            var result = GenerateScramblerMatrix(size, size, galoisField);
+            return result;
+        }
+
+        public static MatrixInt GenerateScramblerMatrix(int numberOfRows, int numberOfCols, GaloisField galoisField)
+        {
+            var rawResult = new int[numberOfRows, numberOfCols];
+            var rand = new Random();
+            for (var row = 0; row < numberOfRows; row++)
+            {
+                for (var col = 0; col < numberOfCols; col++)
+                {
+                    rawResult[row, col] = rand.Next(galoisField.WordCount) - 1;
+                }
+            }
+            var result = new MatrixInt(rawResult);
+            return result;
+        }
+
         public static MatrixInt GeneratePermutationMatrix(int size)
         {
             var permutationMatrix = GenerateIdentityMatrix(size);

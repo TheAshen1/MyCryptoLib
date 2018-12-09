@@ -5,7 +5,7 @@ using System.Text;
 
 namespace McElieceCryptosystem.Models
 {
-    public class MatrixBase<T>
+    public class MatrixBase<T> : ICloneable
     {
         #region Static methods
         protected static MatrixBase<T> ElementWiseOperation(
@@ -27,7 +27,7 @@ namespace McElieceCryptosystem.Models
             {
                 for (int col = 0; col < rawResult.GetLength(1); col++)
                 {
-                    rawResult[row, col] = operation(matrixLeft.Data[row, col], matrixRight.Data[row, col]);
+                    rawResult[row, col] = operation(matrixLeft[row, col], matrixRight[row, col]);
                 }
             }
 
@@ -45,7 +45,7 @@ namespace McElieceCryptosystem.Models
             {
                 for (int col = 0; col < rawResult.GetLength(1); col++)
                 {
-                    rawResult[row, col] = operation(matrix.Data[row, col], scalar);
+                    rawResult[row, col] = operation(matrix[row, col], scalar);
                 }
             }
             MatrixBase<T> result = new MatrixBase<T>(rawResult);
@@ -61,7 +61,7 @@ namespace McElieceCryptosystem.Models
             {
                 for (int col = 0; col < rawResult.GetLength(1); col++)
                 {
-                    rawResult[row, col] = operation(matrix.Data[row, col]);
+                    rawResult[row, col] = operation(matrix[row, col]);
                 }
             }
             MatrixBase<T> result = new MatrixBase<T>(rawResult);
@@ -82,12 +82,12 @@ namespace McElieceCryptosystem.Models
             {
                 for (var col = 0; col < matrixLeft.ColumnCount; col++)
                 {
-                    rawResult[row, col] = matrixLeft.Data[row, col];
+                    rawResult[row, col] = matrixLeft[row, col];
                 }
 
                 for (var col = 0; col < matrixRight.ColumnCount; col++)
                 {
-                    rawResult[row, matrixLeft.ColumnCount + col] = matrixRight.Data[row, col];
+                    rawResult[row, matrixLeft.ColumnCount + col] = matrixRight[row, col];
                 }
             }
             var result = new MatrixBase<T>(rawResult);
@@ -102,7 +102,7 @@ namespace McElieceCryptosystem.Models
             {
                 for (int col = 0; col < matrix.ColumnCount; col++)
                 {
-                    rawDataTransposed[col, row] = matrix.Data[row, col];
+                    rawDataTransposed[col, row] = matrix[row, col];
                 }
             }
             var result = new MatrixBase<T>(rawDataTransposed);
@@ -234,18 +234,49 @@ namespace McElieceCryptosystem.Models
 
             if (i == j)
             {
-                return matrix;
+                return matrix.Clone();
             }
 
-            var rawResult = matrix.Data;
+            var result = matrix.Clone();
 
             for (var row = 0; row < matrix.RowCount; row++)
             {
-                var temp = rawResult[row, i];
-                rawResult[row, i] = rawResult[row, j];
-                rawResult[row, j] = temp;
+                var temp = result.Data[row, i];
+                result.Data[row, i] = result.Data[row, j];
+                result.Data[row, j] = temp;
             }
-            var result = new MatrixBase<T>(rawResult);
+            return result;
+        }
+
+        public static MatrixBase<T> SwapRows(
+          MatrixBase<T> matrix,
+          int i,
+          int j)
+        {
+            if (!matrix.RowRange.Contains(i))
+            {
+                throw new ArgumentOutOfRangeException("rowRange");
+            }
+
+            if (!matrix.RowRange.Contains(j))
+            {
+                throw new ArgumentOutOfRangeException("rowRange");
+            }
+
+            if (i == j)
+            {
+                return matrix.Clone();
+            }
+
+            var result = matrix.Clone();
+
+            for (var col = 0; col < matrix.ColumnCount; col++)
+            {
+                var temp = result.Data[i, col];
+                result.Data[i, col] = result.Data[j, col];
+                result.Data[j, col] = temp;
+            }
+
             return result;
         }
 
@@ -350,6 +381,12 @@ namespace McElieceCryptosystem.Models
 
         public RangeInt ColumnRange => new RangeInt(ColumnCount);
         public RangeInt RowRange => new RangeInt(RowCount);
+
+        public T this[int row, int col]
+        {
+            get { return Data[row, col]; }
+            set { Data[row, col] = value; }
+        }
         #endregion
 
         #region Constructors
@@ -407,7 +444,7 @@ namespace McElieceCryptosystem.Models
             {
                 for (var col = 0; col < ColumnCount; col++)
                 {
-                    Data[row, col] = matrix.Data[row, col];
+                    Data[row, col] = matrix[row, col];
                 }
             }
         }
@@ -438,11 +475,21 @@ namespace McElieceCryptosystem.Models
             {
                 for (var col = 0; col < ColumnCount; col++)
                 {
-                    sb.Append(Data[row, col].ToString() + " ");
+                    sb.Append(this[row, col].ToString() + " ");
                 }
                 sb.Append(Environment.NewLine);
             }
             return sb.ToString();
+        }
+
+        public MatrixBase<T> Clone()
+        {
+            return new MatrixBase<T>(this);
+        }
+
+        object ICloneable.Clone()
+        {
+            return new MatrixBase<T>(this);
         }
         #endregion
 
@@ -452,5 +499,6 @@ namespace McElieceCryptosystem.Models
             return Concatenate(matrix1, matrix2);
         }
         #endregion
+
     }
 }
