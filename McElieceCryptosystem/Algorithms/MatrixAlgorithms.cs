@@ -1,9 +1,9 @@
-﻿using McElieceCryptosystem.Exceptions;
-using McElieceCryptosystem.Models;
-using McElieceCryptosystem.Util;
+﻿using CryptoSystems.Exceptions;
+using CryptoSystems.Models;
+using CryptoSystems.Util;
 using System;
 
-namespace McElieceCryptosystem.Algorithms
+namespace CryptoSystems.Algorithms
 {
     public static class MatrixAlgorithms
     {
@@ -80,7 +80,7 @@ namespace McElieceCryptosystem.Algorithms
         {
             var result = matrix.Clone();
 
-            var leadColumn = 0; // lead column
+            var leadColumn = 0;
             for (int leadRow = 0; leadRow < matrix.RowCount; leadRow++)
             {
                 #region Make leading diagonal word 0
@@ -96,8 +96,6 @@ namespace McElieceCryptosystem.Algorithms
                 #endregion
 
                 #region subtract from all other rows 
-                //subtraction is basicy the same as summation here
-
                 for (int i = (leadRow + 1); i < matrix.RowCount; i++)
                 {
                     var otherRowLeadingValue = result[i, leadColumn];
@@ -133,68 +131,101 @@ namespace McElieceCryptosystem.Algorithms
             return result.GetRangeOfColumns(new RangeInt(result.RowCount, result.ColumnCount));
         }
 
-        public static MatrixInt LUPDecomposition(MatrixInt matrix, GaloisField galoisField)
+        //public static MatrixInt LUSolve(MatrixInt matrix, GaloisField galoisField)
+        //{
+        //    var (L, U) = LUDecomposition(matrix, galoisField);
+
+        //    var rightPart = Utility.GenerateIdentityMatrix(L.RowCount) - 1;
+        //    var y = rightPart.Clone();
+
+        //    Console.WriteLine(rightPart);
+
+        //    // find solution of Ly = b
+        //    for (int row = 0; row < L.RowCount; row++)
+        //    {
+        //        for (int col = 0; col < row; col++)
+        //        {
+        //            var sum = -1;
+        //            for (int k = 0; k < L.RowCount; k++)
+        //            {
+        //                var word = galoisField.MultiplyWords(L[row, k], y[k, col]);
+        //                sum = galoisField.AddWords(sum, word);
+        //            }
+        //            y[row, col] = galoisField.AddWords(y[row, col], sum);
+        //        }
+        //        Console.WriteLine(y);
+        //    }
+
+        //    //// find solution of Ux = y
+        //    //var x = new int[n];
+        //    //for (int i = n - 1; i >= 0; i--)
+        //    //{
+        //    //    var sum = -1;
+        //    //    for (int k = i + 1; k < n; k++)
+        //    //    {
+        //    //        var word = galoisField.MultiplyWords(lu[i, k], x[k]);
+        //    //        sum = galoisField.AddWords(sum, word);
+        //    //    }
+        //    //    x[i] = galoisField.DivideWords(galoisField.AddWords(y[i], sum), lu[i, i]);
+        //    //}
+
+        //    return y;
+        //}
+
+        public static (MatrixInt, MatrixInt) LUDecomposition(MatrixInt matrix, GaloisField galoisField)
         {
-            var n = matrix.RowCount;
-            var lu = new int[n, n];
-
-            for (int row = 0; row < n; row++)
+            if (matrix.RowCount != matrix.ColumnCount)
             {
-                for (int col = row; col < n; col++)
+                throw new DimensionMismatchException("The number of rows in the matrix should be same as number columns.");
+            }
+
+            var U = matrix.Clone();
+            var L = Utility.GenerateIdentityMatrix(matrix.RowCount) - 1;
+
+            int leadColumn = 0;
+            for (int leadRow = 0; leadRow < U.RowCount; leadRow++)
+            {
+                var diagonalWordNumber = U[leadRow, leadColumn];
+
+                for (int row = (leadRow + 1); row < matrix.RowCount; row++)
                 {
-                    var sum = -1;
-                    for (int k = 0; k < row; k++)
+                    var otherRowLeadingValue = U[row, leadColumn];
+                    if(otherRowLeadingValue == -1)
                     {
-                        var word = galoisField.MultiplyWords(lu[row, k], lu[k, col]);
-                        sum = galoisField.AddWords(sum, word);
+                        continue;
                     }
-                    lu[row, col] = galoisField.AddWords(matrix.Data[row, col], sum);
 
-                    Console.WriteLine(new MatrixInt(lu));
-                }
-
-                for (int j = row + 1; j < n; j++)
-                {
-                    var sum = -1;
-                    for (int k = 0; k < row; k++)
+                    for (int col = leadColumn; (col + 1) < matrix.ColumnCount; col++)
                     {
-                        var word = galoisField.MultiplyWords(lu[j, k], lu[k, row]);
-                        sum = galoisField.AddWords(sum, word);
+                        var multiplier = galoisField.DivideWords(otherRowLeadingValue, U[leadRow, col]);
+                        var wordToSubtract = galoisField.MultiplyWords(U[leadRow, col], multiplier);
+                        L[row, col] = multiplier;
+                        U[row, col] = galoisField.AddWords(U[row, col], wordToSubtract);
                     }
-                    lu[j, row] = galoisField.DivideWords(galoisField.AddWords(matrix.Data[j, row], sum), lu[row, row]);
-
-                    Console.WriteLine(new MatrixInt(lu));
                 }
+                leadColumn++;
             }
+            return (L, U);
+        }
 
-            // find solution of Ly = b
-            var y = new int[n];
-            for (int i = 0; i < n; i++)
+        public static int GetDeterminant(MatrixInt matrix, GaloisField galoisField)
+        {
+            var (L, U) = LUDecomposition(matrix, galoisField);
+            
+            var Ldeterminant = 0;
+            var Udeterminant = 0;
+
+            for (int i = 0; i < L.RowCount; i++)
             {
-                var sum = -1;
-                for (int k = 0; k < i; k++)
-                {
-                    var word = galoisField.MultiplyWords(lu[i, k], y[k]);
-                    sum = galoisField.AddWords(sum, word);
-                }
-
-                y[i] = galoisField.AddWords(matrix.Data[i, matrix.ColumnCount - 1], sum);
+                Ldeterminant = galoisField.MultiplyWords(Ldeterminant, L[i, i]);
             }
-
-            // find solution of Ux = y
-            var x = new int[n];
-            for (int i = n - 1; i >= 0; i--)
+            for (int i = 0; i < U.RowCount; i++)
             {
-                var sum = -1;
-                for (int k = i + 1; k < n; k++)
-                {
-                    var word = galoisField.MultiplyWords(lu[i, k], x[k]);
-                    sum = galoisField.AddWords(sum, word);
-                }
-                x[i] = galoisField.DivideWords(galoisField.AddWords(y[i], sum), lu[i, i]);
+                Udeterminant = galoisField.MultiplyWords(Udeterminant, U[i, i]);
             }
 
-            return new MatrixInt(x);
+            var determinant = galoisField.MultiplyWords(Ldeterminant, Udeterminant);
+            return determinant;
         }
 
         public static MatrixInt DotMultiplication(MatrixInt matrixLeft, MatrixInt matrixRight, GaloisField galoisField)

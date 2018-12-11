@@ -1,7 +1,8 @@
-﻿using McElieceCryptosystem.Interfaces;
-using McElieceCryptosystem.Models;
+﻿using CryptoSystems.Interfaces;
+using CryptoSystems.Models;
+using System.Collections.Generic;
 
-namespace McElieceCryptosystem
+namespace CryptoSystems
 {
     public class McElieceCryptosystem
     {
@@ -10,14 +11,15 @@ namespace McElieceCryptosystem
         public PrivateKey PrivateKey { get; }
         public PublicKey PublicKey { get; }
 
-        public McElieceCryptosystem(ILinearCode linearCode, MatrixInt scramblerMatrix, MatrixInt permutationMatrix)
+        public McElieceCryptosystem(ILinearCode linearCode, MatrixInt scramblerMatrix, List<int> permutations, List<int> mask)
         {
             LinearCode = linearCode;
             PrivateKey = new PrivateKey
             {
                 GeneratorMatrix = linearCode.GeneratorMatrix,
                 ScramblerMatrix = scramblerMatrix,
-                PermutationMatrix = permutationMatrix
+                Permutations = permutations,
+                Mask = mask
             };
 
             PublicKey = new PublicKey

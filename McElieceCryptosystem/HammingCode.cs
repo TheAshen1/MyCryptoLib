@@ -1,9 +1,9 @@
-﻿using McElieceCryptosystem.Interfaces;
-using McElieceCryptosystem.Models;
-using McElieceCryptosystem.Util;
+﻿using CryptoSystems.Interfaces;
+using CryptoSystems.Models;
+using CryptoSystems.Util;
 using System;
 
-namespace McElieceCryptosystem
+namespace CryptoSystems
 {
     public class HammingCode : ILinearCode
     {

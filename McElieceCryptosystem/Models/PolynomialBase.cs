@@ -1,8 +1,8 @@
-﻿using McElieceCryptosystem.Exceptions;
+﻿using CryptoSystems.Exceptions;
 using System;
 using System.Text;
 
-namespace McElieceCryptosystem.Models
+namespace CryptoSystems.Models
 {
     public class PolynomialBase<T>
     {

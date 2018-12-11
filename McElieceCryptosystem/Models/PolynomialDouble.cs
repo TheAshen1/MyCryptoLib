@@ -1,9 +1,9 @@
-﻿using McElieceCryptosystem.Exceptions;
-using McElieceCryptosystem.Util;
+﻿using CryptoSystems.Exceptions;
+using CryptoSystems.Util;
 using System;
 using System.Text;
 
-namespace McElieceCryptosystem.Models
+namespace CryptoSystems.Models
 {
     public class PolynomialDouble : PolynomialBase<double>, IEquatable<PolynomialDouble>
     {

@@ -1,4 +1,6 @@
-﻿namespace McElieceCryptosystem.Models
+﻿using System.Collections.Generic;
+
+namespace CryptoSystems.Models
 {
     public class PrivateKey
     {
@@ -11,8 +13,12 @@
         /// </summary>
         public MatrixInt ScramblerMatrix { get; set; }
         /// <summary>
-        /// N rows N columns
+        /// list of N integers which correspond to numbers of columns
         /// </summary>
-        public MatrixInt PermutationMatrix { get; set; }
+        public List<int> Permutations { get; set; }
+        /// <summary>
+        /// list of N elements of finite field which will be added to corresponding columns
+        /// </summary>
+        public List<int> Mask { get; set; }
     }
 }

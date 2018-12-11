@@ -1,9 +1,9 @@
-﻿using McElieceCryptosystem.Exceptions;
-using McElieceCryptosystem.Models;
+﻿using CryptoSystems.Exceptions;
+using CryptoSystems.Models;
 using System;
 using System.Collections.Generic;
 
-namespace McElieceCryptosystem.Util
+namespace CryptoSystems.Util
 {
     public static class Utility
     {
@@ -99,16 +99,20 @@ namespace McElieceCryptosystem.Util
             return result;
         }
 
-        public static MatrixInt GenerateScramblerMatrix(int size, GaloisField galoisField)
+        public static MatrixInt GenerateScramblerMatrix(int size, GaloisField galoisField, Random rand = null)
         {
-            var result = GenerateScramblerMatrix(size, size, galoisField);
+            var result = GenerateScramblerMatrix(size, size, galoisField, rand);
             return result;
         }
 
-        public static MatrixInt GenerateScramblerMatrix(int numberOfRows, int numberOfCols, GaloisField galoisField)
+        public static MatrixInt GenerateScramblerMatrix(int numberOfRows, int numberOfCols, GaloisField galoisField, Random rand = null)
         {
+            if (rand is null)
+            {
+                rand = new Random();
+            }
+
             var rawResult = new int[numberOfRows, numberOfCols];
-            var rand = new Random();
             for (var row = 0; row < numberOfRows; row++)
             {
                 for (var col = 0; col < numberOfCols; col++)
@@ -119,6 +123,7 @@ namespace McElieceCryptosystem.Util
             var result = new MatrixInt(rawResult);
             return result;
         }
+
 
         public static MatrixInt GeneratePermutationMatrix(int size)
         {
@@ -165,7 +170,7 @@ namespace McElieceCryptosystem.Util
         }
 
 
-       
+
         //public static MatrixInt ShiftRight(MatrixInt matrix, int shiftLength = 1)
         //{
         //    var rawResult = new int[matrix.RowCount, matrix.ColumnCount + shiftLength];
@@ -216,6 +221,6 @@ namespace McElieceCryptosystem.Util
         public static PolynomialDouble ZeroPolynomialDouble()
         {
             return new PolynomialDouble(0);
-        }     
+        }
     }
 }

@@ -1,8 +1,8 @@
-﻿using McElieceCryptosystem;
-using McElieceCryptosystem.Algorithms;
-using McElieceCryptosystem.Models;
-using McElieceCryptosystem.Util;
+﻿using CryptoSystems;
+using CryptoSystems.Models;
+using CryptoSystems.Util;
 using System;
+using System.Collections.Generic;
 
 namespace ConsoleApp1
 {
@@ -13,60 +13,102 @@ namespace ConsoleApp1
             #region Fiddle
 
             #region Inverse matrix demo
-            //var field = new GaloisField(2, 3, Constants.IrreduciblePolynom_deg3);
-            //Console.WriteLine(field);
+            //var galoisField = new GaloisField(2, 3, Constants.IrreduciblePolynom_deg3);
+            //Console.WriteLine(galoisField);
 
-            //var m = new int[,] {
+            //var rawMatrix = new int[,] {
             //   {2, 0, 1},
             //   {0, 5, 3},
             //   {4, 0, 1}
             //};
 
-            //var i = new int[,]
+            //var rawInverse = new int[,]
             //{
             //    {1, 0, 1},
             //    {2, 4, 7},
             //    {4, 0, 2}
             //};
 
-            //var matrix = new MatrixInt(m) - 1;
+            //var matrix = new MatrixInt(rawMatrix) - 1;
 
             //var inverse = MatrixAlgorithms.MatrixInverse(matrix, field);
-
             //Console.WriteLine(inverse);
+
+            //var (L, U) = MatrixAlgorithms.LUDecomposition(matrix, field);
+            //Console.WriteLine(L);
+            //Console.WriteLine(U);
+
+            //var det = MatrixAlgorithms.GetDeterminant(matrix, field);
+            //Console.WriteLine(det);
+            //Console.WriteLine(det);
 
             //var check = MatrixAlgorithms.DotMultiplication(matrix, inverse, field);
             //Console.WriteLine(check + 1);
             //Console.WriteLine(check + 1);
+
+            //var rand = new Random();
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    var scramblerMatrix = Utility.GenerateScramblerMatrix(matrix.ColumnCount, galoisField, rand);
+            //    var det = MatrixAlgorithms.GetDeterminant(scramblerMatrix, galoisField);
+            //    Console.WriteLine(det);
+            //    var inverse = MatrixAlgorithms.MatrixInverse(scramblerMatrix, galoisField);
+            //    Console.WriteLine(inverse);
+            //}
+
             #endregion
 
 
             #endregion
 
             #region McElieceExample
+            var galoisField = new GaloisField(2, 3, Constants.IrreduciblePolynom_deg3);
+            Console.WriteLine(galoisField);
 
-            #endregion
-
-            #region Reed-Solomon code example
-            var field = new GaloisField(2, 3, Constants.IrreduciblePolynom_deg3);
-            Console.WriteLine(field);
-            var reedSolomonCode = new ReedSolomonCode(field);
+            var reedSolomonCode = new ReedSolomonCode(galoisField);
             Console.WriteLine(reedSolomonCode.CanCorrectUpTo);
             Console.WriteLine(reedSolomonCode.ParityCheckMatrix);
             Console.WriteLine(reedSolomonCode.GeneratorMatrix);
 
-            var message = new MatrixInt(new int[,]{
-                { 3, 2, 4 }
-            });
-            var errorVector = new MatrixInt(new int[,]{
-                { -1, 1, -1, -1, -1, -1, 6 }
-            });
-            var encodedMessage = reedSolomonCode.Encode(message, errorVector);
-            Console.WriteLine(encodedMessage);
+            var demoScramblerMatrix = new MatrixInt(new int[,] {
+               {2, 0, 1},
+               {0, 5, 3},
+               {4, 0, 1}
+            }) - 1;
 
-            var originalMessage = reedSolomonCode.DecodeAndCorrect(encodedMessage);
-            Console.WriteLine(originalMessage);
-            Console.WriteLine(originalMessage);
+            var demoPermutation = new List<int>
+            {
+                0, 2, 1, 6, 4, 3, 5
+            };
+
+            var demoMask = new List<int>
+            {
+                0, 1, 2, 0, 1, 2, 1
+            };
+
+            var mcElieseCryptosystem = new McElieceCryptosystem(reedSolomonCode, demoScramblerMatrix, demoPermutation, demoMask);
+            #endregion
+
+            #region Reed-Solomon code example
+            //var field = new GaloisField(2, 3, Constants.IrreduciblePolynom_deg3);
+            //Console.WriteLine(field);
+            //var reedSolomonCode = new ReedSolomonCode(field);
+            //Console.WriteLine(reedSolomonCode.CanCorrectUpTo);
+            //Console.WriteLine(reedSolomonCode.ParityCheckMatrix);
+            //Console.WriteLine(reedSolomonCode.GeneratorMatrix);
+
+            //var message = new MatrixInt(new int[,]{
+            //    { 3, 2, 4 }
+            //});
+            //var errorVector = new MatrixInt(new int[,]{
+            //    { -1, 1, -1, -1, -1, -1, 6 }
+            //});
+            //var encodedMessage = reedSolomonCode.Encode(message, errorVector);
+            //Console.WriteLine(encodedMessage);
+
+            //var originalMessage = reedSolomonCode.DecodeAndCorrect(encodedMessage);
+            //Console.WriteLine(originalMessage);
+            //Console.WriteLine(originalMessage);
             #endregion
         }
     }
@@ -80,10 +122,22 @@ namespace ConsoleApp1
     //        Console.WriteLine("\nBegin matrix inverse using Crout LU decomp demo \n");
 
     //        double[][] m = MatrixCreate(4, 4);
-    //        m[0][0] = 3.0; m[0][1] = 7.0; m[0][2] = 2.0; m[0][3] = 5.0;
-    //        m[1][0] = 1.0; m[1][1] = 8.0; m[1][2] = 4.0; m[1][3] = 2.0;
-    //        m[2][0] = 2.0; m[2][1] = 1.0; m[2][2] = 9.0; m[2][3] = 3.0;
-    //        m[3][0] = 5.0; m[3][1] = 4.0; m[3][2] = 7.0; m[3][3] = 1.0;
+    //        m[0][0] = 3.0;
+    //        m[0][1] = 7.0;
+    //        m[0][2] = 2.0;
+    //        m[0][3] = 5.0;
+    //        m[1][0] = 1.0;
+    //        m[1][1] = 8.0;
+    //        m[1][2] = 4.0;
+    //        m[1][3] = 2.0;
+    //        m[2][0] = 2.0;
+    //        m[2][1] = 1.0;
+    //        m[2][2] = 9.0;
+    //        m[2][3] = 3.0;
+    //        m[3][0] = 5.0;
+    //        m[3][1] = 4.0;
+    //        m[3][2] = 7.0;
+    //        m[3][3] = 1.0;
 
 
     //        Console.WriteLine("Original matrix m is ");
@@ -197,9 +251,9 @@ namespace ConsoleApp1
 
     //        for (int j = 0; j < n - 1; ++j) // process by column. note n-1 
     //        {
-    //        Console.WriteLine(MatrixAsString(lum));
+    //            Console.WriteLine(MatrixAsString(lum));
 
-    //        double max = Math.Abs(lum[j][j]);
+    //            double max = Math.Abs(lum[j][j]);
     //            int piv = j;
 
     //            for (int i = j + 1; i < n; ++i) // find pivot index

@@ -1,11 +1,11 @@
-﻿using McElieceCryptosystem.Algorithms;
-using McElieceCryptosystem.Interfaces;
-using McElieceCryptosystem.Models;
-using McElieceCryptosystem.Util;
+﻿using CryptoSystems.Algorithms;
+using CryptoSystems.Interfaces;
+using CryptoSystems.Models;
+using CryptoSystems.Util;
 using System;
 using System.Collections.Generic;
 
-namespace McElieceCryptosystem
+namespace CryptoSystems
 {
     public class GoppaCode : ILinearCode
     {

@@ -1,8 +1,8 @@
-﻿using McElieceCryptosystem.Exceptions;
-using McElieceCryptosystem.Util;
+﻿using CryptoSystems.Exceptions;
+using CryptoSystems.Util;
 using System;
 
-namespace McElieceCryptosystem.Models
+namespace CryptoSystems.Models
 {
     public class PolynomialInt : PolynomialBase<int>, IEquatable<PolynomialInt>
     {

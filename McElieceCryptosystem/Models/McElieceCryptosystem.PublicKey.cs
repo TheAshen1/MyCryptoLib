@@ -1,4 +1,4 @@
-﻿namespace McElieceCryptosystem.Models
+﻿namespace CryptoSystems.Models
 {
     public class PublicKey
     {

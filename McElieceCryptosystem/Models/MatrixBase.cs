@@ -1,9 +1,9 @@
-﻿using McElieceCryptosystem.Exceptions;
+﻿using CryptoSystems.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace McElieceCryptosystem.Models
+namespace CryptoSystems.Models
 {
     public class MatrixBase<T> : ICloneable
     {
@@ -312,7 +312,7 @@ namespace McElieceCryptosystem.Models
 
 
 
-        public int FindRow(MatrixInt matrix, MatrixInt rowToFind)
+        public int FindRow(MatrixBase<int> matrix, MatrixBase<int> rowToFind)
         {
             if (rowToFind.RowCount > 1)
             {
@@ -342,7 +342,7 @@ namespace McElieceCryptosystem.Models
             return -1;
         }
 
-        public int FindColumn(MatrixInt matrix, MatrixInt columnToFind)
+        public int FindColumn(MatrixBase<int> matrix, MatrixBase<int> columnToFind)
         {
 
             if (columnToFind.ColumnCount > 1)

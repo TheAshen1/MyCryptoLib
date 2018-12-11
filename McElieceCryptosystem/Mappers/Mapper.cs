@@ -1,8 +1,8 @@
-﻿using McElieceCryptosystem.Exceptions;
-using McElieceCryptosystem.Models;
+﻿using CryptoSystems.Exceptions;
+using CryptoSystems.Models;
 using System;
 
-namespace McElieceCryptosystem.Mappers
+namespace CryptoSystems.Mappers
 {
     public static class Mapper
     {

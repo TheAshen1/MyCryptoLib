@@ -1,6 +1,6 @@
-﻿using McElieceCryptosystem.Models;
+﻿using CryptoSystems.Models;
 
-namespace McElieceCryptosystem.Algorithms
+namespace CryptoSystems.Algorithms
 {
     public static class PolynomialAlgorithms
     {

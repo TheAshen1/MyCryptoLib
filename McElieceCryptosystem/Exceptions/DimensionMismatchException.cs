@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace McElieceCryptosystem.Exceptions
+namespace CryptoSystems.Exceptions
 {
     class DimensionMismatchException : ArithmeticException
     {

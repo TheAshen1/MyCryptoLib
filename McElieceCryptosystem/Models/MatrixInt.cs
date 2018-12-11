@@ -1,8 +1,8 @@
-﻿using McElieceCryptosystem.Exceptions;
+﻿using CryptoSystems.Exceptions;
 using System;
 using System.Collections.Generic;
 
-namespace McElieceCryptosystem.Models
+namespace CryptoSystems.Models
 {
     public class MatrixInt : MatrixBase<int>, IEquatable<MatrixInt>
     {
@@ -170,7 +170,6 @@ namespace McElieceCryptosystem.Models
         {
             return new MatrixInt(this);
         }
-
         #endregion Public Methods
 
         #region Static Methods

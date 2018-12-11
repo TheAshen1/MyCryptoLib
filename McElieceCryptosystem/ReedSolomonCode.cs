@@ -1,11 +1,11 @@
-﻿using McElieceCryptosystem.Algorithms;
-using McElieceCryptosystem.Exceptions;
-using McElieceCryptosystem.Interfaces;
-using McElieceCryptosystem.Models;
+﻿using CryptoSystems.Algorithms;
+using CryptoSystems.Exceptions;
+using CryptoSystems.Interfaces;
+using CryptoSystems.Models;
 using System;
 using System.Diagnostics;
 
-namespace McElieceCryptosystem
+namespace CryptoSystems
 {
     public class ReedSolomonCode : ILinearCode
     {

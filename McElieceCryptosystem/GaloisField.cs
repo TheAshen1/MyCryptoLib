@@ -1,12 +1,12 @@
-﻿using McElieceCryptosystem.Algorithms;
-using McElieceCryptosystem.Exceptions;
-using McElieceCryptosystem.Mappers;
-using McElieceCryptosystem.Models;
-using McElieceCryptosystem.Util;
+﻿using CryptoSystems.Algorithms;
+using CryptoSystems.Exceptions;
+using CryptoSystems.Mappers;
+using CryptoSystems.Models;
+using CryptoSystems.Util;
 using System;
 using System.Collections.Generic;
 
-namespace McElieceCryptosystem
+namespace CryptoSystems
 {
     public class GaloisField
     {

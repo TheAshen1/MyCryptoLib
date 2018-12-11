@@ -1,6 +1,6 @@
-﻿using McElieceCryptosystem.Models;
+﻿using CryptoSystems.Models;
 
-namespace McElieceCryptosystem.Interfaces
+namespace CryptoSystems.Interfaces
 {
     public interface ILinearCode
     {

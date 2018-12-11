@@ -1,6 +1,6 @@
-﻿using McElieceCryptosystem.Models;
+﻿using CryptoSystems.Models;
 
-namespace McElieceCryptosystem.Util
+namespace CryptoSystems.Util
 {
     public static class Constants
     {

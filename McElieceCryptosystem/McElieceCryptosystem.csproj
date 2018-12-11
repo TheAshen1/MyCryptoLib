@@ -46,6 +46,7 @@
     <Compile Include="GaloisField.cs" />
     <Compile Include="HammingCode.cs" />
     <Compile Include="Mappers\Mapper.cs" />
+    <Compile Include="Models\MatrixOnGaloisField.cs" />
     <Compile Include="Models\PolynomialBase.cs" />
     <Compile Include="Models\PolynomialDouble.cs" />
     <Compile Include="Models\PolynomialExtendedGcdResult.cs" />
