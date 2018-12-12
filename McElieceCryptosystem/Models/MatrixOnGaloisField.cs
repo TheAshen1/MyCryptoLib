@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using CryptoSystems;
 using CryptoSystems.Exceptions;
-using CryptoSystems.Models;
 
-namespace McElieceCryptosystem.Models
+namespace CryptoSystems.Models
 {
     public class MatrixOnGaloisField : MatrixBase<int>, IEquatable<MatrixOnGaloisField>
     {
@@ -272,7 +270,7 @@ namespace McElieceCryptosystem.Models
                 }
             }
 
-            var result = new MatrixInt(rawResult);
+            var result = new MatrixOnGaloisField(rawResult, matrixLeft.GaloisField);
             return result;
         }
 

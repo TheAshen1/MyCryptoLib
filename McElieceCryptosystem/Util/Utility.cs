@@ -169,7 +169,15 @@ namespace CryptoSystems.Util
             return result;
         }
 
-
+        public static List<int> InversePermutation(List<int> permutation)
+        {
+            var inverse = new List<int>(permutation);
+            for (int i = 0; i < permutation.Count; i++)
+            {
+                inverse[permutation[i]] = i;
+            }
+            return inverse;
+        }
 
         //public static MatrixInt ShiftRight(MatrixInt matrix, int shiftLength = 1)
         //{

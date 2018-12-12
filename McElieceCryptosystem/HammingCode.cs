@@ -26,6 +26,8 @@ namespace CryptoSystems
         public int CanDetectUpTo => MinimumDistance - 1;
 
         public int CanCorrectUpTo => (MinimumDistance - 1) / 2;
+
+        public GaloisField GaloisField => throw new NotImplementedException();
         #endregion
 
         #region Constructors

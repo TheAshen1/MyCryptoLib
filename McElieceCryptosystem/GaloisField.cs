@@ -22,6 +22,11 @@ namespace CryptoSystems
         public int WordCount => Field.RowCount;
 
         public int WordLength => Field.ColumnCount;
+
+        public MatrixInt this[int word]
+        {
+            get { return GetWord(word); }
+        }
         #endregion
 
         #region Constructors

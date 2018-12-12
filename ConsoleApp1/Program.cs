@@ -4,7 +4,7 @@ using CryptoSystems.Util;
 using System;
 using System.Collections.Generic;
 
-namespace ConsoleApp1
+namespace ConsoleApp
 {
     class Program
     {
@@ -70,6 +70,14 @@ namespace ConsoleApp1
             Console.WriteLine(reedSolomonCode.ParityCheckMatrix);
             Console.WriteLine(reedSolomonCode.GeneratorMatrix);
 
+
+            var demoMessage = new MatrixInt(new int[,] {
+                {0, -1, 1}
+            });
+
+            var demoErrorVector = new MatrixInt(new int[,] {
+                {0, -1, -1, 2, -1, -1, -1}
+            });
             var demoScramblerMatrix = new MatrixInt(new int[,] {
                {2, 0, 1},
                {0, 5, 3},
@@ -87,6 +95,13 @@ namespace ConsoleApp1
             };
 
             var mcElieseCryptosystem = new McElieceCryptosystem(reedSolomonCode, demoScramblerMatrix, demoPermutation, demoMask);
+
+            var encryptedMessage = mcElieseCryptosystem.EncryptMessage(mcElieseCryptosystem.PublicKey, demoMessage, demoErrorVector);
+            Console.WriteLine(encryptedMessage + 1);
+
+            var originalMessage = mcElieseCryptosystem.DecryptMessage(encryptedMessage);
+            Console.WriteLine(originalMessage + 1);
+
             #endregion
 
             #region Reed-Solomon code example

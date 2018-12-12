@@ -33,6 +33,8 @@ namespace CryptoSystems.Interfaces
         /// Parity check matrix of a linear code 
         /// </summary>
         MatrixInt ParityCheckMatrix { get; }
+
+        GaloisField GaloisField { get; }
         #endregion
 
         #region Methods

@@ -310,7 +310,47 @@ namespace CryptoSystems.Models
             return result;
         }
 
+        public static MatrixBase<T> PermuteColumns(
+            MatrixBase<T> matrix,
+            List<int> permutation)
+        {
+            if (matrix.ColumnCount != permutation.Count)
+            {
+                throw new DimensionMismatchException("The number of columns in matrix does not equal the permutation list count");
+            }
+            var rawResult = new T[matrix.RowCount, matrix.ColumnCount];
 
+            for (int col = 0; col < matrix.ColumnCount; col++)
+            {
+                for (int row = 0; row < matrix.RowCount; row++)
+                {
+                    rawResult[row, permutation[col]] = matrix[row, col];
+                }
+            }
+            var result = new MatrixBase<T>(rawResult);
+            return result;
+        }
+
+        public static MatrixBase<T> PermuteRows(
+            MatrixBase<T> matrix,
+            List<int> permutation)
+        {
+            if (matrix.ColumnCount != permutation.Count)
+            {
+                throw new DimensionMismatchException("The number of columns in matrix does not equal the permutation list count");
+            }
+            var rawResult = new T[matrix.RowCount, matrix.ColumnCount];
+
+            for (int row = 0; row < matrix.ColumnCount; row++)
+            {
+                for (int col = 0; col < matrix.RowCount; col++)
+                {
+                    rawResult[permutation[row], col] = matrix[row, col];
+                }
+            }
+            var result = new MatrixBase<T>(rawResult);
+            return result;
+        }
 
         public int FindRow(MatrixBase<int> matrix, MatrixBase<int> rowToFind)
         {

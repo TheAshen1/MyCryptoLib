@@ -15,7 +15,7 @@ namespace CryptoSystems.Models
         /// <summary>
         /// list of N integers which correspond to numbers of columns
         /// </summary>
-        public List<int> Permutations { get; set; }
+        public List<int> Permutation { get; set; }
         /// <summary>
         /// list of N elements of finite field which will be added to corresponding columns
         /// </summary>

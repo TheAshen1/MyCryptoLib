@@ -1,7 +1,6 @@
 ﻿using CryptoSystems.Exceptions;
 using CryptoSystems.Models;
 using CryptoSystems.Util;
-using System;
 
 namespace CryptoSystems.Algorithms
 {

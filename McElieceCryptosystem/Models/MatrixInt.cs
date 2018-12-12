@@ -159,11 +159,22 @@ namespace CryptoSystems.Models
             return result;
         }
 
-
         public int FindColumn(MatrixInt column)
         {
             var result = FindColumn(this, column);
             return result;
+        }
+
+        public MatrixInt PermuteColumns(List<int> permutation)
+        {
+            var baseResult = PermuteColumns(this, permutation);
+            return new MatrixInt(baseResult);
+        }
+
+        public MatrixInt PermuteRows(List<int> permutation)
+        {
+            var baseResult = PermuteRows(this, permutation);
+            return new MatrixInt(baseResult);
         }
 
         public new MatrixInt Clone()
