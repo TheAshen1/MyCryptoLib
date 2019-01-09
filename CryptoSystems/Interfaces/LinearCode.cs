@@ -13,16 +13,20 @@ namespace CryptoSystems.Interfaces
         /// <summary>
         /// Number of information bits
         /// </summary>
-        int K { get; }
+        int K { get;}
 
         /// <summary>
-        /// Max amount of errors code can correct
+        /// Error correction capability
         /// </summary>
+        int T { get; }
+
         int MinimumDistance { get; }
 
+        /// <summary>
+        /// Error detection capability
+        /// </summary>
         int CanDetectUpTo { get; }
 
-        int CanCorrectUpTo { get; }
 
         /// <summary>
         /// Generator matrix of a linear code with K rows and N columns
@@ -30,7 +34,7 @@ namespace CryptoSystems.Interfaces
         MatrixInt GeneratorMatrix { get; }
 
         /// <summary>
-        /// Parity check matrix of a linear code 
+        /// Parity check matrix of a linear code N - K rows and N columns
         /// </summary>
         MatrixInt ParityCheckMatrix { get; }
 

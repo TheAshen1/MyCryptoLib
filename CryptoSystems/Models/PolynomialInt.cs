@@ -1,5 +1,5 @@
 ﻿using CryptoSystems.Exceptions;
-using CryptoSystems.Util;
+using CryptoSystems.Utility;
 using System;
 
 namespace CryptoSystems.Models
@@ -89,7 +89,7 @@ namespace CryptoSystems.Models
         {
             if (polynomialLeft.IsZero() || polynomialRight.IsZero())
             {
-                return Utility.ZeroPolynomialInt();
+                return Helper.ZeroPolynomialInt();
             }
 
             var resultLength = polynomialLeft.Length + polynomialRight.Length;

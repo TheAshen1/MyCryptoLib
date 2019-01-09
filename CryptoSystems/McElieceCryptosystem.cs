@@ -1,7 +1,7 @@
 ﻿using CryptoSystems.Algorithms;
 using CryptoSystems.Interfaces;
 using CryptoSystems.Models;
-using CryptoSystems.Util;
+using CryptoSystems.Utility;
 using System;
 using System.Collections.Generic;
 
@@ -66,19 +66,19 @@ namespace CryptoSystems
                     message[row, col] = LinearCode.GaloisField.MultiplyWords(message[row, col], LinearCode.GaloisField.GetMultiplicativeInverse(PrivateKey.Mask[col]));
                 }
             }
-            Console.WriteLine(message + 1);
             #endregion
+            //Console.WriteLine(message);
 
             #region Inverse permutation
-            var inversePermutation = Utility.InversePermutation(PrivateKey.Permutation);
+            var inversePermutation = Helper.InversePermutation(PrivateKey.Permutation);
             message = message.PermuteColumns(inversePermutation);
-            Console.WriteLine(message + 1);
             #endregion
+            //Console.WriteLine(message);
 
             #region Correct Errors
             var correctedMessage = LinearCode.DecodeAndCorrect(message);
-            Console.WriteLine(correctedMessage + 1);
             #endregion
+            //Console.WriteLine(correctedMessage);
 
             #region Apply the inverse scrambler matrix
             var inverseScramblerMatrix = MatrixAlgorithms.MatrixInverse(PrivateKey.ScramblerMatrix, LinearCode.GaloisField);

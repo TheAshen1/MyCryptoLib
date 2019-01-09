@@ -1,6 +1,5 @@
 ﻿using CryptoSystems;
-using CryptoSystems.Models;
-using CryptoSystems.Util;
+using CryptoSystems.Utility;
 using System;
 using System.Collections.Generic;
 
@@ -61,46 +60,86 @@ namespace ConsoleApp
 
             #endregion
 
+            #region Reed-Solomon code on elliptics example
+            var field = new GaloisField(2, 3, Constants.IrreduciblePolynom_deg3);
+            Console.WriteLine(field);
+            var degree = 3;
+            var coefficients = new List<int>
+            {
+                1, 1, 1, 0, 1
+            };
+
+            var ellipticCurve = new PolynomialOnGaloisField(degree, coefficients, field);
+            Console.WriteLine(ellipticCurve.PolynomialMembers);
+
+            var points = new List<(int, int, int)>();
+
+            var fixedZValue = 1;
+            for (int x = 0; x <= field.WordCount; x++)
+            {
+                for (int y = 0; y <= field.WordCount; y++)
+                {
+                    if(ellipticCurve.Calculate(x,y) == 0)
+                    {
+                        points.Add((x,y,fixedZValue));
+                        Console.WriteLine($"x: {x}, y: {y}, z: {fixedZValue}");
+                    }
+                }
+            }
+
+
+            var anotherCoefficients = new List<int>
+            {
+                1, 1, 1, 0, 1
+            };
+            var anotherPolynom = new PolynomialOnGaloisField(degree, coefficients, field);
+
+            //var reedSolomonCode = new ReedSolomonCode(field);
+            //Console.WriteLine(reedSolomonCode.CanCorrectUpTo);
+            //Console.WriteLine(reedSolomonCode.ParityCheckMatrix);
+            //Console.WriteLine(reedSolomonCode.GeneratorMatrix);
+            #endregion
+
             #region McElieceExample
-            var galoisField = new GaloisField(2, 3, Constants.IrreduciblePolynom_deg3);
-            Console.WriteLine(galoisField);
+            //var galoisField = new GaloisField(2, 3, Constants.IrreduciblePolynom_deg3);
+            //Console.WriteLine(galoisField);
 
-            var reedSolomonCode = new ReedSolomonCode(galoisField);
-            Console.WriteLine(reedSolomonCode.CanCorrectUpTo);
-            Console.WriteLine(reedSolomonCode.ParityCheckMatrix);
-            Console.WriteLine(reedSolomonCode.GeneratorMatrix);
+            //var reedSolomonCode = new ReedSolomonCode(galoisField);
+            //Console.WriteLine(reedSolomonCode.CanCorrectUpTo);
+            //Console.WriteLine(reedSolomonCode.ParityCheckMatrix);
+            //Console.WriteLine(reedSolomonCode.GeneratorMatrix);
 
 
-            var demoMessage = new MatrixInt(new int[,] {
-                {0, -1, 1}
-            });
+            //var demoMessage = new MatrixInt(new int[,] {
+            //    {7, 1, 5}
+            //});
 
-            var demoErrorVector = new MatrixInt(new int[,] {
-                {0, -1, -1, 2, -1, -1, -1}
-            });
-            var demoScramblerMatrix = new MatrixInt(new int[,] {
-               {2, 0, 1},
-               {0, 5, 3},
-               {4, 0, 1}
-            }) - 1;
+            //var demoErrorVector = new MatrixInt(new int[,] {
+            //    {0, 0, 6, 0, 0, 7, 0}
+            //});
+            //var demoScramblerMatrix = new MatrixInt(new int[,] {
+            //   {2, 0, 1},
+            //   {0, 5, 3},
+            //   {4, 0, 1}
+            //});
 
-            var demoPermutation = new List<int>
-            {
-                0, 2, 1, 6, 4, 3, 5
-            };
+            //var demoPermutation = new List<int>
+            //{
+            //    0, 2, 1, 6, 4, 3, 5
+            //};
 
-            var demoMask = new List<int>
-            {
-                0, 1, 2, 0, 1, 2, 1
-            };
+            //var demoMask = new List<int>
+            //{
+            //    1, 2, 3, 1, 2, 3, 2
+            //};
 
-            var mcElieseCryptosystem = new McElieceCryptosystem(reedSolomonCode, demoScramblerMatrix, demoPermutation, demoMask);
+            //var mcElieseCryptosystem = new McElieceCryptosystem(reedSolomonCode, demoScramblerMatrix, demoPermutation, demoMask);
 
-            var encryptedMessage = mcElieseCryptosystem.EncryptMessage(mcElieseCryptosystem.PublicKey, demoMessage, demoErrorVector);
-            Console.WriteLine(encryptedMessage + 1);
+            //var encryptedMessage = mcElieseCryptosystem.EncryptMessage(mcElieseCryptosystem.PublicKey, demoMessage, demoErrorVector);
+            //Console.WriteLine(encryptedMessage);
 
-            var originalMessage = mcElieseCryptosystem.DecryptMessage(encryptedMessage);
-            Console.WriteLine(originalMessage + 1);
+            //var originalMessage = mcElieseCryptosystem.DecryptMessage(encryptedMessage);
+            //Console.WriteLine(originalMessage);
 
             #endregion
 
@@ -113,19 +152,20 @@ namespace ConsoleApp
             //Console.WriteLine(reedSolomonCode.GeneratorMatrix);
 
             //var message = new MatrixInt(new int[,]{
-            //    { 3, 2, 4 }
+            //    { 1, 0, 2 }
             //});
             //var errorVector = new MatrixInt(new int[,]{
-            //    { -1, 1, -1, -1, -1, -1, 6 }
+            //    { 0, 0, 0, 3, 0, 7, 0 }
             //});
             //var encodedMessage = reedSolomonCode.Encode(message, errorVector);
             //Console.WriteLine(encodedMessage);
 
             //var originalMessage = reedSolomonCode.DecodeAndCorrect(encodedMessage);
             //Console.WriteLine(originalMessage);
-            //Console.WriteLine(originalMessage);
             #endregion
         }
+
+
     }
 
 

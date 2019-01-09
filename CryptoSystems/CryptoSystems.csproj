@@ -7,8 +7,8 @@
     <ProjectGuid>{19157F43-83BF-4757-B5C7-12C71DBC7C89}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>McElieceCryptosystem</RootNamespace>
-    <AssemblyName>McElieceCryptosystem</AssemblyName>
+    <RootNamespace>CryptoSystems</RootNamespace>
+    <AssemblyName>CryptoSystems</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -41,10 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\GeneratorMatrixCalculator.cs" />
     <Compile Include="Algorithms\MatrixAlgorithms.cs" />
+    <Compile Include="Algorithms\PetersonDecoder.cs" />
     <Compile Include="Algorithms\PolynomialAlgorithms.cs" />
+    <Compile Include="PolynomialOnGaloisField.cs" />
     <Compile Include="GaloisField.cs" />
-    <Compile Include="HammingCode.cs" />
+    <Compile Include="Interfaces\IParityCheckMatrixGenerator.cs" />
     <Compile Include="Mappers\Mapper.cs" />
     <Compile Include="Models\MatrixOnGaloisField.cs" />
     <Compile Include="Models\PolynomialBase.cs" />
@@ -52,11 +55,11 @@
     <Compile Include="Models\PolynomialExtendedGcdResult.cs" />
     <Compile Include="Models\PolynomialInt.cs" />
     <Compile Include="Models\PolynomialLongDivisionResult.cs" />
+    <Compile Include="Algorithms\ParityCheckMatrixGeneratorGeneric.cs" />
     <Compile Include="ReedSolomonCode.cs" />
     <Compile Include="Util\Constants.cs" />
     <Compile Include="Exceptions\DimensionMismatchException.cs" />
-    <Compile Include="Interfaces\ILinearCode.cs" />
-    <Compile Include="GoppaCode.cs" />
+    <Compile Include="Interfaces\LinearCode.cs" />
     <Compile Include="McElieceCryptosystem.cs" />
     <Compile Include="Models\MatrixBase.cs" />
     <Compile Include="Models\MatrixInt.cs" />
@@ -68,5 +71,6 @@
   <ItemGroup>
     <Compile Include="Models\McElieceCryptosystem.PrivateKey.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

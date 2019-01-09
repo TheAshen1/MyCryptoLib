@@ -289,13 +289,13 @@ namespace CryptoSystems.Models
             {
                 throw new DimensionMismatchException("The number of columns in matrix does not equal the number of columns in rows");
             }
-            var rawResult = new T[matrix.RowCount + rows.RowCount, matrix.ColumnCount];
+            var result = new MatrixBase<T>( new T[matrix.RowCount + rows.RowCount, matrix.ColumnCount]);
 
             for (var row = 0; row < matrix.RowCount; row++)
             {
                 for (var col = 0; col < matrix.ColumnCount; col++)
                 {
-                    rawResult[row, col] = matrix.Data[row, col];
+                    result[row, col] = matrix.Data[row, col];
                 }
             }
 
@@ -303,10 +303,9 @@ namespace CryptoSystems.Models
             {
                 for (var col = 0; col < matrix.ColumnCount; col++)
                 {
-                    rawResult[row, col] = rows.Data[row - matrix.RowCount, col];
+                    result[row, col] = rows.Data[row - matrix.RowCount, col];
                 }
             }
-            var result = new MatrixBase<T>(rawResult);
             return result;
         }
 

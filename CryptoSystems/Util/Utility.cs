@@ -1,11 +1,12 @@
-﻿using CryptoSystems.Exceptions;
+﻿using CryptoSystems.Algorithms;
+using CryptoSystems.Exceptions;
 using CryptoSystems.Models;
 using System;
 using System.Collections.Generic;
 
-namespace CryptoSystems.Util
+namespace CryptoSystems.Utility
 {
-    public static class Utility
+    public static class Helper
     {
         public static int Weight(MatrixInt vector)
         {
@@ -229,6 +230,46 @@ namespace CryptoSystems.Util
         public static PolynomialDouble ZeroPolynomialDouble()
         {
             return new PolynomialDouble(0);
+        }
+
+        public static MatrixInt CalculateGeneratorMatrix(int n, int k, MatrixInt parityCheckMatrix, GaloisField galoisField)
+        {
+            var generatorMatrix = new MatrixInt(new int[k, n]);
+            #region Init
+            for (int i = 0; i < k; i++)
+            {
+                for (int j = 0; j < k; j++)
+                {
+                    if (i == j)
+                    {
+                        generatorMatrix[i, j] = 1;
+                    }
+                    else
+                    {
+                        generatorMatrix[i, j] = 0;
+                    }
+                }
+            }
+            #endregion
+            //Console.WriteLine(parityCheckMatrix);
+            //Console.WriteLine(generatorMatrix);
+
+            #region Solve k systems of linear equasions on field elements
+            for (int i = 0; i < k; i++)
+            {
+                var system = parityCheckMatrix.GetRangeOfColumns(new RangeInt(k, n)) | parityCheckMatrix.GetColumn(i);
+                var systemSolution = MatrixAlgorithms.Solve(system, galoisField);
+
+                #region CopyResults
+                for (int row = 0; row < systemSolution.RowCount; row++)
+                {
+                    generatorMatrix[i, row + k] = systemSolution.Data[row, systemSolution.ColumnCount - 1];
+                }
+                #endregion
+            }
+            #endregion
+
+            return generatorMatrix;
         }
     }
 }

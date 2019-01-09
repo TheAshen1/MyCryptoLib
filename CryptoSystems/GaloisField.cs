@@ -2,7 +2,7 @@
 using CryptoSystems.Exceptions;
 using CryptoSystems.Mappers;
 using CryptoSystems.Models;
-using CryptoSystems.Util;
+using CryptoSystems.Utility;
 using System;
 using System.Collections.Generic;
 
@@ -19,7 +19,7 @@ namespace CryptoSystems
 
         public MatrixInt Field { get; }
 
-        public int WordCount => Field.RowCount;
+        public int WordCount => Field.RowCount - 1;
 
         public int WordLength => Field.ColumnCount;
 
@@ -59,59 +59,77 @@ namespace CryptoSystems
 
         public int GetMultiplicativeInverse(int wordNumber)
         {
-            if(wordNumber >= WordCount)
+            var wordPower = wordNumber - 1;
+            if (wordPower >= WordCount)
             {
                 throw new DimensionMismatchException("Word number cannot exceed number of all words in Galois field minus one");
             }
 
-            var inverse = (WordCount - wordNumber) % WordCount;
-            return inverse;
+            var inverseWordNumber = (WordCount - wordPower) % WordCount + 1;
+            return inverseWordNumber;
         }
 
-        public int AddWords(int wordNumberleft, int wordNumberRight)
+        public int AddWords(int wordNumberLeft, int wordNumberRight)
         {
-            if(wordNumberleft < 0 && wordNumberRight >= 0)
+            if(wordNumberLeft == 0 && wordNumberRight > 0)
             {
                 return wordNumberRight;
             }
 
-            if (wordNumberRight < 0 && wordNumberleft >= 0)
+            if (wordNumberRight == 0 && wordNumberLeft > 0)
             {
-                return wordNumberleft;
+                return wordNumberLeft;
             }
 
-            if (wordNumberleft < 0 && wordNumberleft < 0)
+            if (wordNumberLeft == 0 && wordNumberLeft == 0)
             {
-                return -1;
+                return 0;
             }
 
-            var wordLeft = GetWord(wordNumberleft);
+            var wordLeft = GetWord(wordNumberLeft);
             var wordRight = GetWord(wordNumberRight);
             var resultWord = (wordLeft + wordRight) % 2;
             var resultWordNumber = FindWord(resultWord);
             return resultWordNumber;
         }
 
-        public int MultiplyWords(int wordNumberleft, int wordNumberRight)
+        public int MultiplyWords(int wordNumberLeft, int wordNumberRight)
         {
-            if (wordNumberleft < 0 || wordNumberRight < 0)
+            if (wordNumberLeft < 0 || wordNumberRight < 0)
             {
-                return -1;
+                throw new ArgumentException("Word number cannot be less than 0.");
             }
 
-            var resultWordNumber = (wordNumberleft + wordNumberRight) % WordCount;
-            return resultWordNumber;
+            if (wordNumberLeft == 0 || wordNumberRight == 0)
+            {
+                return 0;
+            }
+
+            var wordPowerLeft = wordNumberLeft - 1;
+            var wordPowerRight = wordNumberRight -1;
+
+            var resultWordPower = (wordPowerLeft + wordPowerRight) % WordCount;
+            return resultWordPower + 1;
         }
 
         public int DivideWords(int wordNumberleft, int wordNumberRight)
         {
             if (wordNumberleft < 0 || wordNumberRight < 0)
             {
-                return -1;
+                throw new ArgumentException("Word number cannot be less than 0.");
             }
 
-            var resultWordNumber = (wordNumberleft + GetMultiplicativeInverse(wordNumberRight)) % WordCount;
-            return resultWordNumber;
+            if (wordNumberleft == 0 || wordNumberRight == 0)
+            {
+                return 0;
+            }
+
+            var wordPowerLeft = wordNumberleft - 1;
+            var wordPowerRight = wordNumberRight - 1;
+
+            var inverseWordPowerRight = (WordCount - wordPowerRight) % WordCount;
+            var resultWordPower = (wordPowerLeft + inverseWordPowerRight) % WordCount;
+            return resultWordPower + 1;
         }
 
         public int Power(int wordNumber, int power)
@@ -123,9 +141,9 @@ namespace CryptoSystems
 
             if (power == 0)
             {
-                return 0;
-            }          
-           
+                return 1;
+            }
+
             var result = wordNumber;
             
             for (int i = 1; i < power; i++)
@@ -144,10 +162,10 @@ namespace CryptoSystems
         #region Private Methods
         private MatrixInt Generate()
         {
-            var codeWordCount = (Base << FieldPower - 1) - 1;
-            var decimalEquivalentToPolynomial = Utility.BinaryToDecimal(Polynomial);
+            var codeWordCount = (Base << FieldPower - 1);
+            var decimalEquivalentToPolynomial = Helper.BinaryToDecimal(Polynomial);
 
-            var galoisFieldElements = new List<int>() { 1 };
+            var galoisFieldElements = new List<int>() { 0, 1 };
 
             int codewordDecimal = 1;
             for (int i = 0; i < codeWordCount; i++)
@@ -163,7 +181,7 @@ namespace CryptoSystems
             var rawResult = new int[codeWordCount, FieldPower];
             for (int row = 0; row < codeWordCount; row++)
             {
-                var codeword = Utility.DecimalToBinary(galoisFieldElements[row]);
+                var codeword = Helper.DecimalToBinary(galoisFieldElements[row]);
                 for (int col = 0; col < FieldPower && col < codeword.ColumnCount; col++)
                 {
                     rawResult[row, col] = codeword.Data[0, col];

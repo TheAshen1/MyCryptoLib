@@ -56,9 +56,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\McElieceCryptosystem\McElieceCryptosystem.csproj">
+    <ProjectReference Include="..\CryptoSystems\CryptoSystems.csproj">
       <Project>{19157f43-83bf-4757-b5c7-12c71dbc7c89}</Project>
-      <Name>McElieceCryptosystem</Name>
+      <Name>CryptoSystems</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

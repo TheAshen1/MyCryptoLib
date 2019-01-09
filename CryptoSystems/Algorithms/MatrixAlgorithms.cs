@@ -1,6 +1,7 @@
 ﻿using CryptoSystems.Exceptions;
 using CryptoSystems.Models;
-using CryptoSystems.Util;
+using CryptoSystems.Utility;
+using System;
 
 namespace CryptoSystems.Algorithms
 {
@@ -82,8 +83,8 @@ namespace CryptoSystems.Algorithms
             var leadColumn = 0;
             for (int leadRow = 0; leadRow < matrix.RowCount; leadRow++)
             {
-                #region Make leading diagonal word 0
-                if (result[leadRow, leadColumn] != 0)
+                #region Make leading diagonal word 1
+                if (result[leadRow, leadColumn] != 1)
                 {
                     var targetWordNumber = result[leadRow, leadColumn];
 
@@ -93,6 +94,7 @@ namespace CryptoSystems.Algorithms
                     }
                 }
                 #endregion
+                //Console.WriteLine(result);
 
                 #region subtract from all other rows 
                 for (int i = (leadRow + 1); i < matrix.RowCount; i++)
@@ -105,6 +107,8 @@ namespace CryptoSystems.Algorithms
                     }
                 }
                 #endregion
+                //Console.WriteLine(result);
+
                 leadColumn++;
             }
 
@@ -179,7 +183,7 @@ namespace CryptoSystems.Algorithms
             }
 
             var U = matrix.Clone();
-            var L = Utility.GenerateIdentityMatrix(matrix.RowCount) - 1;
+            var L = Helper.GenerateIdentityMatrix(matrix.RowCount);
 
             int leadColumn = 0;
             for (int leadRow = 0; leadRow < U.RowCount; leadRow++)
@@ -189,7 +193,7 @@ namespace CryptoSystems.Algorithms
                 for (int row = (leadRow + 1); row < matrix.RowCount; row++)
                 {
                     var otherRowLeadingValue = U[row, leadColumn];
-                    if(otherRowLeadingValue == -1)
+                    if(otherRowLeadingValue == 0)
                     {
                         continue;
                     }
@@ -243,7 +247,7 @@ namespace CryptoSystems.Algorithms
             {
                 for (int col = 0; col < columnCount; col++)
                 {
-                    int sum = -1;
+                    int sum = 0;
                     for (int k = 0; k < matrixLeft.ColumnCount; k++)
                     {
                         var product = galoisField.MultiplyWords(matrixLeft.Data[row, k], matrixRight.Data[k, col]);
@@ -259,9 +263,9 @@ namespace CryptoSystems.Algorithms
 
         public static MatrixInt MatrixInverse(MatrixInt matrix, GaloisField galoisField)
         {
-            var identity = Utility.GenerateIdentityMatrix(matrix.RowCount);
+            var identity = Helper.GenerateIdentityMatrix(matrix.RowCount);
 
-            var toSolve = matrix | (identity - 1);
+            var toSolve = matrix | (identity);
 
             var inverse = MatrixAlgorithms.Solve(toSolve, galoisField);
 

@@ -1,6 +1,6 @@
 ﻿using CryptoSystems.Models;
 
-namespace CryptoSystems.Util
+namespace CryptoSystems.Utility
 {
     public static class Constants
     {

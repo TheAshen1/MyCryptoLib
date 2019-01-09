@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2019
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28407.52
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "McElieceCryptosystem", "McElieceCryptosystem\McElieceCryptosystem.csproj", "{19157F43-83BF-4757-B5C7-12C71DBC7C89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoSystems", "CryptoSystems\CryptoSystems.csproj", "{19157F43-83BF-4757-B5C7-12C71DBC7C89}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{2A028641-6784-49BC-AD93-39BDBEDF505D}"
 EndProject
