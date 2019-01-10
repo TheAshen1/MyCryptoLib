@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ParityCheckMatrixGenerators\ParityCheckMatrixGeneratorEllyptic.cs" />
     <Compile Include="Algorithms\GeneratorMatrixCalculator.cs" />
     <Compile Include="Algorithms\MatrixAlgorithms.cs" />
     <Compile Include="Algorithms\PetersonDecoder.cs" />
@@ -55,7 +56,7 @@
     <Compile Include="Models\PolynomialExtendedGcdResult.cs" />
     <Compile Include="Models\PolynomialInt.cs" />
     <Compile Include="Models\PolynomialLongDivisionResult.cs" />
-    <Compile Include="Algorithms\ParityCheckMatrixGeneratorGeneric.cs" />
+    <Compile Include="ParityCheckMatrixGenerators\ParityCheckMatrixGeneratorGeneric.cs" />
     <Compile Include="ReedSolomonCode.cs" />
     <Compile Include="Util\Constants.cs" />
     <Compile Include="Exceptions\DimensionMismatchException.cs" />

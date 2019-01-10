@@ -127,7 +127,7 @@ namespace CryptoSystems
             var wordPowerLeft = wordNumberleft - 1;
             var wordPowerRight = wordNumberRight - 1;
 
-            var inverseWordPowerRight = (WordCount - wordPowerRight) % WordCount;
+            var inverseWordPowerRight = WordCount - wordPowerRight;
             var resultWordPower = (wordPowerLeft + inverseWordPowerRight) % WordCount;
             return resultWordPower + 1;
         }

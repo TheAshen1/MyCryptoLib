@@ -12,27 +12,29 @@ namespace CryptoSystems
         public int K => GaloisField.WordLength;
         public int T => (MinimumDistance - 1) / 2;
 
-        public GaloisField GaloisField { get; }
+        public int MinimumDistance => N - K + 1;
+        public int CanDetectUpTo => MinimumDistance - 1;
 
+
+        public GaloisField GaloisField { get; }
         public MatrixInt ParityCheckMatrix { get; }
         public MatrixInt GeneratorMatrix { get; }
 
-        public int MinimumDistance => N - K + 1;
-        public int CanDetectUpTo => MinimumDistance - 1;
+
         #endregion
 
-        public ReedSolomonCode(GaloisField galoisField)
+        public ReedSolomonCode(GaloisField galoisField, IParityCheckMatrixGenerator parityCheckMatrixGenerator)
         {
             GaloisField = galoisField;
-            ParityCheckMatrix = ParityCheckMatrixGeneratorGeneric.GenerateParityCheckMatrix(galoisField, T);
-            GeneratorMatrix = GeneratorMatrixCalculator.CalculateGeneratorMatrix(N, K, ParityCheckMatrix, galoisField);
+            ParityCheckMatrix = parityCheckMatrixGenerator.Generate(this);
+            GeneratorMatrix = GeneratorMatrixCalculator.CalculateGeneratorMatrix(this);
         }
 
         public ReedSolomonCode(GaloisField galoisField, MatrixInt parityCheckMatrix)
         {
             GaloisField = galoisField;
             ParityCheckMatrix = parityCheckMatrix;
-            GeneratorMatrix = GeneratorMatrixCalculator.CalculateGeneratorMatrix(N, K, ParityCheckMatrix, galoisField);
+            GeneratorMatrix = GeneratorMatrixCalculator.CalculateGeneratorMatrix(this);
         }
 
         public MatrixInt DecodeAndCorrect(MatrixInt message)
@@ -42,8 +44,7 @@ namespace CryptoSystems
 
         public MatrixInt Encode(MatrixInt message)
         {
-            var encodedMessage = MatrixAlgorithms.DotMultiplication(message, GeneratorMatrix, GaloisField);
-            return encodedMessage;
+            return MatrixAlgorithms.DotMultiplication(message, GeneratorMatrix, GaloisField); ;
         }
 
         public MatrixInt Encode(MatrixInt message, MatrixInt errorVector)

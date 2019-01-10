@@ -40,6 +40,7 @@ namespace CryptoSystems.Algorithms
                 var checkResult = coefficients.Data[0, 0];
                 for (int i = 1; i < coefficients.ColumnCount; i++)
                 {
+                    var power = linearCode.GaloisField.Power(word, i);
                     var wordToAdd = linearCode.GaloisField.MultiplyWords(coefficients.Data[0, i], word);
                     checkResult = linearCode.GaloisField.AddWords(checkResult, wordToAdd);
                 }

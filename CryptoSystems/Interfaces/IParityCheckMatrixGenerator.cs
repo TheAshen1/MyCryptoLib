@@ -4,6 +4,6 @@ namespace CryptoSystems.Interfaces
 {
     public interface IParityCheckMatrixGenerator
     {
-        MatrixInt Generate(GaloisField galoisField, int errorCorrectionCapability);
+        MatrixInt Generate(ILinearCode linearCode);
     }
 }

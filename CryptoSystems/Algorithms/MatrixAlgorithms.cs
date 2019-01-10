@@ -94,7 +94,7 @@ namespace CryptoSystems.Algorithms
                     }
                 }
                 #endregion
-                //Console.WriteLine(result);
+                Console.WriteLine(result);
 
                 #region subtract from all other rows 
                 for (int i = (leadRow + 1); i < matrix.RowCount; i++)
@@ -107,7 +107,7 @@ namespace CryptoSystems.Algorithms
                     }
                 }
                 #endregion
-                //Console.WriteLine(result);
+                Console.WriteLine(result);
 
                 leadColumn++;
             }
@@ -128,8 +128,10 @@ namespace CryptoSystems.Algorithms
                     }
                 }
                 leadColumn--;
+                Console.WriteLine(result);
             }
             #endregion
+            Console.WriteLine(result);
 
             return result.GetRangeOfColumns(new RangeInt(result.RowCount, result.ColumnCount));
         }
