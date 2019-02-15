@@ -8,22 +8,22 @@ namespace CryptoSystems.Utility
 {
     public static class Helper
     {
-        public static int Weight(MatrixInt vector)
+        public static int Weight(MatrixInt matrix)
         {
             var count = 0;
 
-            if (vector.RowCount == 1 || vector.ColumnCount == 1)
+            for (var row = 0; row < matrix.RowCount; row++)
             {
-                foreach (var value in vector.Data)
+                for (var col = 0; col < matrix.ColumnCount; col++)
                 {
-                    if (value != 0)
+                    if (matrix[row, col] != 0)
                     {
                         count++;
                     }
                 }
-                return count;
             }
-            throw new DimensionMismatchException("Vector should consist of single row or column");
+
+            return count;
         }
 
         public static int Distance(MatrixInt vector1, MatrixInt vector2)
@@ -157,6 +157,16 @@ namespace CryptoSystems.Utility
         {
             var inverse = new List<int>(permutation);
             for (int i = 0; i < permutation.Count; i++)
+            {
+                inverse[permutation[i]] = i;
+            }
+            return inverse;
+        }
+        
+        public static List<int> InversePermutation(int[] permutation)
+        {
+            var inverse = new List<int>(permutation);
+            for (int i = 0; i < permutation.Length; i++)
             {
                 inverse[permutation[i]] = i;
             }

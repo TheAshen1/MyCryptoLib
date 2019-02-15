@@ -1,11 +1,12 @@
-﻿using CryptoSystems.Interfaces;
+﻿using CryptoSystems.Exceptions;
+using CryptoSystems.Interfaces;
 using CryptoSystems.Models;
 using System;
 using System.Collections.Generic;
 
 namespace CryptoSystems.ParityCheckMatrixGenerators
 {
-    public  class ParityCheckMatrixGeneratorEllyptic : IParityCheckMatrixGenerator
+    public class ParityCheckMatrixGeneratorEllyptic : IParityCheckMatrixGenerator
     {
         public MatrixInt Generate(ILinearCode linearCode)
         {
@@ -13,7 +14,7 @@ namespace CryptoSystems.ParityCheckMatrixGenerators
             var degree = 3;
             var coefficients = new List<int>
             {
-                1, 1, 1, 0, 1
+                1, 1, 1, 0, 1, 1
             };
 
             var ellipticCurve = new PolynomialOnGaloisField(degree, coefficients, linearCode.GaloisField);
@@ -29,19 +30,20 @@ namespace CryptoSystems.ParityCheckMatrixGenerators
                     if (ellipticCurve.Calculate(x, y) == 0)
                     {
                         points.Add((x, y, fixedZValue));
-                        //Console.WriteLine($"x: {x}, y: {y}, z: {fixedZValue}");
+                        Console.WriteLine($"x: {x}, y: {y}, z: {fixedZValue}");
                     }
                 }
             }
 
-
-            var anotherCoefficients = new List<int>
-            {
-                1, 1, 1, 0, 1
-            };
             var anotherPolynom = new PolynomialOnGaloisField(degree, coefficients, linearCode.GaloisField);
             var functions = anotherPolynom.PolynomialMembers.Clone();
             #endregion
+
+            if (points.Count < linearCode.N)
+            {
+                throw new ParityCheckMatrixGeneratorException("The amout of acceptable point is too low for given linear code to generate ParityCheck Matrix.");
+            }
+
 
             #region Pick N random points and K random functions
             var Hdots = new MatrixInt(new int[0, degree]);
@@ -55,7 +57,8 @@ namespace CryptoSystems.ParityCheckMatrixGenerators
                 points.RemoveAt(r);
             }
             Hdots = Hdots.Transpose();
-            //Console.WriteLine(Hdots);
+            Console.WriteLine("HDots");
+            Console.WriteLine(Hdots);
 
             var Hpoly = new MatrixInt(new int[0, linearCode.K]);
             var selected = new List<int>();
@@ -71,7 +74,8 @@ namespace CryptoSystems.ParityCheckMatrixGenerators
                     j++;
                 }
             }
-            //Console.WriteLine(Hpoly);
+            Console.WriteLine("Hpoly");
+            Console.WriteLine(Hpoly);
             #endregion
 
             #region Calculate parity check matrix

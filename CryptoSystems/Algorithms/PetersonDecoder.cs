@@ -27,7 +27,7 @@ namespace CryptoSystems.Algorithms
             {
                 for (int col = 0; col < columnCount; col++)
                 {
-                    system[row, col] = syndrome.Data[0, row + col];
+                    system[row, col] = syndrome[0, row + col];
                 }
             }
             var coefficients = MatrixAlgorithms.Solve(new MatrixInt(system), linearCode.GaloisField).Transpose();
@@ -37,11 +37,11 @@ namespace CryptoSystems.Algorithms
             var errorCheck = new int[linearCode.N];
             for (int position = 0, word = 1; position < linearCode.N; position++, word++)
             {
-                var checkResult = coefficients.Data[0, 0];
+                var checkResult = coefficients[0, 0];
                 for (int i = 1; i < coefficients.ColumnCount; i++)
                 {
-                    var power = linearCode.GaloisField.Power(word, i);
-                    var wordToAdd = linearCode.GaloisField.MultiplyWords(coefficients.Data[0, i], word);
+                    word = linearCode.GaloisField.Power(word, i);
+                    var wordToAdd = linearCode.GaloisField.MultiplyWords(coefficients[0, i], word);
                     checkResult = linearCode.GaloisField.AddWords(checkResult, wordToAdd);
                 }
 
@@ -65,7 +65,7 @@ namespace CryptoSystems.Algorithms
                 {
                     for (int row = 0; row < rowCount; row++)
                     {
-                        system[row, errorNumber] = linearCode.ParityCheckMatrix.Data[row, errorPostition];
+                        system[row, errorNumber] = linearCode.ParityCheckMatrix[row, errorPostition];
                     }
                     errorNumber++;
                 }
@@ -73,7 +73,7 @@ namespace CryptoSystems.Algorithms
 
             for (int i = 0; i < rowCount; i++)
             {
-                system[i, columnCount - 1] = syndrome.Data[0, i];
+                system[i, columnCount - 1] = syndrome[0, i];
             }
             #endregion
 

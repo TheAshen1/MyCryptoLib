@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="ReedSolomonCodeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="McElieceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

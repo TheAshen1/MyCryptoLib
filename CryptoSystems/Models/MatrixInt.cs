@@ -171,7 +171,19 @@ namespace CryptoSystems.Models
             return new MatrixInt(baseResult);
         }
 
+        public MatrixInt PermuteColumns(int[] permutation)
+        {
+            var baseResult = PermuteColumns(this, permutation);
+            return new MatrixInt(baseResult);
+        }
+
         public MatrixInt PermuteRows(List<int> permutation)
+        {
+            var baseResult = PermuteRows(this, permutation);
+            return new MatrixInt(baseResult);
+        }
+
+        public MatrixInt PermuteRows(int[] permutation)
         {
             var baseResult = PermuteRows(this, permutation);
             return new MatrixInt(baseResult);

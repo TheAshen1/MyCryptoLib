@@ -1,5 +1,7 @@
-﻿using CryptoSystems.Interfaces;
+﻿using CryptoSystems.Exceptions;
+using CryptoSystems.Interfaces;
 using CryptoSystems.Models;
+using System;
 
 namespace CryptoSystems.Algorithms
 {
@@ -8,6 +10,7 @@ namespace CryptoSystems.Algorithms
         public static MatrixInt CalculateGeneratorMatrix(ILinearCode linearCode)
         {
             var generatorMatrix = new MatrixInt(new int[linearCode.K, linearCode.N]);
+
             #region Init
             for (int i = 0; i < linearCode.K; i++)
             {
@@ -28,15 +31,27 @@ namespace CryptoSystems.Algorithms
             #region Solve k systems of linear equasions on field elements
             for (int i = 0; i < linearCode.K; i++)
             {
-                var system = linearCode.ParityCheckMatrix.GetRangeOfColumns(new RangeInt(linearCode.K, linearCode.N)) | linearCode.ParityCheckMatrix.GetColumn(i);
-                var systemSolution = MatrixAlgorithms.Solve(system, linearCode.GaloisField);
+                var systemA = linearCode.ParityCheckMatrix.GetRangeOfColumns(new RangeInt(linearCode.K, linearCode.N));             
+                var systemB = systemA | linearCode.ParityCheckMatrix.GetColumn(i);
+                Console.WriteLine(systemB);
+
+                MatrixInt systemSolution;
+                try
+                {
+                    systemSolution = MatrixAlgorithms.Solve(systemB, linearCode.GaloisField);
+                }
+                catch (SolveMatrixException)
+                {
+                    throw new LinearCodeException("Could not produce correct Generator matrix from provided ParityCheck matrix.");
+                }
 
                 #region CopyResults
                 for (int row = 0; row < systemSolution.RowCount; row++)
                 {
-                    generatorMatrix[i, row + linearCode.K] = systemSolution.Data[row, systemSolution.ColumnCount - 1];
+                    generatorMatrix[i, row + linearCode.K] = systemSolution[row, systemSolution.ColumnCount - 1];
                 }
                 #endregion
+
             }
             #endregion
 

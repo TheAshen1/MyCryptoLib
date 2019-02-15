@@ -41,6 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\ParityCheckMatrixGeneratorException.cs" />
+    <Compile Include="Exceptions\GaloisFieldException.cs" />
+    <Compile Include="Exceptions\LinearCodeException.cs" />
+    <Compile Include="Exceptions\SolveMatrixException.cs" />
     <Compile Include="ParityCheckMatrixGenerators\ParityCheckMatrixGeneratorEllyptic.cs" />
     <Compile Include="Algorithms\GeneratorMatrixCalculator.cs" />
     <Compile Include="Algorithms\MatrixAlgorithms.cs" />

@@ -2,6 +2,8 @@
 using CryptoSystems.Exceptions;
 using CryptoSystems.Interfaces;
 using CryptoSystems.Models;
+using CryptoSystems.Utility;
+using System;
 
 namespace CryptoSystems
 {
@@ -26,8 +28,33 @@ namespace CryptoSystems
         public ReedSolomonCode(GaloisField galoisField, IParityCheckMatrixGenerator parityCheckMatrixGenerator)
         {
             GaloisField = galoisField;
-            ParityCheckMatrix = parityCheckMatrixGenerator.Generate(this);
-            GeneratorMatrix = GeneratorMatrixCalculator.CalculateGeneratorMatrix(this);
+
+            while (true)
+            {
+                ParityCheckMatrix = parityCheckMatrixGenerator.Generate(this);
+                Console.WriteLine(ParityCheckMatrix);
+
+                if (Helper.Weight(ParityCheckMatrix) < Math.Ceiling(ParityCheckMatrix.RowCount * ParityCheckMatrix.ColumnCount * 0.7))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    GeneratorMatrix = GeneratorMatrixCalculator.CalculateGeneratorMatrix(this);
+                    Console.WriteLine(GeneratorMatrix);
+                }
+                catch (LinearCodeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    continue;
+                }
+
+                if (IsGeneratorMatrixValid(ParityCheckMatrix, GeneratorMatrix, GaloisField))
+                {
+                    break;
+                }
+            }
         }
 
         public ReedSolomonCode(GaloisField galoisField, MatrixInt parityCheckMatrix)
@@ -35,6 +62,10 @@ namespace CryptoSystems
             GaloisField = galoisField;
             ParityCheckMatrix = parityCheckMatrix;
             GeneratorMatrix = GeneratorMatrixCalculator.CalculateGeneratorMatrix(this);
+            if (!IsGeneratorMatrixValid(ParityCheckMatrix, GeneratorMatrix, GaloisField))
+            {
+                throw new LinearCodeException("Could not produce correct Generator matrix from provided ParityCheck matrix.");
+            }
         }
 
         public MatrixInt DecodeAndCorrect(MatrixInt message)
@@ -44,7 +75,7 @@ namespace CryptoSystems
 
         public MatrixInt Encode(MatrixInt message)
         {
-            return MatrixAlgorithms.DotMultiplication(message, GeneratorMatrix, GaloisField); ;
+            return MatrixAlgorithms.DotMultiplication(message, GeneratorMatrix, GaloisField);
         }
 
         public MatrixInt Encode(MatrixInt message, MatrixInt errorVector)
@@ -63,6 +94,12 @@ namespace CryptoSystems
             }
 
             return encodedMessage;
+        }
+
+        private bool IsGeneratorMatrixValid(MatrixInt generatorMatrix, MatrixInt parityCheckMatrix, GaloisField galoisField)
+        {
+            var result = MatrixAlgorithms.DotMultiplication(generatorMatrix, parityCheckMatrix.Transpose(), galoisField);
+            return Helper.Weight(result) == 0;
         }
     }
 }

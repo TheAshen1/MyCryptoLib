@@ -16,17 +16,23 @@ namespace CryptoSystemsTests
         [OneTimeSetUp]
         public void Init()
         {
+            //Message = new MatrixInt(new int[,]{
+            //    { 1, 0, 2 }
+            //});
+            //ErrorVector = new MatrixInt(new int[,]{
+            //    { 1, 0, 0, 3, 0, 0, 0 }
+            //});
+
             Message = new MatrixInt(new int[,]{
-                { 1, 0, 2 }
+                { 7, 1, 5 }
             });
             ErrorVector = new MatrixInt(new int[,]{
-                { 0, 0, 0, 3, 0, 7, 0 }
+                { 0, 0, 6, 0, 0, 7, 0 }
             });
         }
 
 
         [Test]
-        [Repeat(100)]
         public void TestReedSolomonCode()
         {
             var galoisField = new GaloisField(2, 3, Constants.IrreduciblePolynom_deg3);

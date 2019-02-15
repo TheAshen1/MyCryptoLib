@@ -317,16 +317,35 @@ namespace CryptoSystems.Models
             {
                 throw new DimensionMismatchException("The number of columns in matrix does not equal the permutation list count");
             }
-            var rawResult = new T[matrix.RowCount, matrix.ColumnCount];
+            var result = new MatrixBase<T>(matrix.RowCount, matrix.ColumnCount);
 
             for (int col = 0; col < matrix.ColumnCount; col++)
             {
                 for (int row = 0; row < matrix.RowCount; row++)
                 {
-                    rawResult[row, permutation[col]] = matrix[row, col];
+                    result[row, permutation[col]] = matrix[row, col];
                 }
             }
-            var result = new MatrixBase<T>(rawResult);
+            return result;
+        }
+
+        public static MatrixBase<T> PermuteColumns(
+            MatrixBase<T> matrix,
+            int[] permutation)
+        {
+            if (matrix.ColumnCount != permutation.Length)
+            {
+                throw new DimensionMismatchException("The number of columns in matrix does not equal the permutation list count");
+            }
+            var result = new MatrixBase<T>(matrix.RowCount, matrix.ColumnCount);
+
+            for (int col = 0; col < matrix.ColumnCount; col++)
+            {
+                for (int row = 0; row < matrix.RowCount; row++)
+                {
+                    result[row, permutation[col]] = matrix[row, col];
+                }
+            }
             return result;
         }
 
@@ -334,20 +353,39 @@ namespace CryptoSystems.Models
             MatrixBase<T> matrix,
             List<int> permutation)
         {
-            if (matrix.ColumnCount != permutation.Count)
+            if (matrix.RowCount != permutation.Count)
             {
                 throw new DimensionMismatchException("The number of columns in matrix does not equal the permutation list count");
             }
-            var rawResult = new T[matrix.RowCount, matrix.ColumnCount];
+            var result = new MatrixBase<T>(matrix.RowCount, matrix.ColumnCount);
 
-            for (int row = 0; row < matrix.ColumnCount; row++)
+            for (int row = 0; row < matrix.RowCount; row++)
             {
-                for (int col = 0; col < matrix.RowCount; col++)
+                for (int col = 0; col < matrix.ColumnCount; col++)
                 {
-                    rawResult[permutation[row], col] = matrix[row, col];
+                    result[permutation[row], col] = matrix[row, col];
                 }
             }
-            var result = new MatrixBase<T>(rawResult);
+            return result;
+        }
+        
+        public static MatrixBase<T> PermuteRows(
+            MatrixBase<T> matrix,
+            int[] permutation)
+        {
+            if (matrix.RowCount != permutation.Length)
+            {
+                throw new DimensionMismatchException("The number of columns in matrix does not equal the permutation list count");
+            }
+            var result = new MatrixBase<T>(matrix.RowCount, matrix.ColumnCount);
+
+            for (int row = 0; row < matrix.RowCount; row++)
+            {
+                for (int col = 0; col < matrix.ColumnCount; col++)
+                {
+                    result[permutation[row], col] = matrix[row, col];
+                }
+            }
             return result;
         }
 
