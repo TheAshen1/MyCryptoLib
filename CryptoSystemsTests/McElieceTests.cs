@@ -17,6 +17,10 @@ namespace CryptoSystemsTests
         private List<int> Permutation;
         private List<int> Mask;
 
+        public McElieseTests()
+        {
+
+        }
         [OneTimeSetUp]
         public void Init()
         {

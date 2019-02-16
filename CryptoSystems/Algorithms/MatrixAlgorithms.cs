@@ -97,9 +97,11 @@ namespace CryptoSystems.Algorithms
                             permutation[row] = temp;
                             break;
                         }
+                        if (row >= result.RowCount - 1)
+                        {
+                            throw new SolveMatrixException("Rank of the matrix is lower than expected.");
+                        }
                     }
-
-                    throw new SolveMatrixException("Rank of the matrix is lower than expected.");
                 }
                 #endregion
                 Console.WriteLine(result);
