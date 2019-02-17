@@ -20,7 +20,7 @@ namespace CryptoSystems
             Coefficients = Enumerable.Repeat(1, PolynomialMembers.RowCount).ToList();
         }
 
-        public PolynomialOnGaloisField(int degree, List<int> coefficients, GaloisField galoisField)
+        public PolynomialOnGaloisField(int degree, IList<int> coefficients, GaloisField galoisField)
         {
             GaloisField = galoisField;
             PolynomialMembers = CalculatePolynomialMembers(degree);
@@ -37,7 +37,6 @@ namespace CryptoSystems
             }
         }
 
-
         public int Calculate(int x, int y, int? z = null)
         {
             var functionOutput = 0;
@@ -49,7 +48,7 @@ namespace CryptoSystems
                     continue;
                 }
 
-                var memberValue = 1;
+                var memberValue = Coefficients[i];
                 var powerForX = PolynomialMembers[i, 0];
                 var powerForY = PolynomialMembers[i, 1];
                 var powerForZ = PolynomialMembers[i, 2];
@@ -58,13 +57,19 @@ namespace CryptoSystems
                 memberValue = GaloisField.MultiplyWords(memberValue, GaloisField.Power(y, powerForY));
                 if(z.HasValue)
                     memberValue = GaloisField.MultiplyWords(memberValue, GaloisField.Power(z.Value, powerForZ));
+                try
+                {
+                    functionOutput = GaloisField.AddWords(functionOutput, memberValue);
 
-                functionOutput = GaloisField.AddWords(functionOutput, memberValue);
+                }
+                catch (Exception ex) when (functionOutput == -1)
+                {
+
+                }
             }
 
             return functionOutput;
         }
-
 
         private MatrixInt CalculatePolynomialMembers(int degree)
         {

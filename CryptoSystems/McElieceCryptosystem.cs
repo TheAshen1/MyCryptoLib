@@ -14,7 +14,7 @@ namespace CryptoSystems
         public PrivateKey PrivateKey { get; }
         public PublicKey PublicKey { get; }
 
-        public McElieceCryptosystem(ILinearCode linearCode, MatrixInt scramblerMatrix, List<int> permutation, List<int> mask)
+        public McElieceCryptosystem(ILinearCode linearCode, MatrixInt scramblerMatrix, IList<int> permutation, IList<int> mask)
         {
             LinearCode = linearCode;
             PrivateKey = new PrivateKey
@@ -26,9 +26,9 @@ namespace CryptoSystems
             };
 
             var encryptionMatrix = MatrixAlgorithms.DotMultiplication(scramblerMatrix, linearCode.GeneratorMatrix, linearCode.GaloisField);
-            Console.WriteLine(encryptionMatrix + 1);
+            Console.WriteLine(encryptionMatrix);
             encryptionMatrix = encryptionMatrix.PermuteColumns(PrivateKey.Permutation);
-            Console.WriteLine(encryptionMatrix + 1);
+            Console.WriteLine(encryptionMatrix);
             for (int col = 0; col < encryptionMatrix.ColumnCount; col++)
             {
                 for (int row = 0; row < encryptionMatrix.RowCount; row++)

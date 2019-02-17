@@ -9,7 +9,7 @@ namespace CryptoSystems.Algorithms
     {
         public static MatrixInt CalculateGeneratorMatrix(ILinearCode linearCode)
         {
-            var generatorMatrix = new MatrixInt(new int[linearCode.K, linearCode.N]);
+            var generatorMatrix = new MatrixInt(linearCode.K, linearCode.N);
 
             #region Init
             for (int i = 0; i < linearCode.K; i++)

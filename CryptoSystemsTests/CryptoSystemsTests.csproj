@@ -57,11 +57,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MessageErrorPair.cs" />
+    <Compile Include="ParityCheckMatrixGeneratorTests.cs" />
     <Compile Include="ReedSolomonCodeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="McElieceTests.cs" />
-    <Compile Include="TestDataProvider.cs" />
+    <Compile Include="RepeatAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

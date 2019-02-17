@@ -37,18 +37,18 @@ namespace CryptoSystems.Algorithms
             var errorCheck = new int[linearCode.N];
             for (int position = 0, word = 1; position < linearCode.N; position++, word++)
             {
-                var checkResult = coefficients[0, 0];
+                var sum = coefficients[0, 0];
                 for (int i = 1; i < coefficients.ColumnCount; i++)
                 {
-                    word = linearCode.GaloisField.Power(word, i);
-                    var wordToAdd = linearCode.GaloisField.MultiplyWords(coefficients[0, i], word);
-                    checkResult = linearCode.GaloisField.AddWords(checkResult, wordToAdd);
+                    var wordPower = linearCode.GaloisField.Power(word, i);
+                    var wordToAdd = linearCode.GaloisField.MultiplyWords(coefficients[0, i], wordPower);
+                    sum = linearCode.GaloisField.AddWords(sum, wordToAdd);
                 }
 
-                var lastAddent = linearCode.GaloisField.Power(word, linearCode.T);
-                checkResult = linearCode.GaloisField.AddWords(checkResult, lastAddent);
+                var lastWord = linearCode.GaloisField.Power(word, linearCode.T);
+                sum = linearCode.GaloisField.AddWords(sum, lastWord);
 
-                errorCheck[position] = checkResult;
+                errorCheck[position] = sum;
             }
             #endregion
 

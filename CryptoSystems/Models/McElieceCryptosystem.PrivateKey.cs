@@ -15,10 +15,10 @@ namespace CryptoSystems.Models
         /// <summary>
         /// list of N integers which correspond to numbers of columns
         /// </summary>
-        public List<int> Permutation { get; set; }
+        public IList<int> Permutation { get; set; }
         /// <summary>
         /// list of N elements of finite field which will be added to corresponding columns
         /// </summary>
-        public List<int> Mask { get; set; }
+        public IList<int> Mask { get; set; }
     }
 }

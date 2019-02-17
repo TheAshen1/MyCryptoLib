@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\SyndromeCalculator.cs" />
     <Compile Include="Exceptions\ParityCheckMatrixGeneratorException.cs" />
     <Compile Include="Exceptions\GaloisFieldException.cs" />
     <Compile Include="Exceptions\LinearCodeException.cs" />

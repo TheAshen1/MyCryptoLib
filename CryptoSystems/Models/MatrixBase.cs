@@ -311,7 +311,7 @@ namespace CryptoSystems.Models
 
         public static MatrixBase<T> PermuteColumns(
             MatrixBase<T> matrix,
-            List<int> permutation)
+            IList<int> permutation)
         {
             if (matrix.ColumnCount != permutation.Count)
             {
@@ -329,29 +329,9 @@ namespace CryptoSystems.Models
             return result;
         }
 
-        public static MatrixBase<T> PermuteColumns(
-            MatrixBase<T> matrix,
-            int[] permutation)
-        {
-            if (matrix.ColumnCount != permutation.Length)
-            {
-                throw new DimensionMismatchException("The number of columns in matrix does not equal the permutation list count");
-            }
-            var result = new MatrixBase<T>(matrix.RowCount, matrix.ColumnCount);
-
-            for (int col = 0; col < matrix.ColumnCount; col++)
-            {
-                for (int row = 0; row < matrix.RowCount; row++)
-                {
-                    result[row, permutation[col]] = matrix[row, col];
-                }
-            }
-            return result;
-        }
-
         public static MatrixBase<T> PermuteRows(
             MatrixBase<T> matrix,
-            List<int> permutation)
+            IList<int> permutation)
         {
             if (matrix.RowCount != permutation.Count)
             {
@@ -369,26 +349,6 @@ namespace CryptoSystems.Models
             return result;
         }
         
-        public static MatrixBase<T> PermuteRows(
-            MatrixBase<T> matrix,
-            int[] permutation)
-        {
-            if (matrix.RowCount != permutation.Length)
-            {
-                throw new DimensionMismatchException("The number of columns in matrix does not equal the permutation list count");
-            }
-            var result = new MatrixBase<T>(matrix.RowCount, matrix.ColumnCount);
-
-            for (int row = 0; row < matrix.RowCount; row++)
-            {
-                for (int col = 0; col < matrix.ColumnCount; col++)
-                {
-                    result[permutation[row], col] = matrix[row, col];
-                }
-            }
-            return result;
-        }
-
         public int FindRow(MatrixBase<int> matrix, MatrixBase<int> rowToFind)
         {
             if (rowToFind.RowCount > 1)

@@ -1,4 +1,5 @@
 ﻿using CryptoSystems.Models;
+using System.Collections.Generic;
 
 namespace CryptoSystems.Interfaces
 {

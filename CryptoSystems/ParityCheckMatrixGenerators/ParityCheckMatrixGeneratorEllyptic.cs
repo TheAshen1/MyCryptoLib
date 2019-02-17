@@ -8,17 +8,26 @@ namespace CryptoSystems.ParityCheckMatrixGenerators
 {
     public class ParityCheckMatrixGeneratorEllyptic : IParityCheckMatrixGenerator
     {
+        private readonly int _degree;
+        private readonly IList<int> _coefficient;
+
+        private PolynomialOnGaloisField _ellipticCurve;
+
+        public ParityCheckMatrixGeneratorEllyptic(int degree, IList<int> coefficient)
+        {
+            _degree = degree;
+            _coefficient = coefficient;
+        }
+
         public MatrixInt Generate(ILinearCode linearCode)
         {
             #region Generate points and functions
-            var degree = 3;
-            var coefficients = new List<int>
+            if(_ellipticCurve is null)
             {
-                1, 1, 1, 0, 1, 1
-            };
+                _ellipticCurve = new PolynomialOnGaloisField(_degree, _coefficient, linearCode.GaloisField);
 
-            var ellipticCurve = new PolynomialOnGaloisField(degree, coefficients, linearCode.GaloisField);
-            Console.WriteLine(ellipticCurve.PolynomialMembers);
+            }
+            Console.WriteLine(_ellipticCurve.PolynomialMembers);
 
             var points = new List<(int, int, int)>();
 
@@ -27,7 +36,7 @@ namespace CryptoSystems.ParityCheckMatrixGenerators
             {
                 for (int y = 0; y <= linearCode.GaloisField.WordCount; y++)
                 {
-                    if (ellipticCurve.Calculate(x, y) == 0)
+                    if (_ellipticCurve.Calculate(x, y) == 0)
                     {
                         points.Add((x, y, fixedZValue));
                         Console.WriteLine($"x: {x}, y: {y}, z: {fixedZValue}");
@@ -35,8 +44,7 @@ namespace CryptoSystems.ParityCheckMatrixGenerators
                 }
             }
 
-            var anotherPolynom = new PolynomialOnGaloisField(degree, coefficients, linearCode.GaloisField);
-            var functions = anotherPolynom.PolynomialMembers.Clone();
+            var functions = _ellipticCurve.PolynomialMembers.Clone();
             #endregion
 
             if (points.Count < linearCode.N)
@@ -46,7 +54,7 @@ namespace CryptoSystems.ParityCheckMatrixGenerators
 
 
             #region Pick N random points and K random functions
-            var Hdots = new MatrixInt(new int[0, degree]);
+            var Hdots = new MatrixInt(new int[0, _degree]);
             for (int i = 0; i < linearCode.N; i++)
             {
                 var rand = new Random();

@@ -153,7 +153,7 @@ namespace CryptoSystems.Utility
             return result;
         }
 
-        public static List<int> InversePermutation(List<int> permutation)
+        public static List<int> InversePermutation(IList<int> permutation)
         {
             var inverse = new List<int>(permutation);
             for (int i = 0; i < permutation.Count; i++)

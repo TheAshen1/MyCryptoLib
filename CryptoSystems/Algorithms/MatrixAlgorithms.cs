@@ -72,14 +72,6 @@ namespace CryptoSystems.Algorithms
         public static MatrixInt Solve(MatrixInt matrix, GaloisField galoisField)
         {
             var result = matrix.Clone();
-
-            var permutation = new int[matrix.RowCount];
-
-            for (int i = 0; i < permutation.Length; i++)
-            {
-                permutation[i] = i;
-            }
-
             var leadColumn = 0;
             for (int leadRow = 0; leadRow < matrix.RowCount; leadRow++)
             {
@@ -92,9 +84,6 @@ namespace CryptoSystems.Algorithms
                         if (result[row, leadColumn] != 0)
                         {
                             result = result.SwapRows(leadRow, row);
-                            var temp = permutation[leadRow];
-                            permutation[leadRow] = permutation[row];
-                            permutation[row] = temp;
                             break;
                         }
                         if (row >= result.RowCount - 1)
@@ -147,10 +136,7 @@ namespace CryptoSystems.Algorithms
            
             Console.WriteLine(result);
 
-            var permutedSolution = result.GetRangeOfColumns(new RangeInt(result.RowCount, result.ColumnCount));
-            var solution = permutedSolution.PermuteRows(permutation);
-
-            return solution;
+            return result.GetRangeOfColumns(new RangeInt(result.RowCount, result.ColumnCount));
         }
 
         public static (MatrixInt, MatrixInt) LUDecomposition(MatrixInt matrix, GaloisField galoisField)

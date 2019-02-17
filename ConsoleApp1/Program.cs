@@ -12,41 +12,47 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            var testMatrix = new MatrixInt(new int[,]
-            {
-                { 3,0,1,0,0,0,0},
-                { 3,5,1,0,6,2,1},
-                { 1,1,1,1,1,1,1},
-                { 4,0,1,0,0,0,0}
-            });
-
-
-            #region Reed-Solomon code example
             var field = new GaloisField(2, 3, Constants.IrreduciblePolynom_deg3);
             Console.WriteLine(field);
             Console.WriteLine(field.AdditionTable);
             Console.WriteLine(field.MultiplicationTable);
             Console.WriteLine(field.DivisionTable);
-            //var generator = new ParityCheckMatrixGeneratorGeneric();
-            var generator = new ParityCheckMatrixGeneratorEllyptic();
 
+            var degree = 3;
+            var coefficients = new List<int>
+            {
+                1, 1, 1, 0, 1,
+            };
+
+            var generator = new ParityCheckMatrixGeneratorEllyptic(degree, coefficients);
             var reedSolomonCode = new ReedSolomonCode(field, generator);
-            Console.WriteLine(reedSolomonCode.T);
-            Console.WriteLine(reedSolomonCode.ParityCheckMatrix);
-            Console.WriteLine(reedSolomonCode.GeneratorMatrix);
 
-            var message = new MatrixInt(new int[,]{
-                { 1, 0, 2 }
-            });
-            var errorVector = new MatrixInt(new int[,]{
-                { 1, 0, 0, 3, 0, 0, 0 }
-            });
+            #region Reed-Solomon code example
+            //var field = new GaloisField(2, 3, Constants.IrreduciblePolynom_deg3);
+            //Console.WriteLine(field);
+            //Console.WriteLine(field.AdditionTable);
+            //Console.WriteLine(field.MultiplicationTable);
+            //Console.WriteLine(field.DivisionTable);
+            ////var generator = new ParityCheckMatrixGeneratorGeneric();
+            //var generator = new ParityCheckMatrixGeneratorEllyptic();
 
-            var encodedMessage = reedSolomonCode.Encode(message, errorVector);
-            Console.WriteLine(encodedMessage);
+            //var reedSolomonCode = new ReedSolomonCode(field, generator);
+            //Console.WriteLine(reedSolomonCode.T);
+            //Console.WriteLine(reedSolomonCode.ParityCheckMatrix);
+            //Console.WriteLine(reedSolomonCode.GeneratorMatrix);
 
-            var originalMessage = reedSolomonCode.DecodeAndCorrect(encodedMessage);
-            Console.WriteLine(originalMessage);
+            //var message = new MatrixInt(new int[,]{
+            //    { 1, 0, 2 }
+            //});
+            //var errorVector = new MatrixInt(new int[,]{
+            //    { 1, 0, 0, 3, 0, 0, 0 }
+            //});
+
+            //var encodedMessage = reedSolomonCode.Encode(message, errorVector);
+            //Console.WriteLine(encodedMessage);
+
+            //var originalMessage = reedSolomonCode.DecodeAndCorrect(encodedMessage);
+            //Console.WriteLine(originalMessage);
             #endregion
         }
 
