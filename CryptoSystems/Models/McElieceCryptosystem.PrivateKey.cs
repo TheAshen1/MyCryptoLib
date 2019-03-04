@@ -13,7 +13,7 @@ namespace CryptoSystems.Models
         /// </summary>
         public MatrixInt ScramblerMatrix { get; set; }
         /// <summary>
-        /// list of N integers which correspond to numbers of columns
+        /// permutation matrix
         /// </summary>
         public IList<int> Permutation { get; set; }
         /// <summary>

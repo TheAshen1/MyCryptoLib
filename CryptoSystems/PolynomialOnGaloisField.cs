@@ -1,6 +1,4 @@
-﻿using CryptoSystems.Exceptions;
-using CryptoSystems.Models;
-using System;
+﻿using CryptoSystems.Models;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,32 +6,32 @@ namespace CryptoSystems
 {
     public class PolynomialOnGaloisField
     {
-        public GaloisField GaloisField { get; set; }
-        public MatrixInt PolynomialMembers { get; }
-        public List<int> Coefficients { get; }
+        public MatrixInt Members { get; }
 
+        private readonly GaloisField _galoisField;
+        private readonly List<int> _coefficients;
 
         public PolynomialOnGaloisField(int degree, GaloisField galoisField)
         {
-            GaloisField = galoisField;
-            PolynomialMembers = CalculatePolynomialMembers(degree);
-            Coefficients = Enumerable.Repeat(1, PolynomialMembers.RowCount).ToList();
+            _galoisField = galoisField;
+            Members = CalculatePolynomialMembers(degree);
+            _coefficients = Enumerable.Repeat(1, Members.RowCount).ToList();
         }
 
         public PolynomialOnGaloisField(int degree, IList<int> coefficients, GaloisField galoisField)
         {
-            GaloisField = galoisField;
-            PolynomialMembers = CalculatePolynomialMembers(degree);
+            _galoisField = galoisField;
+            Members = CalculatePolynomialMembers(degree);
 
-            Coefficients = new List<int>();
-            for (int i = 0; i < PolynomialMembers.RowCount; i++)
+            _coefficients = new List<int>();
+            for (int i = 0; i < Members.RowCount; i++)
             {
-                if(i >= coefficients.Count)
+                if (i >= coefficients.Count)
                 {
-                    Coefficients.Add(0);
+                    _coefficients.Add(0);
                     continue;
                 }
-                Coefficients.Add(coefficients[i]);
+                _coefficients.Add(coefficients[i]);
             }
         }
 
@@ -41,35 +39,46 @@ namespace CryptoSystems
         {
             var functionOutput = 0;
 
-            for (int i = 0; i < PolynomialMembers.RowCount; i++)
+            for (int i = 0; i < Members.RowCount; i++)
             {
-                if (Coefficients[i] == 0)
+                if (_coefficients[i] == 0)
                 {
                     continue;
                 }
 
-                var memberValue = Coefficients[i];
-                var powerForX = PolynomialMembers[i, 0];
-                var powerForY = PolynomialMembers[i, 1];
-                var powerForZ = PolynomialMembers[i, 2];
+                var memberValue = _coefficients[i];
+                var powerForX = Members[i, 0];
+                var powerForY = Members[i, 1];
+                var powerForZ = Members[i, 2];
 
-                memberValue = GaloisField.MultiplyWords(memberValue, GaloisField.Power(x, powerForX));
-                memberValue = GaloisField.MultiplyWords(memberValue, GaloisField.Power(y, powerForY));
-                if(z.HasValue)
-                    memberValue = GaloisField.MultiplyWords(memberValue, GaloisField.Power(z.Value, powerForZ));
-                try
-                {
-                    functionOutput = GaloisField.AddWords(functionOutput, memberValue);
+                memberValue = _galoisField.MultiplyWords(memberValue, _galoisField.Power(x, powerForX));
+                memberValue = _galoisField.MultiplyWords(memberValue, _galoisField.Power(y, powerForY));
+                if (z.HasValue)
+                    memberValue = _galoisField.MultiplyWords(memberValue, _galoisField.Power(z.Value, powerForZ));
 
-                }
-                catch (Exception ex) when (functionOutput == -1)
-                {
-
-                }
+                functionOutput = _galoisField.AddWords(functionOutput, memberValue);
             }
 
             return functionOutput;
         }
+
+        public int CalculateMember(int position, int x, int y, int? z = null)
+        {
+            var memberValue = 1;
+
+            var powerForX = Members[position, 0];
+            var powerForY = Members[position, 1];
+            var powerForZ = Members[position, 2];
+
+            memberValue = _galoisField.MultiplyWords(memberValue, _galoisField.Power(x, powerForX));
+            memberValue = _galoisField.MultiplyWords(memberValue, _galoisField.Power(y, powerForY));
+            if (z.HasValue)
+                memberValue = _galoisField.MultiplyWords(memberValue, _galoisField.Power(z.Value, powerForZ));
+
+            return memberValue;
+        }
+
+
 
         private MatrixInt CalculatePolynomialMembers(int degree)
         {
@@ -90,5 +99,6 @@ namespace CryptoSystems
 
             return polynomialMembers;
         }
+
     }
 }

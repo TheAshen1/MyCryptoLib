@@ -369,11 +369,6 @@ namespace CryptoSystems.Models
             return Mod(matrix, scalar);
         }
 
-        public static MatrixInt operator ^(MatrixInt matrixLeft, MatrixInt matrixRight)
-        {
-            return Multiplication(matrixLeft, matrixRight);
-        }
-
         public static MatrixInt operator |(MatrixInt matrixLeft, MatrixInt matrixRight)
         {
             return Concatenate(matrixLeft, matrixRight);

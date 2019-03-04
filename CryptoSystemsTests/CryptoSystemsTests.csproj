@@ -57,7 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ParityCheckMatrixGeneratorTests.cs" />
+    <Compile Include="McElieseEllypticTests.cs" />
     <Compile Include="ReedSolomonCodeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="McElieceTests.cs" />

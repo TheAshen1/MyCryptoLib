@@ -57,5 +57,37 @@ namespace CryptoSystems.Algorithms
 
             return generatorMatrix;
         }
+
+        public static MatrixInt CalculateGeneratorMatrixAlt(ILinearCode linearCode)
+        {
+            var generatorMatrix = new MatrixInt(linearCode.K, linearCode.N);
+            var system = linearCode.ParityCheckMatrix.Clone();
+            MatrixInt solution = null;
+            try
+            {
+                solution = MatrixAlgorithms.Solve(system, linearCode.GaloisField);
+            }
+            catch (SolveMatrixException)
+            {
+                throw new LinearCodeException("Could not produce correct Generator matrix from provided ParityCheck matrix.");
+            }
+
+            #region Assemble generator matrix
+            for (int i = 0; i < linearCode.K; i++)
+            {
+                for (int j = 0; j < solution.RowCount; j++)
+                {
+                    generatorMatrix[i, j] = solution[j, solution.ColumnCount - (i + 1)];
+                }
+
+                if(solution.RowCount < linearCode.N)
+                {
+                    generatorMatrix[i, linearCode.N - (i + 1)] = 1;
+                }
+            }
+            #endregion
+
+            return generatorMatrix;
+        }
     }
 }

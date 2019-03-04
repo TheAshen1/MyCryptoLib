@@ -7,14 +7,14 @@ using System.Collections.Generic;
 
 namespace CryptoSystems
 {
-    public class McElieceCryptosystem
+    public class McEliece
     {
         public ILinearCode LinearCode { get; }
 
         public PrivateKey PrivateKey { get; }
         public PublicKey PublicKey { get; }
 
-        public McElieceCryptosystem(ILinearCode linearCode, MatrixInt scramblerMatrix, IList<int> permutation, IList<int> mask)
+        public McEliece(ILinearCode linearCode, MatrixInt scramblerMatrix, IList<int> permutation, IList<int> mask)
         {
             LinearCode = linearCode;
             PrivateKey = new PrivateKey

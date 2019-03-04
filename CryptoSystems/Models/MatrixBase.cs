@@ -323,7 +323,7 @@ namespace CryptoSystems.Models
             {
                 for (int row = 0; row < matrix.RowCount; row++)
                 {
-                    result[row, permutation[col]] = matrix[row, col];
+                    result[row, col] = matrix[row, permutation[col]];
                 }
             }
             return result;
@@ -343,7 +343,7 @@ namespace CryptoSystems.Models
             {
                 for (int col = 0; col < matrix.ColumnCount; col++)
                 {
-                    result[permutation[row], col] = matrix[row, col];
+                    result[row, col] = matrix[permutation[row], col];
                 }
             }
             return result;

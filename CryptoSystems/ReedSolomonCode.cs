@@ -19,10 +19,10 @@ namespace CryptoSystems
 
 
         public GaloisField GaloisField { get; }
-        public MatrixInt ParityCheckMatrix { get; }
-        public MatrixInt GeneratorMatrix { get; }
+        public MatrixInt ParityCheckMatrix { get; set; }
+        public MatrixInt GeneratorMatrix { get; set; }
 
-
+        public int D => throw new NotImplementedException();
         #endregion
 
         public ReedSolomonCode(GaloisField galoisField, IParityCheckMatrixGenerator parityCheckMatrixGenerator)
@@ -70,7 +70,7 @@ namespace CryptoSystems
 
         public MatrixInt DecodeAndCorrect(MatrixInt message)
         {
-            return PetersonDecoder.DecodeAndCorrect(this, message);
+            return Decoder.DecodeAndCorrect(this, message);
         }
 
         public MatrixInt Encode(MatrixInt message)

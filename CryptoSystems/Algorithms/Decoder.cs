@@ -4,7 +4,7 @@ using CryptoSystems.Models;
 
 namespace CryptoSystems.Algorithms
 {
-    public static class PetersonDecoder
+    public static class Decoder
     {
         public static MatrixInt DecodeAndCorrect(ILinearCode linearCode, MatrixInt message)
         {
@@ -17,55 +17,22 @@ namespace CryptoSystems.Algorithms
             var syndrome = MatrixAlgorithms.DotMultiplication(message, linearCode.ParityCheckMatrix.Transpose(), linearCode.GaloisField);
             #endregion
 
-            #region МЛО
+            var errorLocations = ErrorLocatorDefault.LocateErrors(linearCode, syndrome);
+
+            #region Caclulate Error vector
             var rowCount = linearCode.T;
             var columnCount = linearCode.T + 1;
 
             var system = new int[rowCount, columnCount];
-
-            for (int row = 0; row < rowCount; row++)
-            {
-                for (int col = 0; col < columnCount; col++)
-                {
-                    system[row, col] = syndrome[0, row + col];
-                }
-            }
-            var coefficients = MatrixAlgorithms.Solve(new MatrixInt(system), linearCode.GaloisField).Transpose();
-            #endregion
-
-            #region Calculate Error Positions
-            var errorCheck = new int[linearCode.N];
-            for (int position = 0, word = 1; position < linearCode.N; position++, word++)
-            {
-                var sum = coefficients[0, 0];
-                for (int i = 1; i < coefficients.ColumnCount; i++)
-                {
-                    var wordPower = linearCode.GaloisField.Power(word, i);
-                    var wordToAdd = linearCode.GaloisField.MultiplyWords(coefficients[0, i], wordPower);
-                    sum = linearCode.GaloisField.AddWords(sum, wordToAdd);
-                }
-
-                var lastWord = linearCode.GaloisField.Power(word, linearCode.T);
-                sum = linearCode.GaloisField.AddWords(sum, lastWord);
-
-                errorCheck[position] = sum;
-            }
-            #endregion
-
-            #region Caclulate Error vector
-            rowCount = linearCode.T;
-            columnCount = linearCode.T + 1;
-
-            system = new int[rowCount, columnCount];
             #region Find error positions
             var errorNumber = 0;
-            for (int errorPostition = 0; errorPostition < linearCode.N; errorPostition++)
+            for (int errorPosition = 0; errorPosition < linearCode.N; errorPosition++)
             {
-                if (errorCheck[errorPostition] == 0)
+                if (errorLocations[errorPosition] == 0)
                 {
                     for (int row = 0; row < rowCount; row++)
                     {
-                        system[row, errorNumber] = linearCode.ParityCheckMatrix[row, errorPostition];
+                        system[row, errorNumber] = linearCode.ParityCheckMatrix[row, errorPosition];
                     }
                     errorNumber++;
                 }
@@ -87,7 +54,7 @@ namespace CryptoSystems.Algorithms
             errorNumber = 0;
             for (int i = 0; i < linearCode.N; i++)
             {
-                if (errorCheck[i] == 0)
+                if (errorLocations[i] == 0)
                 {
                     rawErrorVector[i] = weights.Data[errorNumber, 0];
                     errorNumber++;

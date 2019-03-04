@@ -92,7 +92,7 @@ namespace CryptoSystemsTests
             var generator = new ParityCheckMatrixGeneratorGeneric();
             var reedSolomonCode = new ReedSolomonCode(galoisField, generator);
 
-            var mcElieseCryptosystem = new McElieceCryptosystem(reedSolomonCode, scrambler, permutation, mask);
+            var mcElieseCryptosystem = new McEliece(reedSolomonCode, scrambler, permutation, mask);
 
             var encryptedMessage = mcElieseCryptosystem.EncryptMessage(mcElieseCryptosystem.PublicKey, message, errorVector);
             var originalMessage = mcElieseCryptosystem.DecryptMessage(encryptedMessage);

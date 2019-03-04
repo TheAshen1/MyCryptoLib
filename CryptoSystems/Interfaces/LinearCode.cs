@@ -16,6 +16,11 @@ namespace CryptoSystems.Interfaces
         int K { get;}
 
         /// <summary>
+        /// Number of extra bits
+        /// </summary>
+        int D { get;}
+
+        /// <summary>
         /// Error correction capability
         /// </summary>
         int T { get; }
@@ -31,12 +36,12 @@ namespace CryptoSystems.Interfaces
         /// <summary>
         /// Generator matrix of a linear code with K rows and N columns
         /// </summary>
-        MatrixInt GeneratorMatrix { get; }
+        MatrixInt GeneratorMatrix { get; set; }
 
         /// <summary>
         /// Parity check matrix of a linear code N - K rows and N columns
         /// </summary>
-        MatrixInt ParityCheckMatrix { get; }
+        MatrixInt ParityCheckMatrix { get; set; }
 
         GaloisField GaloisField { get; }
         #endregion

@@ -41,15 +41,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\DecoderEllyptic.cs" />
+    <Compile Include="Algorithms\ErrorLocatorDefault.cs" />
+    <Compile Include="Algorithms\ErrorLocatorEllyptic.cs" />
     <Compile Include="Algorithms\SyndromeCalculator.cs" />
+    <Compile Include="EllypticCurve.cs" />
     <Compile Include="Exceptions\ParityCheckMatrixGeneratorException.cs" />
     <Compile Include="Exceptions\GaloisFieldException.cs" />
     <Compile Include="Exceptions\LinearCodeException.cs" />
     <Compile Include="Exceptions\SolveMatrixException.cs" />
+    <Compile Include="LinearCode.cs" />
+    <Compile Include="Models\Point.cs" />
     <Compile Include="ParityCheckMatrixGenerators\ParityCheckMatrixGeneratorEllyptic.cs" />
     <Compile Include="Algorithms\GeneratorMatrixCalculator.cs" />
     <Compile Include="Algorithms\MatrixAlgorithms.cs" />
-    <Compile Include="Algorithms\PetersonDecoder.cs" />
+    <Compile Include="Algorithms\Decoder.cs" />
     <Compile Include="Algorithms\PolynomialAlgorithms.cs" />
     <Compile Include="PolynomialOnGaloisField.cs" />
     <Compile Include="GaloisField.cs" />
@@ -63,10 +69,11 @@
     <Compile Include="Models\PolynomialLongDivisionResult.cs" />
     <Compile Include="ParityCheckMatrixGenerators\ParityCheckMatrixGeneratorGeneric.cs" />
     <Compile Include="ReedSolomonCode.cs" />
+    <Compile Include="McElieseEllyptic.cs" />
     <Compile Include="Util\Constants.cs" />
     <Compile Include="Exceptions\DimensionMismatchException.cs" />
     <Compile Include="Interfaces\LinearCode.cs" />
-    <Compile Include="McElieceCryptosystem.cs" />
+    <Compile Include="McEliece.cs" />
     <Compile Include="Models\MatrixBase.cs" />
     <Compile Include="Models\MatrixInt.cs" />
     <Compile Include="Models\McElieceCryptosystem.PublicKey.cs" />

@@ -12,21 +12,37 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            var field = new GaloisField(2, 3, Constants.IrreduciblePolynom_deg3);
+            var field = new GaloisField(2, 2, Constants.IrreduciblePolynom_deg2);
             Console.WriteLine(field);
             Console.WriteLine(field.AdditionTable);
             Console.WriteLine(field.MultiplicationTable);
             Console.WriteLine(field.DivisionTable);
 
-            var degree = 3;
-            var coefficients = new List<int>
-            {
-                1, 1, 1, 0, 1,
-            };
+            var message = new MatrixInt(new int[] { 1, 1 });
+            var errorVector = new MatrixInt(new int[] { 0, 0, 1, 0, 0, 2, 0, 0 });
+            var scrambler = new MatrixInt(new int[,] {
+                { 1, 2 },
+                { 3, 0 }
+            });
+            var permutation = new int[] { 1, 4, 3, 0, 2, 7, 5, 6 };
+            var permutationMatrix = new MatrixInt(new int[,] { 
+                { 0, 0, 0, 1, 0, 0, 0, 0 },
+                { 1, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 1, 0, 0, 0 },
+                { 0, 0, 1, 0, 0, 0, 0, 0 },
+                { 0, 1, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 1, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 1 },
+                { 0, 0, 0, 0, 0, 1, 0, 0 }
+            });
 
-            var generator = new ParityCheckMatrixGeneratorEllyptic(degree, coefficients);
-            var reedSolomonCode = new ReedSolomonCode(field, generator);
-
+            Console.WriteLine(permutationMatrix.Transpose());
+            var mask = new int[] { 1, 2, 3, 1, 2, 3, 1, 1 };
+            var mceliese = new McElieseEllyptic(8, 2, 6, 2, field, scrambler, permutation, mask);
+            var crytptogram = mceliese.EncryptMessage(mceliese.PublicKey, message, errorVector);
+            Console.WriteLine(crytptogram);
+            var decryptedMessage = mceliese.DecryptMessage(crytptogram);
+            Console.WriteLine(decryptedMessage);
             #region Reed-Solomon code example
             //var field = new GaloisField(2, 3, Constants.IrreduciblePolynom_deg3);
             //Console.WriteLine(field);
