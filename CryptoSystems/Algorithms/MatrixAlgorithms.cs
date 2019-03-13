@@ -79,7 +79,8 @@ namespace CryptoSystems.Algorithms
                 #region Check if first row is not 0 and swap with non 0 row
                 if (result[leadRow, leadColumn] == 0)
                 {
-                    if(leadRow == result.RowCount - 1)
+
+                    if (leadRow == result.RowCount - 1)
                     {
                         throw new SolveMatrixException("Rank of the matrix is lower than expected.");
                     }
@@ -93,6 +94,11 @@ namespace CryptoSystems.Algorithms
                         }
                         if (row >= result.RowCount - 1)
                         {
+                            if (leadColumn == result.ColumnCount - 1)
+                            {
+                                return result.GetRangeOfColumns(new RangeInt(result.ColumnCount - 1, result.ColumnCount));
+                            }
+
                             throw new SolveMatrixException("Rank of the matrix is lower than expected.");
                         }
                     }
@@ -138,7 +144,7 @@ namespace CryptoSystems.Algorithms
 
                 leadColumn++;
             }
-           
+
             Console.WriteLine(result);
 
             return result.GetRangeOfColumns(new RangeInt(result.RowCount, result.ColumnCount));

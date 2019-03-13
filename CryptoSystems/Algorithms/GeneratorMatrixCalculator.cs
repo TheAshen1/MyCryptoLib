@@ -77,12 +77,12 @@ namespace CryptoSystems.Algorithms
             {
                 for (int j = 0; j < solution.RowCount; j++)
                 {
-                    generatorMatrix[i, j] = solution[j, solution.ColumnCount - (i + 1)];
+                    generatorMatrix[i, j] = solution[j, i];
                 }
 
                 if(solution.RowCount < linearCode.N)
                 {
-                    generatorMatrix[i, linearCode.N - (i + 1)] = 1;
+                    generatorMatrix[i, linearCode.N - linearCode.K + i] = 1;
                 }
             }
             #endregion

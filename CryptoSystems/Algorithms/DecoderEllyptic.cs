@@ -1,13 +1,15 @@
 ﻿using CryptoSystems.Exceptions;
 using CryptoSystems.Interfaces;
 using CryptoSystems.Models;
-using System.Collections.Generic;
+using CryptoSystems.ParityCheckMatrixGenerators;
+using System;
+using System.Linq;
 
 namespace CryptoSystems.Algorithms
 {
     public static class DecoderEllyptic
     {
-        public static MatrixInt DecodeAndCorrect(ILinearCode linearCode, MatrixInt message, List<Point> points)
+        public static MatrixInt DecodeAndCorrect(ILinearCode linearCode, MatrixInt message, ParityCheckMatrixGeneratorEllyptic generator)
         {
             if (message.ColumnCount != linearCode.ParityCheckMatrix.ColumnCount)
             {
@@ -18,60 +20,52 @@ namespace CryptoSystems.Algorithms
             var syndrome = MatrixAlgorithms.DotMultiplication(message, linearCode.ParityCheckMatrix.Transpose(), linearCode.GaloisField);
             #endregion
 
-            var errorLocations = ErrorLocatorEllyptic.LocateErrors(linearCode, syndrome, points);
+            #region Locate errors
+            var errorLocators = ErrorLocatorEllyptic.LocateErrors(linearCode, syndrome, generator);
 
+            var errorCount = errorLocators.Where(v => v == 0).Count();
+            #endregion
+
+            Console.WriteLine(linearCode.ParityCheckMatrix);
             #region Caclulate Error vector
-            var rowCount = linearCode.T;
-            var columnCount = linearCode.T + 1;
-
-            var system = new int[rowCount, columnCount];
-            #region Find error positions
-            var errorNumber = 0;
-            for (int errorPosition = 0; errorPosition < linearCode.N; errorPosition++)
+            var system = new MatrixInt(linearCode.D, errorCount);
+            for (int row = 0; row < linearCode.D; row++)
             {
-                if (errorLocations[errorPosition] == 0)
+                for (int col = 0, i = 0; col < linearCode.N; col++)
                 {
-                    for (int row = 0; row < rowCount; row++)
+                    if (errorLocators[col] == 0)
                     {
-                        system[row, errorNumber] = linearCode.ParityCheckMatrix[row, errorPosition];
+                        system[row, i] = linearCode.ParityCheckMatrix[row, col];
+                        i++;
                     }
-                    errorNumber++;
                 }
             }
+            Console.WriteLine(system);
+            system |= syndrome.Transpose();
+            Console.WriteLine(system);
+            var errorVectorValues = MatrixAlgorithms.Solve(system, linearCode.GaloisField);
 
-            for (int i = 0; i < rowCount; i++)
+            var errorVector = new int[errorLocators.Length];
+            for (int i = 0, j = 0; i < errorVector.Length; i++)
             {
-                system[i, columnCount - 1] = syndrome[0, i];
-            }
-            #endregion
-
-            #region Find error values
-            var weights = MatrixAlgorithms.Solve(new MatrixInt(system), linearCode.GaloisField);
-            #endregion
-
-            #region Recreate complete error vector
-            var rawErrorVector = new int[linearCode.N];
-
-            errorNumber = 0;
-            for (int i = 0; i < linearCode.N; i++)
-            {
-                if (errorLocations[i] == 0)
+                if (errorLocators[i] == 0)
                 {
-                    rawErrorVector[i] = weights.Data[errorNumber, 0];
-                    errorNumber++;
-                    continue;
+                    errorVector[i] = errorVectorValues[j, 0];
+                    j++;
                 }
-                rawErrorVector[i] = 0;
+                else
+                {
+                    errorVector[i] = 0;
+                }
             }
             #endregion
 
-            #endregion
 
             var rawOriginalMessage = new int[linearCode.K];
 
             for (int i = 0; i < linearCode.K; i++)
             {
-                rawOriginalMessage[i] = linearCode.GaloisField.AddWords(message.Data[0, i], rawErrorVector[i]);
+                rawOriginalMessage[i] = linearCode.GaloisField.AddWords(message.Data[0, i + linearCode.D], errorVector[i + linearCode.D]);
             }
 
             var originalMessage = new MatrixInt(rawOriginalMessage);

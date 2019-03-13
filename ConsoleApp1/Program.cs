@@ -18,25 +18,25 @@ namespace ConsoleApp
             Console.WriteLine(field.MultiplicationTable);
             Console.WriteLine(field.DivisionTable);
 
-            var message = new MatrixInt(new int[] { 1, 1 });
-            var errorVector = new MatrixInt(new int[] { 0, 0, 1, 0, 0, 2, 0, 0 });
+            var message = new MatrixInt(new int[] { 1, 0 });
+            var errorVector = new MatrixInt(new int[] { 2, 2, 0, 0, 0, 0, 0, 0 });
             var scrambler = new MatrixInt(new int[,] {
                 { 1, 2 },
                 { 3, 0 }
             });
             var permutation = new int[] { 1, 4, 3, 0, 2, 7, 5, 6 };
-            var permutationMatrix = new MatrixInt(new int[,] { 
-                { 0, 0, 0, 1, 0, 0, 0, 0 },
-                { 1, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 1, 0, 0, 0 },
-                { 0, 0, 1, 0, 0, 0, 0, 0 },
-                { 0, 1, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 1, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 1 },
-                { 0, 0, 0, 0, 0, 1, 0, 0 }
-            });
+            //var permutationMatrix = new MatrixInt(new int[,] {
+            //    { 0, 1, 0, 0, 0, 0, 0, 0 },
+            //    { 0, 0, 0, 0, 1, 0, 0, 0 },
+            //    { 0, 0, 0, 1, 0, 0, 0, 0 },
+            //    { 1, 0, 0, 0, 0, 0, 0, 0 },
+            //    { 0, 0, 1, 0, 0, 0, 0, 0 },
+            //    { 0, 0, 0, 0, 0, 0, 0, 1 },
+            //    { 0, 0, 0, 0, 0, 1, 0, 0 },
+            //    { 0, 0, 0, 0, 0, 0, 1, 0 }
+            //});
 
-            Console.WriteLine(permutationMatrix.Transpose());
+            //Console.WriteLine(permutationMatrix.Transpose());
             var mask = new int[] { 1, 2, 3, 1, 2, 3, 1, 1 };
             var mceliese = new McElieseEllyptic(8, 2, 6, 2, field, scrambler, permutation, mask);
             var crytptogram = mceliese.EncryptMessage(mceliese.PublicKey, message, errorVector);

@@ -9,6 +9,7 @@ namespace CryptoSystems.ParityCheckMatrixGenerators
     public class ParityCheckMatrixGeneratorEllyptic : IParityCheckMatrixGenerator
     {
         public List<Point> Points { get; private set; }
+        public Terms Terms { get; private set; }
 
         private readonly int _degree;
 
@@ -38,25 +39,31 @@ namespace CryptoSystems.ParityCheckMatrixGenerators
                 _polynomial = new PolynomialOnGaloisField(_degree, linearCode.GaloisField);
             }
 
-            Console.WriteLine(_polynomial.Members);
+            Console.WriteLine(_polynomial.Terms);
 
-            var functions = new List<int>()
-            {
-                5,2,4,0,1,3
-            };
             #region Pick K random functions
-            var selectedFunctions = new List<int>();
+            //var functions = new List<int>()
+            //{
+            //    5,2,4,0,1,3
+            //};
+            var functions = new List<int>();
             var j = 0;
             while (j < (linearCode.D))
             {
                 var rand = new Random();
-                var r = rand.Next(_polynomial.Members.RowCount);
-                if (!selectedFunctions.Contains(r))
+                var r = rand.Next(_polynomial.Terms.RowCount);
+                if (!functions.Contains(r))
                 {
-                    selectedFunctions.Add(r);
+                    functions.Add(r);
                     j++;
                 }
             }
+            Terms = new Terms(linearCode.D);
+            for (var i = 0; i < functions.Count; i++)
+            {
+                Terms.SetTerm(i, _polynomial.Terms[functions[i], 0], _polynomial.Terms[functions[i], 1]);
+            }
+            Console.WriteLine(Terms);
             #endregion
 
             #region Calculate parity check matrix

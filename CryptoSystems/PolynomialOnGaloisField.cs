@@ -6,7 +6,7 @@ namespace CryptoSystems
 {
     public class PolynomialOnGaloisField
     {
-        public MatrixInt Members { get; }
+        public MatrixInt Terms { get; }
 
         private readonly GaloisField _galoisField;
         private readonly List<int> _coefficients;
@@ -14,17 +14,17 @@ namespace CryptoSystems
         public PolynomialOnGaloisField(int degree, GaloisField galoisField)
         {
             _galoisField = galoisField;
-            Members = CalculatePolynomialMembers(degree);
-            _coefficients = Enumerable.Repeat(1, Members.RowCount).ToList();
+            Terms = CalculatePolynomialMembers(degree);
+            _coefficients = Enumerable.Repeat(1, Terms.RowCount).ToList();
         }
 
         public PolynomialOnGaloisField(int degree, IList<int> coefficients, GaloisField galoisField)
         {
             _galoisField = galoisField;
-            Members = CalculatePolynomialMembers(degree);
+            Terms = CalculatePolynomialMembers(degree);
 
             _coefficients = new List<int>();
-            for (int i = 0; i < Members.RowCount; i++)
+            for (int i = 0; i < Terms.RowCount; i++)
             {
                 if (i >= coefficients.Count)
                 {
@@ -39,7 +39,7 @@ namespace CryptoSystems
         {
             var functionOutput = 0;
 
-            for (int i = 0; i < Members.RowCount; i++)
+            for (int i = 0; i < Terms.RowCount; i++)
             {
                 if (_coefficients[i] == 0)
                 {
@@ -47,9 +47,9 @@ namespace CryptoSystems
                 }
 
                 var memberValue = _coefficients[i];
-                var powerForX = Members[i, 0];
-                var powerForY = Members[i, 1];
-                var powerForZ = Members[i, 2];
+                var powerForX = Terms[i, 0];
+                var powerForY = Terms[i, 1];
+                var powerForZ = Terms[i, 2];
 
                 memberValue = _galoisField.MultiplyWords(memberValue, _galoisField.Power(x, powerForX));
                 memberValue = _galoisField.MultiplyWords(memberValue, _galoisField.Power(y, powerForY));
@@ -66,9 +66,9 @@ namespace CryptoSystems
         {
             var memberValue = 1;
 
-            var powerForX = Members[position, 0];
-            var powerForY = Members[position, 1];
-            var powerForZ = Members[position, 2];
+            var powerForX = Terms[position, 0];
+            var powerForY = Terms[position, 1];
+            var powerForZ = Terms[position, 2];
 
             memberValue = _galoisField.MultiplyWords(memberValue, _galoisField.Power(x, powerForX));
             memberValue = _galoisField.MultiplyWords(memberValue, _galoisField.Power(y, powerForY));

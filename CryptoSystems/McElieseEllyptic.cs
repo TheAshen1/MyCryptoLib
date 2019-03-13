@@ -17,33 +17,31 @@ namespace CryptoSystems
         public PublicKey PublicKey { get; }
 
         private readonly GaloisField _galoisField;
-        private readonly List<Point> _points;
-        private MatrixInt _generatorMatrix;
-        private readonly MatrixInt _parityCheckMatrix;
-
+        private readonly ParityCheckMatrixGeneratorEllyptic _generator;
 
         public McElieseEllyptic(int n, int k, int d, int t, GaloisField galoisField, MatrixInt scramblerMatrix, IList<int> permutation, IList<int> mask)
         {
             _galoisField = galoisField;
-            var generator = new ParityCheckMatrixGeneratorEllyptic(2);
-            LinearCode = new LinearCode(n, k, d, t, galoisField, generator);
+            _generator = new ParityCheckMatrixGeneratorEllyptic(2);
+            LinearCode = new LinearCode(n, k, d, t, galoisField, _generator);
 
-
+            MatrixInt parityCheckMatrix = null;
+            MatrixInt generatorMatrix = null;
             while (true)
             {
-                _parityCheckMatrix = generator.Generate(LinearCode);
-                LinearCode.ParityCheckMatrix = _parityCheckMatrix;
-                Console.WriteLine(_parityCheckMatrix);
+                parityCheckMatrix = _generator.Generate(LinearCode);
+                LinearCode.ParityCheckMatrix = parityCheckMatrix;
+                Console.WriteLine(parityCheckMatrix);
 
-                if (Helper.Weight(_parityCheckMatrix) < Math.Ceiling(_parityCheckMatrix.RowCount * _parityCheckMatrix.ColumnCount * 0.7))
+                if (Helper.Weight(parityCheckMatrix) < Math.Ceiling(parityCheckMatrix.RowCount * parityCheckMatrix.ColumnCount * 0.7))
                 {
                     continue;
                 }
 
                 try
                 {
-                    _generatorMatrix = GeneratorMatrixCalculator.CalculateGeneratorMatrixAlt(LinearCode);
-                    Console.WriteLine(_generatorMatrix);
+                    generatorMatrix = GeneratorMatrixCalculator.CalculateGeneratorMatrixAlt(LinearCode);
+                    Console.WriteLine(generatorMatrix);
                 }
                 catch (LinearCodeException ex)
                 {
@@ -51,14 +49,12 @@ namespace CryptoSystems
                     continue;
                 }
 
-                if (IsGeneratorMatrixValid(_parityCheckMatrix, _generatorMatrix, galoisField))
+                if (IsGeneratorMatrixValid(parityCheckMatrix, generatorMatrix, galoisField))
                 {
-                    LinearCode.GeneratorMatrix = _generatorMatrix;
-                    _points = generator.Points;
+                    LinearCode.GeneratorMatrix = generatorMatrix;
                     break;
                 }
             }
-
 
             PrivateKey = new PrivateKey
             {
@@ -68,9 +64,8 @@ namespace CryptoSystems
                 Mask = mask
             };
 
-            var encryptionMatrix = MatrixAlgorithms.DotMultiplication(scramblerMatrix, _generatorMatrix, LinearCode.GaloisField);
+            var encryptionMatrix = MatrixAlgorithms.DotMultiplication(scramblerMatrix, generatorMatrix, LinearCode.GaloisField);
             Console.WriteLine(encryptionMatrix);
-            //encryptionMatrix = MatrixAlgorithms.DotMultiplication(encryptionMatrix, PrivateKey.Permutation, LinearCode.GaloisField);
             encryptionMatrix = encryptionMatrix.PermuteColumns(PrivateKey.Permutation);
             Console.WriteLine(encryptionMatrix);
             for (int col = 0; col < encryptionMatrix.ColumnCount; col++)
@@ -114,7 +109,6 @@ namespace CryptoSystems
             Console.WriteLine(message);
 
             #region Inverse permutation
-            //message = MatrixAlgorithms.DotMultiplication(message, PrivateKey.Permutation.Transpose(), LinearCode.GaloisField);
             var inverse = Helper.InversePermutation(PrivateKey.Permutation);
             message = message.PermuteColumns(inverse);
 
@@ -122,7 +116,7 @@ namespace CryptoSystems
             Console.WriteLine(message);
 
             #region Correct Errors
-            var correctedMessage = DecoderEllyptic.DecodeAndCorrect(LinearCode, message, _points);
+            var correctedMessage = DecoderEllyptic.DecodeAndCorrect(LinearCode, message, _generator);
             #endregion
             Console.WriteLine(correctedMessage);
 

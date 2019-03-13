@@ -13,91 +13,52 @@ namespace CryptoSystemsTests
         public static IEnumerable<object[]> GetDataForEllypticParityCheckMatrixGeneratorTest => new List<object[]>
         {
             new object[] {
-                7,
-                3,
-                2,
-                Constants.IrreduciblePolynom_deg2,
-                new MatrixInt(new int[,] { { 1, 0, 2 } }),
-                new MatrixInt(new int[,] { { 1, 0, 0, 3, 0, 0, 0 } }),
-                2
+                8, 2, 6, 2,
+                2, Constants.IrreduciblePolynom_deg2,
+                new MatrixInt(new int[] { 1, 1 }),
+                new MatrixInt(new int[] { 0, 0, 1, 0, 0, 2, 0, 0 }),
+                new MatrixInt(new int[,] {
+                    { 1, 2 },
+                    { 3, 0 }
+                }),
+                new int[] { 1, 4, 3, 0, 2, 7, 5, 6 },
+                new int[] { 1, 2, 3, 1, 2, 3, 1, 1 }
             },
             new object[] {
-                7,
-                3,
-                2,
-                Constants.IrreduciblePolynom_deg2,
-                new MatrixInt(new int[,] { { 0, 1, 1 } }),
-                new MatrixInt(new int[,] { { 0, 0, 2, 0, 0, 1, 0 } }),
-                2,
+                8, 2, 6, 2,
+                2, Constants.IrreduciblePolynom_deg2,
+                new MatrixInt(new int[] { 1, 0 }),
+                new MatrixInt(new int[] { 2, 2, 0, 0, 0, 0, 0, 0 }),
+                new MatrixInt(new int[,] {
+                    { 1, 2 },
+                    { 3, 0 }
+                }),
+                new int[] { 1, 4, 3, 0, 2, 7, 5, 6 },
+                new int[] { 1, 2, 3, 1, 2, 3, 1, 1 }
             },
-            //new object[] {
-            //    7,
-            //    3,
-            //    2,
-            //    Constants.IrreduciblePolynom_deg3,
-            //    new MatrixInt(new int[,] { { 0, 6, 1 } }),
-            //    new MatrixInt(new int[,] { { 1, 0, 0, 0, 5, 0, 0 } }),
-            //    2,
-            //},
-            //new object[] {
-            //    7,
-            //    3,
-            //    2,
-            //    Constants.IrreduciblePolynom_deg3,
-            //    new MatrixInt(new int[,] { { 4, 3, 5 } }),
-            //    new MatrixInt(new int[,] { { 0, 2, 0, 0, 0, 0, 7 } }),
-            //    2,
-            //},
-            //new object[] {
-            //    7,
-            //    3,
-            //    2,
-            //    Constants.IrreduciblePolynom_deg3,
-            //    new MatrixInt(new int[,] { { 7, 6, 1 } }),
-            //    new MatrixInt(new int[,] { { 0, 0, 0, 0, 6, 6, 0 } }),
-            //    2,
-            //},
-            //new object[] {
-            //    7,
-            //    3,
-            //    2,
-            //    Constants.IrreduciblePolynom_deg3,
-            //    new MatrixInt(new int[,] { { 3, 1, 0 } }),
-            //    new MatrixInt(new int[,] { { 6, 0, 0, 5, 0, 0, 0 } }),
-            //    2,
-            //},
-            //new object[] {
-            //    7,
-            //    3,
-            //    2,
-            //    Constants.IrreduciblePolynom_deg3,
-            //    new MatrixInt(new int[,] { { 1, 1, 1 } }),
-            //    new MatrixInt(new int[,] { { 0, 0, 0, 0, 0, 1, 3 } }),
-            //    2,
-            //},
-            //new object[] {
-            //    7,
-            //    3,
-            //    2,
-            //    Constants.IrreduciblePolynom_deg3,
-            //    new MatrixInt(new int[,] { { 2, 0, 0 } }),
-            //    new MatrixInt(new int[,] { { 1, 0, 0, 2, 0, 0, 0 } }),
-            //    2
-            //}
+            new object[] {
+                8, 2, 6, 2,
+                2, Constants.IrreduciblePolynom_deg2,
+                new MatrixInt(new int[] { 2, 2 }),
+                new MatrixInt(new int[] { 0, 0, 0, 0, 0, 0, 3, 3 }),
+                new MatrixInt(new int[,] {
+                    { 1, 2 },
+                    { 3, 0 }
+                }),
+                new int[] { 1, 4, 3, 0, 2, 7, 5, 6 },
+                new int[] { 1, 2, 3, 1, 2, 3, 1, 1 }
+            },
         };
 
         [Theory, MemberData(nameof(GetDataForEllypticParityCheckMatrixGeneratorTest))]
-        public void McElieseEllypticTest(int n, int k, int fieldPower, MatrixInt irreduciblePolynoimial, MatrixInt message, MatrixInt errorVector, int degree)
+        public void McElieseEllypticTest(int n, int k, int d, int t, int fieldPower, MatrixInt irreduciblePolynoimial, MatrixInt message, MatrixInt errorVector, MatrixInt scrambler, int[] permutation, int[] mask)
         {
-            //var galoisField = new GaloisField(2, fieldPower, irreduciblePolynoimial);
-            //var generator = new ParityCheckMatrixGeneratorEllyptic(degree);
-            //var reedSolomonCode = new McElieseEllyptic(n, k, galoisField, generator);
+            var galoisField = new GaloisField(2, fieldPower, irreduciblePolynoimial);
+            var mceliese = new McElieseEllyptic(n, k, d, t, galoisField, scrambler, permutation, mask);
+            var crytptogram = mceliese.EncryptMessage(mceliese.PublicKey, message, errorVector);
+            var decryptedMessage = mceliese.DecryptMessage(crytptogram);
 
-            //var encodedMessage = reedSolomonCode.Encode(message, errorVector);
-
-            //var originalMessage = reedSolomonCode.DecodeAndCorrect(encodedMessage);
-
-            //Assert.True(message == originalMessage);
+            Assert.True(message == decryptedMessage);
         }
     }
 }
