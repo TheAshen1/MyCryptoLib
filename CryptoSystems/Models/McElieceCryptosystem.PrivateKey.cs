@@ -12,10 +12,12 @@ namespace CryptoSystems.Models
         /// K rows K columns
         /// </summary>
         public MatrixInt ScramblerMatrix { get; set; }
+        public MatrixInt InverseScramblerMatrix { get; set; }
         /// <summary>
         /// permutation matrix
         /// </summary>
         public IList<int> Permutation { get; set; }
+        public IList<int> InversePermutation { get; set; }
         /// <summary>
         /// list of N elements of finite field which will be added to corresponding columns
         /// </summary>

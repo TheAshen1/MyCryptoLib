@@ -56,12 +56,15 @@ namespace CryptoSystems
                 }
             }
 
+
             PrivateKey = new PrivateKey
             {
                 GeneratorMatrix = LinearCode.GeneratorMatrix,
                 ScramblerMatrix = scramblerMatrix,
+                InverseScramblerMatrix = MatrixAlgorithms.MatrixInverse(scramblerMatrix, galoisField),
                 Permutation = permutation,
-                Mask = mask
+                InversePermutation = Helper.InversePermutation(permutation),
+                Mask = mask,
             };
 
             var encryptionMatrix = MatrixAlgorithms.DotMultiplication(scramblerMatrix, generatorMatrix, LinearCode.GaloisField);
@@ -109,8 +112,7 @@ namespace CryptoSystems
             Console.WriteLine(message);
 
             #region Inverse permutation
-            var inverse = Helper.InversePermutation(PrivateKey.Permutation);
-            message = message.PermuteColumns(inverse);
+            message = message.PermuteColumns(PrivateKey.InversePermutation);
 
             #endregion
             Console.WriteLine(message);
@@ -121,8 +123,7 @@ namespace CryptoSystems
             Console.WriteLine(correctedMessage);
 
             #region Apply the inverse scrambler matrix
-            var inverseScramblerMatrix = MatrixAlgorithms.MatrixInverse(PrivateKey.ScramblerMatrix, LinearCode.GaloisField);
-            var decryptedMessage = MatrixAlgorithms.DotMultiplication(correctedMessage, inverseScramblerMatrix, LinearCode.GaloisField);
+            var decryptedMessage = MatrixAlgorithms.DotMultiplication(correctedMessage, PrivateKey.InverseScramblerMatrix, LinearCode.GaloisField);
             #endregion
 
             return decryptedMessage;
