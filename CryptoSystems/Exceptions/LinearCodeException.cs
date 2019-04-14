@@ -2,7 +2,7 @@
 
 namespace CryptoSystems.Exceptions
 {
-    class LinearCodeException : Exception
+    public class LinearCodeException : Exception
     {
         public LinearCodeException() : base() { }
         public LinearCodeException(string message) : base(message) { }

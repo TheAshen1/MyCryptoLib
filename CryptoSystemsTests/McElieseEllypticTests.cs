@@ -1,7 +1,10 @@
 ﻿using CryptoSystems;
+using CryptoSystems.Algorithms;
+using CryptoSystems.Exceptions;
 using CryptoSystems.Models;
 using CryptoSystems.ParityCheckMatrixGenerators;
 using CryptoSystems.Utility;
+using System;
 using System.Collections.Generic;
 using Xunit;
 
@@ -9,7 +12,6 @@ namespace CryptoSystemsTests
 {
     public class McElieseEllypticTests
     {
-
         public static IEnumerable<object[]> GetDataForEllypticParityCheckMatrixGeneratorTest => new List<object[]>
         {
             new object[] {
@@ -60,5 +62,47 @@ namespace CryptoSystemsTests
 
             Assert.True(message == decryptedMessage);
         }
+
+        [Theory, MemberData(nameof(GetDataForEllypticParityCheckMatrixGeneratorTest))]
+        public void McElieseGenericFormTest(int n, int k, int d, int t, int fieldPower, MatrixInt irreduciblePolynoimial, MatrixInt message, MatrixInt errorVector, MatrixInt scrambler, int[] permutation, int[] mask)
+        {
+            var galoisField = new GaloisField(2, fieldPower, irreduciblePolynoimial);
+            var generator = new ParityCheckMatrixGeneratorEllyptic(2);
+            var linearCode = new LinearCode(n, k, d, t, galoisField, generator);
+
+            while (true)
+            {
+                linearCode.ParityCheckMatrix = generator.Generate(linearCode);
+
+                if (Helper.Weight(linearCode.ParityCheckMatrix) < Math.Ceiling(linearCode.ParityCheckMatrix.RowCount * linearCode.ParityCheckMatrix.ColumnCount * 0.7))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    linearCode.GeneratorMatrix = GeneratorMatrixCalculator.CalculateGeneratorMatrixAlt(linearCode);
+                }
+                catch (LinearCodeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    continue;
+                }
+
+                if (Helper.Weight(MatrixAlgorithms.DotMultiplication(linearCode.GeneratorMatrix, linearCode.ParityCheckMatrix.Transpose(), galoisField)) == 0)
+                {
+                    linearCode.GeneratorMatrix = linearCode.GeneratorMatrix;
+                    break;
+                }
+            }
+
+
+            var crytptogram = McElieseGenericForm.Encrypt(linearCode, scrambler, permutation, mask, generator, message, errorVector);
+            var decryptedMessage = McElieseGenericForm.Decrypt(linearCode, permutation, mask, scrambler, generator, crytptogram);
+
+            Assert.True(message == decryptedMessage);
+        }
+
+
     }
 }

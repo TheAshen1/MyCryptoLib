@@ -51,6 +51,7 @@
     <Compile Include="Exceptions\LinearCodeException.cs" />
     <Compile Include="Exceptions\SolveMatrixException.cs" />
     <Compile Include="LinearCode.cs" />
+    <Compile Include="McElieseGenericForm.cs" />
     <Compile Include="Models\Point.cs" />
     <Compile Include="Models\Term.cs" />
     <Compile Include="Models\Terms.cs" />
