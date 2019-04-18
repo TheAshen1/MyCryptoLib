@@ -44,6 +44,23 @@ namespace CryptoSystems
             MultiplicationTable = CalculateMultiplicationLookupTable(Field);
             DivisionTable = CalculateDivisionLookupTable(Field);
         }
+
+        public GaloisField(int baseNumber, int fieldPower)
+        {
+            if (!Constants.IrreduciblePolynoms.ContainsKey(fieldPower))
+            {
+                throw new GaloisFieldException($"It seems there is no fitting irreducible polynomial for such parameters: power={fieldPower}");
+            }
+            Base = baseNumber;
+            FieldPower = fieldPower;
+
+            Polynomial = Constants.IrreduciblePolynoms[fieldPower];
+            MaxValue = (Base << FieldPower - 1);
+            Field = Generate();
+            AdditionTable = CalculateAdditionLookupTable(Field);
+            MultiplicationTable = CalculateMultiplicationLookupTable(Field);
+            DivisionTable = CalculateDivisionLookupTable(Field);
+        }
         #endregion
 
         #region Public Methods

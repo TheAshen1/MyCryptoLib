@@ -16,7 +16,7 @@ namespace CryptoSystemsTests
         {
             new object[] {
                 8, 2, 6, 2,
-                2, Constants.IrreduciblePolynom_deg2,
+                2, Constants.IrreduciblePolynoms[2],
                 new MatrixInt(new int[] { 1, 1 }),
                 new MatrixInt(new int[] { 0, 0, 1, 0, 0, 2, 0, 0 }),
                 new MatrixInt(new int[,] {
@@ -28,7 +28,7 @@ namespace CryptoSystemsTests
             },
             new object[] {
                 8, 2, 6, 2,
-                2, Constants.IrreduciblePolynom_deg2,
+                2, Constants.IrreduciblePolynoms[2],
                 new MatrixInt(new int[] { 1, 0 }),
                 new MatrixInt(new int[] { 2, 2, 0, 0, 0, 0, 0, 0 }),
                 new MatrixInt(new int[,] {
@@ -40,7 +40,7 @@ namespace CryptoSystemsTests
             },
             new object[] {
                 8, 2, 6, 2,
-                2, Constants.IrreduciblePolynom_deg2,
+                2, Constants.IrreduciblePolynoms[2],
                 new MatrixInt(new int[] { 2, 2 }),
                 new MatrixInt(new int[] { 0, 0, 0, 0, 0, 0, 3, 3 }),
                 new MatrixInt(new int[,] {

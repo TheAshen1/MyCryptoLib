@@ -87,7 +87,7 @@ namespace CryptoSystemsTests
         [Theory, MemberData(nameof(GetData))]
         public void TestMcElieceCryptosystem(MatrixInt message, MatrixInt errorVector, MatrixInt scrambler, IList<int> permutation, IList<int> mask)
         {
-            var galoisField = new GaloisField(2, 3, Constants.IrreduciblePolynom_deg3);
+            var galoisField = new GaloisField(2, 3, Constants.IrreduciblePolynoms[3]);
 
             var generator = new ParityCheckMatrixGeneratorGeneric();
             var reedSolomonCode = new ReedSolomonCode(galoisField, generator);

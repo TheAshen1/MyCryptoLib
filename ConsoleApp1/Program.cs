@@ -12,7 +12,7 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            var field = new GaloisField(2, 2, Constants.IrreduciblePolynom_deg2);
+            var field = new GaloisField(2, 2, Constants.IrreduciblePolynoms[2]);
             Console.WriteLine(field);
             Console.WriteLine(field.AdditionTable);
             Console.WriteLine(field.MultiplicationTable);
