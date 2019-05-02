@@ -3,7 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:CryptoSystems.UI"
+      xmlns:fa="http://schemas.fontawesome.io/icons/"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="McElieseWizardPage1">
@@ -17,6 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
@@ -25,16 +26,41 @@
 
         <StackPanel Grid.Row="1" Grid.ColumnSpan="10"  Orientation="Horizontal" Loaded="StackPanel_Loaded">
             <Label Grid.Row="1">Galois field base:</Label>
-            <TextBox Width="50" Text = "{Binding FieldBase, Mode = TwoWay}" TextChanged="Input_Changed"/>
+            <TextBox Width="50" Text = "{Binding FieldBase, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }"/>
             <Label Grid.Row="1">Galois field power:</Label>
-            <TextBox Width="50" Text = "{Binding FieldPower, Mode = TwoWay}" TextChanged="Input_Changed"/>
+            <TextBox Width="50" Text = "{Binding FieldPower, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }"/>
+            <Button Margin="20,0,0,0" Content="Generate field" Width="150" Click="GenerateGaloisField"></Button>
         </StackPanel>
-
-        <DataGrid Grid.Row="2" ItemsSource="{Binding McElieseWizardData.GaloisField.Field.Data}"></DataGrid>
-       
+        
+        <Label Grid.Row="2" Grid.Column="0" Content="Addition table:"></Label>
+        <Label Grid.Row="2" Grid.Column="1" Content="Multiplication table:"></Label>
+        <Label Grid.Row="2" Grid.Column="2" Content="Division table:"></Label>
+        <fa:ImageAwesome x:Name="Loader"  Grid.Row="3" Grid.Column="1" Icon="Gear" Spin="True" Height="48" Width="48" Visibility="Hidden" Panel.ZIndex="1"/>
+        <DataGrid Name="GaloisFieldAdditionTable_Preview"
+                  Grid.Row="3"
+                  Grid.Column="0"
+                  RowHeaderWidth="0"
+                  ColumnHeaderHeight="0"
+                  AutoGenerateColumns="True"
+                  AutoGeneratingColumn="c_dataGrid_AutoGeneratingColumn"/>
+        <DataGrid Name="GaloisFieldMultiplicationTable_Preview"
+                  Grid.Row="3"
+                  Grid.Column="1"
+                  RowHeaderWidth="0"
+                  ColumnHeaderHeight="0"
+                  AutoGenerateColumns="True"
+                  AutoGeneratingColumn="c_dataGrid_AutoGeneratingColumn"/>
+        <DataGrid Name="GaloisFieldDivisionTable_Preview"
+                  Grid.Row="3"
+                  Grid.Column="2"
+                  RowHeaderWidth="0"
+                  ColumnHeaderHeight="0"
+                  AutoGenerateColumns="True"
+                  AutoGeneratingColumn="c_dataGrid_AutoGeneratingColumn"/>
+        
         <StackPanel Grid.Row="10" Grid.ColumnSpan="10" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
-            <!--<Button Name="backButton" IsEnabled="False" xml:space="preserve">&lt; _Back</Button>-->
-            <Button Name="nextButton" Click="NextButton_Click" xml:space="preserve" IsDefault="True">_Next &gt;</Button>
+            <!--<Button Name="backButton" IsEnabled="False">&lt; _Back</Button>-->
+            <Button Name="nextButton" Click="NextButton_Click" IsDefault="True">_Next &gt;</Button>
         </StackPanel>
     </Grid>
 </Page>

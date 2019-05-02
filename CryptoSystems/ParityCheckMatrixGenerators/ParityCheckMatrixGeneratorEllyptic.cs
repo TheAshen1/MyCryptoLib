@@ -42,10 +42,6 @@ namespace CryptoSystems.ParityCheckMatrixGenerators
             Console.WriteLine(_polynomial.Terms);
 
             #region Pick K random functions
-            //var functions = new List<int>()
-            //{
-            //    5,2,4,0,1,3
-            //};
             var functions = new List<int>();
             var j = 0;
             while (j < (linearCode.D))

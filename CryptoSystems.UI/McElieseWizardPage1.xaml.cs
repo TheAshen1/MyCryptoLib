@@ -1,4 +1,5 @@
 ﻿using CryptoSystems.Exceptions;
+using CryptoSystems.UI.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,11 +36,19 @@ namespace CryptoSystems.UI
             FieldPower = 3;
         }
 
-        private void Input_Changed(object sender, TextChangedEventArgs e)
+        private void GenerateGaloisField(object sender, RoutedEventArgs e)
         {
             try
             {
+                Loader.Visibility = Visibility.Visible;
+
                 McElieseWizardData.GaloisField = new GaloisField(FieldBase, FieldPower);
+
+                GaloisFieldAdditionTable_Preview.ItemsSource = BindingHelper.GetBindable2DArray(McElieseWizardData.GaloisField.AdditionTable);
+                GaloisFieldMultiplicationTable_Preview.ItemsSource = BindingHelper.GetBindable2DArray(McElieseWizardData.GaloisField.MultiplicationTable);
+                GaloisFieldDivisionTable_Preview.ItemsSource = BindingHelper.GetBindable2DArray(McElieseWizardData.GaloisField.DivisionTable);
+
+                Loader.Visibility = Visibility.Hidden;
             }
             catch (GaloisFieldException ex)
             {
@@ -49,12 +58,20 @@ namespace CryptoSystems.UI
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
-
+            var wizardPage2 = new McElieseWizardPage2(McElieseWizardData);
+            NavigationService?.Navigate(wizardPage2);
         }
 
         private void StackPanel_Loaded(object sender, RoutedEventArgs e)
         {
             McElieseWizardData.GaloisField = new GaloisField(FieldBase, FieldPower);
+        }
+
+        private void c_dataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            DataGridTextColumn column = e.Column as DataGridTextColumn;
+            Binding binding = column.Binding as Binding;
+            binding.Path = new PropertyPath(binding.Path.Path + ".Value");
         }
     }
 }

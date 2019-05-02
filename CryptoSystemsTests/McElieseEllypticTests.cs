@@ -16,7 +16,7 @@ namespace CryptoSystemsTests
         {
             new object[] {
                 8, 2, 6, 2,
-                2, Constants.IrreduciblePolynoms[2],
+                2,
                 new MatrixInt(new int[] { 1, 1 }),
                 new MatrixInt(new int[] { 0, 0, 1, 0, 0, 2, 0, 0 }),
                 new MatrixInt(new int[,] {
@@ -28,7 +28,7 @@ namespace CryptoSystemsTests
             },
             new object[] {
                 8, 2, 6, 2,
-                2, Constants.IrreduciblePolynoms[2],
+                2,
                 new MatrixInt(new int[] { 1, 0 }),
                 new MatrixInt(new int[] { 2, 2, 0, 0, 0, 0, 0, 0 }),
                 new MatrixInt(new int[,] {
@@ -40,7 +40,7 @@ namespace CryptoSystemsTests
             },
             new object[] {
                 8, 2, 6, 2,
-                2, Constants.IrreduciblePolynoms[2],
+                2,
                 new MatrixInt(new int[] { 2, 2 }),
                 new MatrixInt(new int[] { 0, 0, 0, 0, 0, 0, 3, 3 }),
                 new MatrixInt(new int[,] {
@@ -53,9 +53,9 @@ namespace CryptoSystemsTests
         };
 
         [Theory, MemberData(nameof(GetDataForEllypticParityCheckMatrixGeneratorTest))]
-        public void McElieseEllypticTest(int n, int k, int d, int t, int fieldPower, MatrixInt irreduciblePolynoimial, MatrixInt message, MatrixInt errorVector, MatrixInt scrambler, int[] permutation, int[] mask)
+        public void McElieseEllypticTest(int n, int k, int d, int t, int fieldPower, MatrixInt message, MatrixInt errorVector, MatrixInt scrambler, int[] permutation, int[] mask)
         {
-            var galoisField = new GaloisField(2, fieldPower, irreduciblePolynoimial);
+            var galoisField = new GaloisField(2, fieldPower);
             var mceliese = new McElieseEllyptic(n, k, d, t, galoisField, scrambler, permutation, mask);
             var crytptogram = mceliese.EncryptMessage(mceliese.PublicKey, message, errorVector);
             var decryptedMessage = mceliese.DecryptMessage(crytptogram);
@@ -64,9 +64,9 @@ namespace CryptoSystemsTests
         }
 
         [Theory, MemberData(nameof(GetDataForEllypticParityCheckMatrixGeneratorTest))]
-        public void McElieseGenericFormTest(int n, int k, int d, int t, int fieldPower, MatrixInt irreduciblePolynoimial, MatrixInt message, MatrixInt errorVector, MatrixInt scrambler, int[] permutation, int[] mask)
+        public void McElieseGenericFormTest(int n, int k, int d, int t, int fieldPower, MatrixInt message, MatrixInt errorVector, MatrixInt scrambler, int[] permutation, int[] mask)
         {
-            var galoisField = new GaloisField(2, fieldPower, irreduciblePolynoimial);
+            var galoisField = new GaloisField(2, fieldPower);
             var generator = new ParityCheckMatrixGeneratorEllyptic(2);
             var linearCode = new LinearCode(n, k, d, t, galoisField, generator);
 
