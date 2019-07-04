@@ -1,6 +1,6 @@
 ﻿using CryptoSystems.Exceptions;
 using CryptoSystems.Models;
-using CryptoSystems.Utility;
+using CryptoSystems.Util;
 using System;
 using System.Collections.Generic;
 
@@ -30,6 +30,11 @@ namespace CryptoSystems
         public MatrixInt MultiplicationTable { get; }
 
         public MatrixInt DivisionTable { get; }
+
+        public int this[int wordNumber]
+        {
+            get { return Field[wordNumber]; }
+        }
         #endregion
 
         #region Constructors

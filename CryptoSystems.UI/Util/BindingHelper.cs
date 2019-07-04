@@ -51,8 +51,7 @@ namespace CryptoSystems.UI.Util
                 {
                     int a = i;
                     int b = j;
-                    Ref<int> refT = new Ref<int>(() => matrix[a, b], z => { matrix[a, b] = z; });
-                    dataView[a][b] = refT;
+                    dataView[a][b] = new Ref<int>(() => matrix[a, b], z => { matrix[a, b] = z; });
                 }
             }
             return dataView;
@@ -77,6 +76,24 @@ namespace CryptoSystems.UI.Util
                 dataView[a][0] = new Ref<int>(() => points[a].x, v => {; });
                 dataView[a][1] = new Ref<int>(() => points[a].y, v => {; });
                 dataView[a][2] = new Ref<int>(() => points[a].z, v => {; });
+            }
+            return dataView;
+        }
+
+        public static DataView GetBindable2DArray<T>(IList<T> items)
+        {
+            DataTable dataTable = new DataTable();
+            for (int i = 0; i < items.Count; i++)
+            {
+                dataTable.Columns.Add(i.ToString(), typeof(Ref<T>));
+            }
+            DataRow dataRow = dataTable.NewRow();
+            dataTable.Rows.Add(dataRow);
+            DataView dataView = new DataView(dataTable);
+            for (int i = 0; i < items.Count; i++)
+            {
+                int a = i;
+                dataView[0][a] = new Ref<T>(() => items[a], v => { items[a] = v; });
             }
             return dataView;
         }

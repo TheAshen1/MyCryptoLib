@@ -19,28 +19,75 @@
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Label Grid.ColumnSpan="10" HorizontalContentAlignment="Center" >1. Define ellyptic curve parameters</Label>
+        <Label Grid.ColumnSpan="10" HorizontalContentAlignment="Center" >2. Define ellyptic curve parameters</Label>
 
-        <StackPanel Grid.Row="1" Grid.ColumnSpan="10"  Orientation="Horizontal" Loaded="StackPanel_Loaded">
-            <Label Grid.Row="1">Degree:</Label>
-            <TextBox Width="50" Text = "{Binding Degree, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }"/>
-            <Button Margin="20,0,0,0" Content="Generate curve" Width="150" Click="GenerateEllypticCurve"></Button>
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="10"  Orientation="Horizontal">
+            <StackPanel Grid.Row="1" Grid.ColumnSpan="10"  Orientation="Horizontal">
+                <Label Grid.Row="1">N:</Label>
+                <TextBox Width="50" Text = "{Binding N, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }"/>
+                <Label Grid.Row="1">K:</Label>
+                <TextBox Width="50" Text = "{Binding K, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }"/>
+                <Label Grid.Row="1">D:</Label>
+                <TextBox Width="50" Text = "{Binding D, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }"/>
+                <Label Grid.Row="1">T:</Label>
+                <TextBox Width="50" Text = "{Binding T, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }"/>
+            </StackPanel>
         </StackPanel>
 
-        <Label Grid.Row="2" Grid.Column="0" Content="Terms:"></Label>
-        <Label Grid.Row="2" Grid.Column="1" Content="Points:"></Label>
         <fa:ImageAwesome x:Name="Loader" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Icon="Gear" Spin="True" Height="48" Width="48" Visibility="Hidden" Panel.ZIndex="1"/>
-        <DataGrid Name="Terms_Preview"
+        <Label Grid.Row="2" Grid.Column="0" Content="Scrambler matrix:"></Label>
+        <DataGrid Name="ScamblerMatrix_Preview"
                   Grid.Row="3"
                   Grid.Column="0"
+                  Grid.RowSpan="3"
                   RowHeaderWidth="0"
                   ColumnHeaderHeight="0"
                   AutoGenerateColumns="True"
                   AutoGeneratingColumn="c_dataGrid_AutoGeneratingColumn"/>
-        <DataGrid Name="Points_Preview"
+        <Label Grid.Row="6" Grid.Column="0" Content="Inverse scrambler matrix:"></Label>
+        <DataGrid Name="InverseScamblerMatrix_Preview"
+                  Grid.Row="7"
+                  Grid.Column="0"
+                  Grid.RowSpan="3"
+                  RowHeaderWidth="0"
+                  ColumnHeaderHeight="0"
+                  AutoGenerateColumns="True"
+                  AutoGeneratingColumn="c_dataGrid_AutoGeneratingColumn"/>
+        <Label Grid.Row="2" Grid.Column="1" Content="Permutation:"></Label>
+        <DataGrid Name="Permutation_Preview"
                   Grid.Row="3"
+                  Grid.Column="1"
+                  RowHeaderWidth="0"
+                  ColumnHeaderHeight="0"
+                  AutoGenerateColumns="True"
+                  AutoGeneratingColumn="c_dataGrid_AutoGeneratingColumn"/>
+        <Label Grid.Row="4" Grid.Column="1" Content="Inverse permutation:"></Label>
+        <DataGrid Name="InversePermutation_Preview"
+                  Grid.Row="5"
+                  Grid.Column="1"
+                  RowHeaderWidth="0"
+                  ColumnHeaderHeight="0"
+                  AutoGenerateColumns="True"
+                  AutoGeneratingColumn="c_dataGrid_AutoGeneratingColumn"/>
+        <Label Grid.Row="6" Grid.Column="1" Content="Mask:"></Label>
+        <DataGrid Name="Mask_Preview"
+                  Grid.Row="7"
+                  Grid.Column="1"
+                  RowHeaderWidth="0"
+                  ColumnHeaderHeight="0"
+                  AutoGenerateColumns="True"
+                  AutoGeneratingColumn="c_dataGrid_AutoGeneratingColumn"/>
+        <Label Grid.Row="8" Grid.Column="1" Content="Inverse mask:"></Label>
+        <DataGrid Name="InverseMask_Preview"
+                  Grid.Row="9"
                   Grid.Column="1"
                   RowHeaderWidth="0"
                   ColumnHeaderHeight="0"

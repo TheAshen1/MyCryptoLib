@@ -3,6 +3,7 @@ using CryptoSystems.Interfaces;
 using CryptoSystems.Models;
 using CryptoSystems.ParityCheckMatrixGenerators;
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace CryptoSystems.Algorithms
@@ -26,7 +27,7 @@ namespace CryptoSystems.Algorithms
             var errorCount = errorLocators.Where(v => v == 0).Count();
             #endregion
 
-            Console.WriteLine(linearCode.ParityCheckMatrix);
+            Debug.WriteLine(linearCode.ParityCheckMatrix);
             #region Caclulate Error vector
             var system = new MatrixInt(linearCode.D, errorCount);
             for (int row = 0; row < linearCode.D; row++)
@@ -40,9 +41,9 @@ namespace CryptoSystems.Algorithms
                     }
                 }
             }
-            Console.WriteLine(system);
+            Debug.WriteLine(system);
             system |= syndrome.Transpose();
-            Console.WriteLine(system);
+            Debug.WriteLine(system);
             var errorVectorValues = MatrixAlgorithms.Solve(system, linearCode.GaloisField);
 
             var errorVector = new int[errorLocators.Length];

@@ -27,8 +27,8 @@
         <StackPanel Grid.Row="1" Grid.ColumnSpan="10"  Orientation="Horizontal" Loaded="StackPanel_Loaded">
             <Label Grid.Row="1">Galois field base:</Label>
             <TextBox Width="50" Text = "{Binding FieldBase, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }"/>
-            <Label Grid.Row="1">Galois field power:</Label>
-            <TextBox Width="50" Text = "{Binding FieldPower, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }"/>
+            <Label Grid.Row="1">Galois field power(has to be even):</Label>
+            <TextBox Width="50" Text = "{Binding FieldPower, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }" TextChanged="TextBox_TextChanged"/>
             <Button Margin="20,0,0,0" Content="Generate field" Width="150" Click="GenerateGaloisField"></Button>
         </StackPanel>
         

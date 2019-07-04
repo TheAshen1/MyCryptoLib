@@ -1,5 +1,5 @@
 ﻿using CryptoSystems.Exceptions;
-using CryptoSystems.Utility;
+using CryptoSystems.Util;
 using System;
 
 namespace CryptoSystems.Models

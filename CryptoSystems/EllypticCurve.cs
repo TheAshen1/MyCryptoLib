@@ -1,4 +1,5 @@
-﻿using CryptoSystems.Models;
+﻿using CryptoSystems.Exceptions;
+using CryptoSystems.Models;
 using System;
 using System.Collections.Generic;
 
@@ -14,7 +15,7 @@ namespace CryptoSystems
         {
             if (galoisField.FieldPower % 2 != 0)
             {
-                throw new Exception();
+                throw new EllypticCurveException("Field power has to be even");
             }
             _fixedZValue = 1;
             _galoisField = galoisField;

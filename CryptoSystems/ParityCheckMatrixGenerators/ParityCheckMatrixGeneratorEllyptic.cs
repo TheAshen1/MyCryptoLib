@@ -3,6 +3,7 @@ using CryptoSystems.Interfaces;
 using CryptoSystems.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace CryptoSystems.ParityCheckMatrixGenerators
 {
@@ -39,7 +40,7 @@ namespace CryptoSystems.ParityCheckMatrixGenerators
                 _polynomial = new PolynomialOnGaloisField(_degree, linearCode.GaloisField);
             }
 
-            Console.WriteLine(_polynomial.Terms);
+            Debug.WriteLine(_polynomial.Terms);
 
             #region Pick K random functions
             var functions = new List<int>();
@@ -59,7 +60,7 @@ namespace CryptoSystems.ParityCheckMatrixGenerators
             {
                 Terms.SetTerm(i, _polynomial.Terms[functions[i], 0], _polynomial.Terms[functions[i], 1]);
             }
-            Console.WriteLine(Terms);
+            Debug.WriteLine(Terms);
             #endregion
 
             #region Calculate parity check matrix

@@ -22,5 +22,6 @@ namespace CryptoSystems.Models
         /// list of N elements of finite field which will be added to corresponding columns
         /// </summary>
         public IList<int> Mask { get; set; }
+        public List<int> InverseMask { get; internal set; }
     }
 }

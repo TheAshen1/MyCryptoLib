@@ -1,0 +1,42 @@
+﻿<Page x:Class="CryptoSystems.UI.McElieseWizardPage3"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CryptoSystems.UI"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="McElieseWizardPage3">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Label Grid.ColumnSpan="10" HorizontalContentAlignment="Center" >3. Pick parameters for linear code</Label>
+
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="10"  Orientation="Horizontal">
+            <Label Grid.Row="1">N:</Label>
+            <TextBox Width="50" Text = "{Binding N, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }"/>
+            <Label Grid.Row="1">K:</Label>
+            <TextBox Width="50" Text = "{Binding K, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }"/>
+            <Label Grid.Row="1">D:</Label>
+            <TextBox Width="50" Text = "{Binding D, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }"/>
+            <Label Grid.Row="1">T:</Label>
+            <TextBox Width="50" Text = "{Binding T, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="10" Grid.ColumnSpan="10" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+            <Button Name="backButton" Click="PrevButton_Click" IsEnabled="True" Height="31" VerticalAlignment="Bottom">&lt; _Back</Button>
+            <Button Name="nextButton" Click="NextButton_Click" IsDefault="True" Margin="10,0,0,0">_Next &gt;</Button>
+        </StackPanel>
+    </Grid>
+</Page>

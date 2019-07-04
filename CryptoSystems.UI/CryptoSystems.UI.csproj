@@ -62,6 +62,9 @@
     <Compile Include="McElieseWizardPage2.xaml.cs">
       <DependentUpon>McElieseWizardPage2.xaml</DependentUpon>
     </Compile>
+    <Compile Include="McElieseWizardPage3.xaml.cs">
+      <DependentUpon>McElieseWizardPage3.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Util\BindingHelper.cs" />
     <Compile Include="Util\Ref.cs" />
     <Page Include="MainWindow.xaml">
@@ -85,6 +88,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="McElieseWizardPage2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="McElieseWizardPage3.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

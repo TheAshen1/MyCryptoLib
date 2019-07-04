@@ -3,7 +3,7 @@ using CryptoSystems.Algorithms;
 using CryptoSystems.Exceptions;
 using CryptoSystems.Models;
 using CryptoSystems.ParityCheckMatrixGenerators;
-using CryptoSystems.Utility;
+using CryptoSystems.Util;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -64,11 +64,22 @@ namespace CryptoSystemsTests
         }
 
         [Theory, MemberData(nameof(GetDataForEllypticParityCheckMatrixGeneratorTest))]
+        public void McElieseEllypticTest2(int n, int k, int d, int t, int fieldPower, MatrixInt message, MatrixInt errorVector, MatrixInt scrambler, int[] permutation, int[] mask)
+        {
+            var galoisField = new GaloisField(2, fieldPower);
+            var mceliese = new McElieseEllyptic(n, k, d, t, galoisField);
+            var crytptogram = mceliese.EncryptMessage(mceliese.PublicKey, message, errorVector);
+            var decryptedMessage = mceliese.DecryptMessage(crytptogram);
+
+            Assert.True(message == decryptedMessage);
+        }
+
+        [Theory, MemberData(nameof(GetDataForEllypticParityCheckMatrixGeneratorTest))]
         public void McElieseGenericFormTest(int n, int k, int d, int t, int fieldPower, MatrixInt message, MatrixInt errorVector, MatrixInt scrambler, int[] permutation, int[] mask)
         {
             var galoisField = new GaloisField(2, fieldPower);
             var generator = new ParityCheckMatrixGeneratorEllyptic(2);
-            var linearCode = new LinearCode(n, k, d, t, galoisField, generator);
+            var linearCode = new LinearCode(n, k, d, t, galoisField);
 
             while (true)
             {
@@ -95,7 +106,6 @@ namespace CryptoSystemsTests
                     break;
                 }
             }
-
 
             var crytptogram = McElieseGenericForm.Encrypt(linearCode, scrambler, permutation, mask, generator, message, errorVector);
             var decryptedMessage = McElieseGenericForm.Decrypt(linearCode, permutation, mask, scrambler, generator, crytptogram);

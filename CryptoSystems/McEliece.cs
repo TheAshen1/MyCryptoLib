@@ -1,9 +1,10 @@
 ﻿using CryptoSystems.Algorithms;
 using CryptoSystems.Interfaces;
 using CryptoSystems.Models;
-using CryptoSystems.Utility;
+using CryptoSystems.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace CryptoSystems
 {
@@ -26,9 +27,9 @@ namespace CryptoSystems
             };
 
             var encryptionMatrix = MatrixAlgorithms.DotMultiplication(scramblerMatrix, linearCode.GeneratorMatrix, linearCode.GaloisField);
-            Console.WriteLine(encryptionMatrix);
+            Debug.WriteLine(encryptionMatrix);
             encryptionMatrix = encryptionMatrix.PermuteColumns(PrivateKey.Permutation);
-            Console.WriteLine(encryptionMatrix);
+            Debug.WriteLine(encryptionMatrix);
             for (int col = 0; col < encryptionMatrix.ColumnCount; col++)
             {
                 for (int row = 0; row < encryptionMatrix.RowCount; row++)
@@ -36,7 +37,7 @@ namespace CryptoSystems
                     encryptionMatrix[row, col] = linearCode.GaloisField.MultiplyWords(encryptionMatrix[row, col], mask[col]);
                 }
             }
-            Console.WriteLine(encryptionMatrix + 1);
+            Debug.WriteLine(encryptionMatrix + 1);
 
             PublicKey = new PublicKey
             {
@@ -67,18 +68,18 @@ namespace CryptoSystems
                 }
             }
             #endregion
-            //Console.WriteLine(message);
+            //Debug.WriteLine(message);
 
             #region Inverse permutation
             var inversePermutation = Helper.InversePermutation(PrivateKey.Permutation);
             message = message.PermuteColumns(inversePermutation);
             #endregion
-            //Console.WriteLine(message);
+            //Debug.WriteLine(message);
 
             #region Correct Errors
             var correctedMessage = LinearCode.DecodeAndCorrect(message);
             #endregion
-            //Console.WriteLine(correctedMessage);
+            //Debug.WriteLine(correctedMessage);
 
             #region Apply the inverse scrambler matrix
             var inverseScramblerMatrix = MatrixAlgorithms.MatrixInverse(PrivateKey.ScramblerMatrix, LinearCode.GaloisField);

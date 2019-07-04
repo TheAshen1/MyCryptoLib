@@ -2,7 +2,7 @@
 using CryptoSystems.Algorithms;
 using CryptoSystems.Models;
 using CryptoSystems.ParityCheckMatrixGenerators;
-using CryptoSystems.Utility;
+using CryptoSystems.Util;
 using System;
 using System.Collections.Generic;
 

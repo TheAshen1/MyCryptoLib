@@ -2,7 +2,7 @@
 using CryptoSystems.Exceptions;
 using CryptoSystems.Interfaces;
 using CryptoSystems.Models;
-using CryptoSystems.Utility;
+using CryptoSystems.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +32,7 @@ namespace CryptoSystems
         public GaloisField GaloisField { get; }
 
 
-        public LinearCode(int n, int k, int d, int t, GaloisField galoisField, IParityCheckMatrixGenerator parityCheckMatrixGenerator)
+        public LinearCode(int n, int k, int d, int t, GaloisField galoisField)
         {
             N = n;
             K = k;

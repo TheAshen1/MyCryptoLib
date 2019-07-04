@@ -2,7 +2,7 @@
 using CryptoSystems;
 using CryptoSystems.Models;
 using CryptoSystems.ParityCheckMatrixGenerators;
-using CryptoSystems.Utility;
+using CryptoSystems.Util;
 using Xunit;
 
 namespace CryptoSystemsTests

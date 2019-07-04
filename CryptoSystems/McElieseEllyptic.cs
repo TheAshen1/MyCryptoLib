@@ -3,9 +3,10 @@ using CryptoSystems.Exceptions;
 using CryptoSystems.Interfaces;
 using CryptoSystems.Models;
 using CryptoSystems.ParityCheckMatrixGenerators;
-using CryptoSystems.Utility;
+using CryptoSystems.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace CryptoSystems
 {
@@ -16,14 +17,12 @@ namespace CryptoSystems
         public PrivateKey PrivateKey { get; }
         public PublicKey PublicKey { get; }
 
-        private readonly GaloisField _galoisField;
         private readonly ParityCheckMatrixGeneratorEllyptic _generator;
 
-        public McElieseEllyptic(int n, int k, int d, int t, GaloisField galoisField, MatrixInt scramblerMatrix, IList<int> permutation, IList<int> mask)
+        public McElieseEllyptic(int n, int k, int d, int t, GaloisField galoisField, MatrixInt scramblerMatrix = null, IList<int> permutation = null, IList<int> mask = null)
         {
-            _galoisField = galoisField;
             _generator = new ParityCheckMatrixGeneratorEllyptic(2);
-            LinearCode = new LinearCode(n, k, d, t, galoisField, _generator);
+            LinearCode = new LinearCode(n, k, d, t, galoisField);
 
             MatrixInt parityCheckMatrix = null;
             MatrixInt generatorMatrix = null;
@@ -31,9 +30,11 @@ namespace CryptoSystems
             {
                 parityCheckMatrix = _generator.Generate(LinearCode);
                 LinearCode.ParityCheckMatrix = parityCheckMatrix;
-                Console.WriteLine(parityCheckMatrix);
+                Debug.WriteLine(parityCheckMatrix);
 
-                if (Helper.Weight(parityCheckMatrix) < Math.Ceiling(parityCheckMatrix.RowCount * parityCheckMatrix.ColumnCount * 0.7))
+                var minValueFillPercentage = 0.7;
+
+                if (Helper.Weight(parityCheckMatrix) < Math.Ceiling(parityCheckMatrix.RowCount * parityCheckMatrix.ColumnCount * minValueFillPercentage))
                 {
                     continue;
                 }
@@ -41,11 +42,11 @@ namespace CryptoSystems
                 try
                 {
                     generatorMatrix = GeneratorMatrixCalculator.CalculateGeneratorMatrixAlt(LinearCode);
-                    Console.WriteLine(generatorMatrix);
+                    Debug.WriteLine(generatorMatrix);
                 }
                 catch (LinearCodeException ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Debug.WriteLine(ex.Message);
                     continue;
                 }
 
@@ -55,8 +56,35 @@ namespace CryptoSystems
                     break;
                 }
             }
-
-
+            if (scramblerMatrix is null)
+            {
+                scramblerMatrix = Helper.GenerateScramblerMatrix(LinearCode.K);
+                while (true)
+                {
+                    try
+                    {
+                        MatrixAlgorithms.MatrixInverse(scramblerMatrix, galoisField);
+                        break;
+                    }
+                    catch (SolveMatrixException)
+                    {
+                        Debug.WriteLine("Reattempting to generate scrambler matrix");
+                    }
+                }
+            }
+            if (permutation is null)
+            {
+                permutation = Helper.GeneratePermutaionList(LinearCode.N);
+            }
+            if (mask is null)
+            {
+                mask = Helper.GenerateMask(LinearCode.N, LinearCode.GaloisField);
+            }
+            var inverseMask = new List<int>(LinearCode.N);
+            for (int i = 0; i < LinearCode.N; i++)
+            {
+                inverseMask.Add(LinearCode.GaloisField.GetMultiplicativeInverse(mask[i]));
+            }
             PrivateKey = new PrivateKey
             {
                 GeneratorMatrix = LinearCode.GeneratorMatrix,
@@ -65,25 +93,25 @@ namespace CryptoSystems
                 Permutation = permutation,
                 InversePermutation = Helper.InversePermutation(permutation),
                 Mask = mask,
+                InverseMask = inverseMask
             };
 
-            var encryptionMatrix = MatrixAlgorithms.DotMultiplication(scramblerMatrix, generatorMatrix, LinearCode.GaloisField);
-            Console.WriteLine(encryptionMatrix);
+            var encryptionMatrix = MatrixAlgorithms.DotMultiplication(PrivateKey.ScramblerMatrix, generatorMatrix, LinearCode.GaloisField);
+            Debug.WriteLine(encryptionMatrix);
             encryptionMatrix = encryptionMatrix.PermuteColumns(PrivateKey.Permutation);
-            Console.WriteLine(encryptionMatrix);
+            Debug.WriteLine(encryptionMatrix);
             for (int col = 0; col < encryptionMatrix.ColumnCount; col++)
             {
                 for (int row = 0; row < encryptionMatrix.RowCount; row++)
                 {
-                    encryptionMatrix[row, col] = LinearCode.GaloisField.MultiplyWords(encryptionMatrix[row, col], mask[col]);
+                    encryptionMatrix[row, col] = LinearCode.GaloisField.MultiplyWords(encryptionMatrix[row, col], PrivateKey.Mask[col]);
                 }
             }
-            Console.WriteLine(encryptionMatrix);
+            Debug.WriteLine(encryptionMatrix);
 
             PublicKey = new PublicKey
             {
                 EncryptionMatrix = encryptionMatrix,
-                //ErrorVectorMaxWeight = LinearCode.MinimumDistance
             };
         }
 
@@ -105,22 +133,22 @@ namespace CryptoSystems
             {
                 for (int row = 0; row < message.RowCount; row++)
                 {
-                    message[row, col] = LinearCode.GaloisField.MultiplyWords(message[row, col], LinearCode.GaloisField.GetMultiplicativeInverse(PrivateKey.Mask[col]));
+                    message[row, col] = LinearCode.GaloisField.MultiplyWords(message[row, col], PrivateKey.InverseMask[col]);
                 }
             }
             #endregion
-            Console.WriteLine(message);
+            Debug.WriteLine(message);
 
             #region Inverse permutation
             message = message.PermuteColumns(PrivateKey.InversePermutation);
 
             #endregion
-            Console.WriteLine(message);
+            Debug.WriteLine(message);
 
             #region Correct Errors
             var correctedMessage = DecoderEllyptic.DecodeAndCorrect(LinearCode, message, _generator);
             #endregion
-            Console.WriteLine(correctedMessage);
+            Debug.WriteLine(correctedMessage);
 
             #region Apply the inverse scrambler matrix
             var decryptedMessage = MatrixAlgorithms.DotMultiplication(correctedMessage, PrivateKey.InverseScramblerMatrix, LinearCode.GaloisField);

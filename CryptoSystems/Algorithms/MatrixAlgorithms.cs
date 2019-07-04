@@ -1,7 +1,8 @@
 ﻿using CryptoSystems.Exceptions;
 using CryptoSystems.Models;
-using CryptoSystems.Utility;
+using CryptoSystems.Util;
 using System;
+using System.Diagnostics;
 
 namespace CryptoSystems.Algorithms
 {
@@ -75,7 +76,7 @@ namespace CryptoSystems.Algorithms
             var leadColumn = 0;
             for (int leadRow = 0; leadRow < matrix.RowCount; leadRow++)
             {
-                Console.WriteLine(result);
+                Debug.WriteLine(result);
                 #region Check if first row is not 0 and swap with non 0 row
                 if (result[leadRow, leadColumn] == 0)
                 {
@@ -104,7 +105,7 @@ namespace CryptoSystems.Algorithms
                     }
                 }
                 #endregion
-                Console.WriteLine(result);
+                Debug.WriteLine(result);
 
                 #region Make leading diagonal word 1
                 if (result[leadRow, leadColumn] != 1)
@@ -117,7 +118,7 @@ namespace CryptoSystems.Algorithms
                     }
                 }
                 #endregion
-                Console.WriteLine(result);
+                Debug.WriteLine(result);
 
                 #region make all other values in the same column 0
                 for (int i = 0; i < matrix.RowCount; i++)
@@ -137,7 +138,7 @@ namespace CryptoSystems.Algorithms
                         var wordToAdd = galoisField.MultiplyWords(multiplier, result[leadRow, col]);
                         result[i, col] = galoisField.AddWords(wordToAdd, result[i, col]);
                     }
-                    Console.WriteLine(result);
+                    Debug.WriteLine(result);
 
                 }
                 #endregion
@@ -145,7 +146,7 @@ namespace CryptoSystems.Algorithms
                 leadColumn++;
             }
 
-            Console.WriteLine(result);
+            Debug.WriteLine(result);
 
             return result.GetRangeOfColumns(new RangeInt(result.RowCount, result.ColumnCount));
         }
@@ -217,7 +218,6 @@ namespace CryptoSystems.Algorithms
             var columnCount = matrixRight.ColumnCount;
 
             var result = new MatrixInt(rowCount, columnCount);
-
             for (int row = 0; row < rowCount; row++)
             {
                 for (int col = 0; col < columnCount; col++)
@@ -237,11 +237,8 @@ namespace CryptoSystems.Algorithms
         public static MatrixInt MatrixInverse(MatrixInt matrix, GaloisField galoisField)
         {
             var identity = Helper.GenerateIdentityMatrix(matrix.RowCount);
-
             var toSolve = matrix | (identity);
-
             var inverse = MatrixAlgorithms.Solve(toSolve, galoisField);
-
             return inverse;
         }
 
@@ -338,7 +335,7 @@ namespace CryptoSystems.Algorithms
         {
             var result = matrix.Clone();
             int rank = result.ColumnCount;
-            Console.WriteLine(result);
+            Debug.WriteLine(result);
 
             for (int row = 0; row < rank; row++)
             {
@@ -366,10 +363,10 @@ namespace CryptoSystems.Algorithms
                                 var temp = galoisField.MultiplyWords(mult, result[row, i]);
                                 result[subRow, i] = galoisField.AddWords(temp, result[subRow, i]);
                             }
-                            Console.WriteLine(result);
+                            Debug.WriteLine(result);
                         }
                     }
-                    Console.WriteLine(result);
+                    Debug.WriteLine(result);
 
                 }
 
@@ -401,7 +398,7 @@ namespace CryptoSystems.Algorithms
                             break;
                         }
                     }
-                    Console.WriteLine(result);
+                    Debug.WriteLine(result);
 
                     // If we did not find any row with  
                     // non-zero element in current  

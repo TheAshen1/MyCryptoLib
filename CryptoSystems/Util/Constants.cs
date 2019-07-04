@@ -1,7 +1,7 @@
 ﻿using CryptoSystems.Models;
 using System.Collections.Generic;
 
-namespace CryptoSystems.Utility
+namespace CryptoSystems.Util
 {
     public static class Constants
     {

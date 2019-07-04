@@ -46,6 +46,7 @@
     <Compile Include="Algorithms\ErrorLocatorEllyptic.cs" />
     <Compile Include="Algorithms\SyndromeCalculator.cs" />
     <Compile Include="EllypticCurve.cs" />
+    <Compile Include="Exceptions\EllypticCurveException.cs" />
     <Compile Include="Exceptions\ParityCheckMatrixGeneratorException.cs" />
     <Compile Include="Exceptions\GaloisFieldException.cs" />
     <Compile Include="Exceptions\LinearCodeException.cs" />
@@ -82,7 +83,7 @@
     <Compile Include="Models\McElieceCryptosystem.PublicKey.cs" />
     <Compile Include="Models\RangeInt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\Utility.cs" />
+    <Compile Include="Util\Helper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\McElieceCryptosystem.PrivateKey.cs" />

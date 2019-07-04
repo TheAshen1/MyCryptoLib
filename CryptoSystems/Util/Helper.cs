@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CryptoSystems.Utility
+namespace CryptoSystems.Util
 {
     public static class Helper
     {
@@ -121,6 +121,40 @@ namespace CryptoSystems.Utility
             return permutationMatrix;
         }
 
+        public static List<int> GeneratePermutaionList(int size)
+        {
+            var permutationList = new List<int>(size);
+            for (int i = 0; i < size; i++)
+            {
+                permutationList.Add(i);
+            }
+            var rand = new Random();
+            for (var col = 0; col < size; col++)
+            {
+                var temp = permutationList[col];
+                var randomIndex = rand.Next(col, permutationList.Count);
+                if(temp == randomIndex)
+                {
+                    continue;
+                }
+                permutationList[col] = permutationList[randomIndex];
+                permutationList[randomIndex] = temp;
+            }
+            return permutationList;
+        }
+
+        public static List<int> GenerateMask(int size, GaloisField galoisField)
+        {
+            var mask = new List<int>(size);
+            var rand = new Random();
+            for (int i = 0; i < size; i++)
+            {
+                var randomWord = rand.Next(1, galoisField.WordCount);
+                mask.Add(galoisField[randomWord]);
+            }
+            return mask;
+        } 
+
         public static int BinaryToDecimal(MatrixInt binaryVector)
         {
             if (binaryVector.RowCount > 1)
@@ -163,7 +197,7 @@ namespace CryptoSystems.Utility
             }
             return inverse;
         }
-        
+
         public static List<int> InversePermutation(int[] permutation)
         {
             var inverse = new List<int>(permutation);
@@ -225,6 +259,5 @@ namespace CryptoSystems.Utility
         {
             return new PolynomialDouble(0);
         }
-
     }
 }

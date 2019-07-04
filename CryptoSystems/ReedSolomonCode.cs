@@ -2,8 +2,9 @@
 using CryptoSystems.Exceptions;
 using CryptoSystems.Interfaces;
 using CryptoSystems.Models;
-using CryptoSystems.Utility;
+using CryptoSystems.Util;
 using System;
+using System.Diagnostics;
 
 namespace CryptoSystems
 {
@@ -32,7 +33,7 @@ namespace CryptoSystems
             while (true)
             {
                 ParityCheckMatrix = parityCheckMatrixGenerator.Generate(this);
-                Console.WriteLine(ParityCheckMatrix);
+                Debug.WriteLine(ParityCheckMatrix);
 
                 if (Helper.Weight(ParityCheckMatrix) < Math.Ceiling(ParityCheckMatrix.RowCount * ParityCheckMatrix.ColumnCount * 0.7))
                 {
@@ -42,11 +43,11 @@ namespace CryptoSystems
                 try
                 {
                     GeneratorMatrix = GeneratorMatrixCalculator.CalculateGeneratorMatrix(this);
-                    Console.WriteLine(GeneratorMatrix);
+                    Debug.WriteLine(GeneratorMatrix);
                 }
                 catch (LinearCodeException ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Debug.WriteLine(ex.Message);
                     continue;
                 }
 

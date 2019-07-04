@@ -2,6 +2,7 @@
 using CryptoSystems.Interfaces;
 using CryptoSystems.Models;
 using System;
+using System.Diagnostics;
 
 namespace CryptoSystems.Algorithms
 {
@@ -33,7 +34,7 @@ namespace CryptoSystems.Algorithms
             {
                 var systemA = linearCode.ParityCheckMatrix.GetRangeOfColumns(new RangeInt(linearCode.K, linearCode.N));             
                 var systemB = systemA | linearCode.ParityCheckMatrix.GetColumn(i);
-                Console.WriteLine(systemB);
+                Debug.WriteLine(systemB);
 
                 MatrixInt systemSolution;
                 try
