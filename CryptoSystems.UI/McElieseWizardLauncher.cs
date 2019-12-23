@@ -17,5 +17,6 @@ namespace CryptoSystems.UI
             var wizardPage1 = new McElieseWizardPage1(_wizardData);
             NavigationService?.Navigate(wizardPage1);
         }
+        
     }
 }

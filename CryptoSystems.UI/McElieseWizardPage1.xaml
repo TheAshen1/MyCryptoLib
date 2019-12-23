@@ -3,7 +3,6 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:fa="http://schemas.fontawesome.io/icons/"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="McElieseWizardPage1">
@@ -26,7 +25,7 @@
 
         <StackPanel Grid.Row="1" Grid.ColumnSpan="10"  Orientation="Horizontal" Loaded="StackPanel_Loaded">
             <Label Grid.Row="1">Galois field base:</Label>
-            <TextBox Width="50" Text = "{Binding FieldBase, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }"/>
+            <TextBox Width="50" Text = "{Binding FieldBase, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }" IsReadOnly="True"/>
             <Label Grid.Row="1">Galois field power(has to be even):</Label>
             <TextBox Width="50" Text = "{Binding FieldPower, Mode = TwoWay, UpdateSourceTrigger=PropertyChanged }" TextChanged="TextBox_TextChanged"/>
             <Button Margin="20,0,0,0" Content="Generate field" Width="150" Click="GenerateGaloisField"></Button>
@@ -35,7 +34,7 @@
         <Label Grid.Row="2" Grid.Column="0" Content="Addition table:"></Label>
         <Label Grid.Row="2" Grid.Column="1" Content="Multiplication table:"></Label>
         <Label Grid.Row="2" Grid.Column="2" Content="Division table:"></Label>
-        <fa:ImageAwesome x:Name="Loader"  Grid.Row="3" Grid.Column="1" Icon="Gear" Spin="True" Height="48" Width="48" Visibility="Hidden" Panel.ZIndex="1"/>
+        <!--<fa:ImageAwesome x:Name="Loader"  Grid.Row="3" Grid.Column="1" Icon="Gear" Spin="True" Height="48" Width="48" Visibility="Hidden" Panel.ZIndex="1"/>-->
         <DataGrid Name="GaloisFieldAdditionTable_Preview"
                   Grid.Row="3"
                   Grid.Column="0"

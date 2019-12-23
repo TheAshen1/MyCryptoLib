@@ -1,12 +1,8 @@
-﻿using CryptoSystems;
-using CryptoSystems.Algorithms;
-using CryptoSystems.Models;
-using CryptoSystems.ParityCheckMatrixGenerators;
+﻿using CryptoSystems.Models;
 using CryptoSystems.Util;
 using System;
-using System.Collections.Generic;
 
-namespace ConsoleApp
+namespace CryptoSystems.ConsoleApp
 {
     class Program
     {
@@ -71,7 +67,5 @@ namespace ConsoleApp
             //Console.WriteLine(originalMessage);
             #endregion
         }
-
-
     }
 }

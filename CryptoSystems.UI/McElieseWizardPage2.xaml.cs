@@ -54,8 +54,8 @@ namespace CryptoSystems.UI
 
         private void PrevButton_Click(object sender, RoutedEventArgs e)
         {
-            var wizardPage2 = new McElieseWizardPage2(_mcElieseWizardData);
-            NavigationService?.Navigate(wizardPage2);
+            var wizardPage1 = new McElieseWizardPage1(_mcElieseWizardData);
+            NavigationService?.Navigate(wizardPage1);
         }
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
